@@ -10,7 +10,7 @@
         public static function add($username, $password, $first, $last,
                                    $email, $address, $city, $state, $zip) {
 
-            $user = dynamic_uninvoke(__METHOD__, func_get_args());
+            $user = Dynamics::uninvoke(__METHOD__, func_get_args());
             $user["password"] = password_hash($password, PASSWORD_DEFAULT);
 
             // Make sure any cert file is a valid Resource.
@@ -61,7 +61,7 @@
         public static function update($username, $password = null, $first = null, $last = null,
                                       $email = null, $address = null, $city = null, $state = null,
                                       $zip = null, $cert = null) {
-            $user = dynamic_uninvoke(__METHOD__, func_get_args());
+            $user = Dynamics::uninvoke(__METHOD__, func_get_args());
 
             // Make sure we have rights to update the user.
             if (Flight::get('user') != $username &&
@@ -116,10 +116,10 @@
             }
         }
 
-        /**
-         * @filter $username words
-         */
         public static function view($username) {
+            $user = Dynamics::uninvoke(__METHOD__, func_get_args());
+            Filters::sift($user, ['username' => 'username']);
+
             // Short-circuit a special username "me" to mean the authed user.
             if($username === 'me') {
                 $username = Flight::get('user');
@@ -136,7 +136,7 @@
                 $selector = ["username", "first", "last", "email", "address", "city", "state", "zip", "cert"];
                 $result = Flight::db()->select("Users", $selector, ["username" => $username]);
                 if (count($result) == 0) {
-                    throw new HTTPException("no such user", 404);
+                    throw new HTTPException("no such user '$username'", 404);
                 }
 
                 return $result[0];

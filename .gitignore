@@ -1,4 +1,2 @@
-/receipts/
-dbinfo.php
 server_info.php
-/user/certs/
+.sync-config.cson

@@ -38,6 +38,111 @@
         }
     }
 
+    // Filters...
+    class Filters {
+        private static function username($x) {
+            return is_string($x) && (preg_match('/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/', $x) == true);
+        }
+        private static function date($x) {
+            return is_string($x) && (preg_match('/^[0-9]{4}[-/][0-9]{1,2}[-/][0-9]{1,2}$/', $x) == true);
+        }
+        private static function amount($x) {
+            return is_string($x) && (preg_match("/^[-]?[0-9]+\$/", $x) == true);
+        }
+        private static function number($x) {
+            return is_string($x) && (preg_match("/^[-]?[0-9,]+\$/", $x) == true);
+        }
+        private static function alfanum($x) {
+            return is_string($x) && (preg_match("/^[0-9a-zA-Z ,.-_\\s\?\!]+\$/", $x) == true);
+        }
+        private static function not_empty($x) {
+            return is_string($x) && (preg_match("/[a-z0-9A-Z]+/", $x) == true);
+        }
+        private static function words($x) {
+            return is_string($x) && (preg_match("/^[A-Za-z]+[A-Za-z \\s]*\$/", $x) == true);
+        }
+        private static function phone($x) {
+            return is_string($x) && (preg_match("/^[0-9]{10,11}\$/", $x) == true);
+        }
+        private static function zipcode($x) {
+            return is_string($x) && (preg_match("/^[1-9][0-9]{3}[a-zA-Z]{2}\$/", $x) == true);
+        }
+        private static function price($x) {
+            return is_string($x) && (preg_match("/^[0-9.,]*(([.,][-])|([.,][0-9]{2}))?\$/", $x) == true);
+        }
+
+        // Extract filters (defined in get_filters()) from the docstrings of functions
+        // and map them to the above declared set of filters ($_FILTERS) and ensure
+        // the arguments passed to each parameter satisfy their filters.
+        //
+        // 1. Get all declared function filters, filter to those that exist.
+        // 2. Get all arguments whose parameter requires filtering.
+        // 3. Fail if any one of the filters fails; if all succeed, return true.
+        //
+        // Note: if there are more filters on the method than arguments passed, they
+        // will NOT be accounted for!! Missing parameters should be checked beforehand.
+        public static function sift($vars, $defs) {
+            foreach ($defs as $param_name => $filter_name) {
+                if (!array_key_exists($param_name, $vars))
+                    throw new HTTPException("parameter $param_name does not exist", 400);
+                if ($filter_name !== '' && !method_exists('Filters', $filter_name))
+                    throw new HTTPException("filter $filter_name does not exist", 400);
+
+                if (!call_user_func(['Filters', $filter_name], $vars[$param_name]))
+                    throw new HTTPException("$param_name does not match filter type '$filter_name'", 400);
+            }
+            return true;
+        }
+    }
+
+    // Dynamics...
+    class Dynamics {
+
+        // Dynamically invokes a method and maps the associative array of arguments
+        // onto the method's parameter names. If any non-optional arguments are
+        // missing, the $missing callback is invoked with the parameter name.
+        // If the $arguments array contains more arguments than method parameters exist,
+        // these leftover arguments will be automatically discarded.
+        //
+        // Usage:
+        // $p = ["username" => "abc", "nonexistentparam" => 2];
+        // Dynamics::invoke("User::add", $p, function($name) {
+        //     die('Missing or invalid parameter $name!');
+        // }
+        //
+        public static function invoke($method, $arguments, callable $missing) {
+            $values = [];
+            $all = (new \ReflectionMethod($method))->getParameters();
+            foreach ($all as $p) {
+                $name = $p->getName();
+                $exists = array_key_exists($name, $arguments);
+                if (!$exists && !$p->isDefaultValueAvailable()) {
+                    $missing($name);
+                    $arguments[$name] = null;
+                }
+                $values[$p->getPosition()] = $exists ? $arguments[$name] : $p->getDefaultValue();
+            }
+            return call_user_func_array($method, $values);
+        }
+
+        // Unpacks a function's arguments from their positions into an associative
+        // array; the inverse of dynamically invoking a function. This MUST be used
+        // with the current method name and arguments passed in. If it is not used
+        // in this exact way, or a method's argument does not exist, it will fail.
+        //
+        // Usage: $res = Dynamics::uninvoke(__METHOD__, func_get_args());
+        //
+        // TODO: Make `__METHOD__, func_get_args()` go away.
+        public static function uninvoke($method, $arguments) {
+            $values = [];
+            $all = (new \ReflectionMethod($method))->getParameters();
+            foreach ($all as $p) {
+                $values[$p->getName()] = $arguments[$p->getPosition()];
+            }
+            return $values;
+        }
+    }
+
     // Modified version of Flight::json(...) from Flight\Engine to allow setting
     // CORS headers for client consumption. Use this function ALWAYS!
     Flight::map('json', function($data, $code = 200, $encode = true, $charset = 'utf-8', $option = 0) {
@@ -50,6 +155,33 @@
             ->header('Access-Control-Allow-Origin', $origin_header)
             ->write($json)
             ->send();
+    });
+
+    // Using this is very convenient; we always receive an exception result.
+    // If an HTTPException is thrown, we know to return that to the user normally.
+    // Otherwise, encode the error in a log and notify the administrator about
+    // the fatal error, and return the reference number to the user invoking it.
+    //
+    // TODO: Return a log reference number on non-HTTPException thrown.
+    Flight::map('error', function($e) {
+        try {
+            if ($e instanceof HTTPException) {
+                return Flight::json(["error" => $e->getMessage()], $e->getCode());
+            } else {
+                return Flight::json(["fatal" => [
+                    "message" => $e->getMessage(),
+                    "trace" => $e->getTraceAsString()
+                ]], 500);
+            }
+        } catch(Throwable $t) {
+            http_response_code(500);
+            die("unhandled internal fatal exception: {$t->getMessage()}\n{$t->getTraceAsString()}");
+        }
+    });
+
+    //
+    Flight::map('notFound', function() {
+        throw new HTTPException("api endpoint does not exist", 404);
     });
 
     // Validate the token before invoking any API endpoints if it's requested.
@@ -107,143 +239,19 @@
         Flight::set('user', _check_token()->data->username);
     });
 
-    // TODO: Defines a set of validation functions for API input.
-    $_FILTERS = [
-        'date' => function($x) {
-            return (preg_match("/^[0-9]{4}[-/][0-9]{1,2}[-/][0-9]{1,2}\$/", $x) == true);
-        }, 'amount' => function($x) {
-            return (preg_match("/^[-]?[0-9]+\$/", $x) == true);
-        }, 'number' => function($x) {
-            return (preg_match("/^[-]?[0-9,]+\$/", $x) == true);
-        }, 'alfanum' => function($x) {
-            return (preg_match("/^[0-9a-zA-Z ,.-_\\s\?\!]+\$/", $x) == true);
-        }, 'not_empty' => function($x) {
-            return (preg_match("/[a-z0-9A-Z]+/", $x) == true);
-        }, 'words' => function($x) {
-            return (preg_match("/^[A-Za-z]+[A-Za-z \\s]*\$/", $x) == true);
-        }, 'phone' => function($x) {
-            return (preg_match("/^[0-9]{10,11}\$/", $x) == true);
-        }, 'zipcode' => function($x) {
-            return (preg_match("/^[1-9][0-9]{3}[a-zA-Z]{2}\$/", $x) == true);
-        }, 'plate' => function($x) {
-            return (preg_match("/^([0-9a-zA-Z]{2}[-]){2}[0-9a-zA-Z]{2}\$/", $x) == true);
-        }, 'price' => function($x) {
-            return (preg_match("/^[0-9.,]*(([.,][-])|([.,][0-9]{2}))?\$/", $x) == true);
-        }, '2digitopt' => function($x) {
-            return (preg_match("/^\d+(\,\d{2})?\$/", $x) == true);
-        }, '2digitforce' => function($x) {
-            return (preg_match("/^\d+\,\d\d\$/", $x) == true);
-        }, 'anything' => function($x) {
-            return (preg_match("/^[\d\D]{1,}\$/", $x) == true);
-        } //'is_array' => is_array,
-    ];
-    Flight::set('FILTERS', $_FILTERS);
-
-    // Extracts all `@filter $name comment` strings from docstrings.
-    // TODO: Support ReflectionFunction as well.
-    function get_filters($method_name) {
-        $str = (new \ReflectionMethod($method_name))->getDocComment();
-        if (preg_match_all('/(@filter \$)(\w+)\s+(.*)\r?\n/m', $str, $matches)) {
-            return array_combine($matches[2], $matches[3]);
-        }
-        return [];
-    }
-
-    // Extract filters (defined in get_filters()) from the docstrings of functions
-    // and map them to the above declared set of filters ($_FILTERS) and ensure
-    // the arguments passed to each parameter satisfy their filters.
-    //
-    // 1. Get all declared function filters, filter to those that exist.
-    // 2. Get all arguments whose parameter requires filtering.
-    // 3. Fail if any one of the filters fails; if all succeed, return true.
-    //
-    // Note: if there are more filters on the method than arguments passed, they
-    // will NOT be accounted for!! Missing parameters should be checked beforehand.
-    function dynamic_filter($method, $arguments, callable $failed) {
-        // ["param1" => func1, "param2" => func2]
-        $from_filter = array_filter(get_filters($method), function($v) {
-            return array_key_exists($v, Flight::get('FILTERS'));
-        });
-        //throw new HTTPException(["from" => get_filters($method), "to" => $from_filter], 400);
-        foreach ($from_filter as $param => $filter_name) {
-            $filter_func = Flight::get('FILTERS')[$filter_name];
-            if (!(array_key_exists($param, $from_filter) && $filter_func($arguments[$param]))) {
-                $failed($param);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // Dynamically invokes a method and maps the associative array of arguments
-    // onto the method's parameter names. If any non-optional arguments are
-    // missing, the $missing callback is invoked with the parameter name.
-    // If the $arguments array contains more arguments than method parameters exist,
-    // these leftover arguments will be automatically discarded.
-    //
-    // Usage:
-    // $p = ["username" => "abc", "nonexistentparam" => 2];
-    // dynamic_invoke("User::add", $p, function($name) {
-    //     die('Missing or invalid parameter $name!');
-    // }
-    //
-    function dynamic_invoke($method, $arguments, callable $missing) {
-        $values = [];
-        $all = (new \ReflectionMethod($method))->getParameters();
-        foreach ($all as $p) {
-            $name = $p->getName();
-            $exists = array_key_exists($name, $arguments);
-            if (!$exists && !$p->isDefaultValueAvailable()) {
-                $missing($name);
-                $arguments[$name] = null;
-            }
-            $values[$p->getPosition()] = $exists ? $arguments[$name] : $p->getDefaultValue();
-        }
-        return call_user_func_array($method, $values);
-    }
-
-    // Unpacks a function's arguments from their positions into an associative
-    // array; the inverse of dynamically invoking a function. This MUST be used
-    // with the current method name and arguments passed in. If it is not used
-    // in this exact way, or a method's argument does not exist, it will fail.
-    //
-    // Usage:
-    // $res = dynamic_uninvoke(__METHOD__, func_get_args());
-    function dynamic_uninvoke($method, $arguments) {
-        $values = [];
-        $all = (new \ReflectionMethod($method))->getParameters();
-        foreach ($all as $p) {
-            $values[$p->getName()] = $arguments[$p->getPosition()];
-        }
-        return $values;
-    }
-
     // Dynamically routes an HTTP endpoint to a global or static function,
-    // by using the dynamic_invoke() method above and matching parameters.
-    function dynamic_route($match, $to, $require_auth = true) {
+    // by using the Dynamics::invoke() method above and matching parameters.
+    Flight::map('dynamic_route', function($match, $to, $require_auth = true) {
         Flight::route($match, function(...$args) use (&$to, &$require_auth) {
             if ($require_auth) Flight::check_token();
             $json_params = json_decode(Flight::request()->getBody(), true) ?: [];
             $url_params = array_pop($args)->params; // prioritized in merge()
             $all_params = array_merge($json_params, $url_params);
 
-            // First filter the parameters of the function, then invoke the function.
-            try {
-                $valid = dynamic_filter($to, $all_params, function($name) {
-                    throw new HTTPException("invalid type of parameter $name", 400);
-                });
-                $res = dynamic_invoke($to, $all_params, function($name) {
-                    throw new HTTPException("missing paramter $name", 400);
-                });
-
-                // Now we either return result or error if an HTTPException was thrown.
-                return Flight::json(["result" => $res]);
-            } catch (HTTPException $e) {
-                return Flight::json(["error" => $e->getMessage()], $e->getCode());
-            }
+            $res = Dynamics::invoke($to, $all_params, function($name) {
+                throw new HTTPException("missing paramter $name", 400);
+            });
+            return Flight::json(["result" => $res]);
         }, true);
-    }
-    Flight::map('dynamic_route', function($match, $to, $require_auth = true) {
-        dynamic_route($match, $to, $require_auth);
     });
 ?>

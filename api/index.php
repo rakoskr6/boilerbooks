@@ -1,22 +1,22 @@
 <?php
-
     require 'lib/meedo.php';
     require 'lib/php-jwt/JWT.php';
     require 'lib/flight/Flight.php';
 
-    // By versioning the API, we ensure that clients are aware of the specific calls
-    // and will be explicit in their intent.  By default use newest API (this) if no
-    // version is specified, but return an error on older versions that aren't supported.
+    // By versioning the API, we ensure that clients are aware of the specific
+    // calls and will be explicit in their intent.  By default use newest API
+    // (this) if no version is specified, but return an error on older versions
+    // that aren't supported.
     define("API_VERSION", 2);
     if (isset(getallheaders()['Version']) && getallheaders()["Version"] !== API_VERSION) {
         return http_return(400, ["error" => "incorrect API version number"]);
     }
 
-    // The `server_info.php` file contains database and token secrets and will not
-    // be versioned with the API. Establishing connection to the database occurs first,
-    // before any API endpoints are established.
+    // The `server_info.php` file contains database and token secrets and will
+    // not be versioned with the API. Establishing connection to the database
+    // occurs first, before any API endpoints are established.
     require_once '../server_info.php';
-    $database = new database([
+    Flight::set('database', new database([
         'database_type' => 'mysql',
         'database_name' => DB_NAME,
         'server' => DB_HOST,
@@ -26,20 +26,13 @@
         'option' => [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         ],
-    ]);
-    Flight::set('database', $database);
+    ]));
     Flight::map("db", function() {
         return Flight::get('database');
     });
 
     // Load our dynamics and utilities and set up 404, 500 response.
     require_once 'utils.php';
-    Flight::map('notFound', function() {
-        throw new HTTPException("api endpoint does not exist", 404);
-    });
-    Flight::map('error', function($e) {
-        throw new HTTPException("$e", 500);
-    });
 
     // Establish API endpoints and start!
     require_once 'rights.php';
