@@ -10,7 +10,7 @@
         public static function add($username, $password, $first, $last,
                                    $email, $address, $city, $state, $zip) {
 
-            $user = Dynamics::uninvoke(__METHOD__, func_get_args());
+            $user = Dynamics::extract(__METHOD__, func_get_args());
             $user["password"] = password_hash($password, PASSWORD_DEFAULT);
 
             // Make sure any cert file is a valid Resource.
@@ -61,7 +61,7 @@
         public static function update($username, $password = null, $first = null, $last = null,
                                       $email = null, $address = null, $city = null, $state = null,
                                       $zip = null, $cert = null) {
-            $user = Dynamics::uninvoke(__METHOD__, func_get_args());
+            $user = Dynamics::extract(__METHOD__, func_get_args());
 
             // Make sure we have rights to update the user.
             if (Flight::get('user') != $username &&
@@ -117,8 +117,8 @@
         }
 
         public static function view($username) {
-            $user = Dynamics::uninvoke(__METHOD__, func_get_args());
-            Filters::sift($user, ['username' => 'username']);
+            $user = Dynamics::extract(__METHOD__, func_get_args());
+            Validators::apply($user, ['username' => 'username']);
 
             // Short-circuit a special username "me" to mean the authed user.
             if($username === 'me') {

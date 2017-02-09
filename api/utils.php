@@ -39,24 +39,25 @@
     }
 
     // Filters...
-    class Filters {
+    class Validators {
         private static function username($x) {
-            return is_string($x) && (preg_match('/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/', $x) == true);
+            return  is_string($x) && in_array(strlen($x), range(3, 16)) &&
+                    preg_match('/^([a-z0-9]+(?:[._][a-z0-9]+)*)\$/i', $x);
         }
         private static function date($x) {
             return is_string($x) && (preg_match('/^[0-9]{4}[-/][0-9]{1,2}[-/][0-9]{1,2}$/', $x) == true);
         }
-        private static function amount($x) {
-            return is_string($x) && (preg_match("/^[-]?[0-9]+\$/", $x) == true);
+        private static function alpha($x) {
+            return is_string($x) && ctype_alpha($x);
         }
-        private static function number($x) {
-            return is_string($x) && (preg_match("/^[-]?[0-9,]+\$/", $x) == true);
+        private static function numeric($x) {
+            return is_numeric($x);
         }
-        private static function alfanum($x) {
-            return is_string($x) && (preg_match("/^[0-9a-zA-Z ,.-_\\s\?\!]+\$/", $x) == true);
+        private static function alphanumeric($x) {
+            return is_string($x) && ctype_alnum($x);
         }
-        private static function not_empty($x) {
-            return is_string($x) && (preg_match("/[a-z0-9A-Z]+/", $x) == true);
+        private static function empty($x) {
+            return is_string($x) && strlen($x) === 0;
         }
         private static function words($x) {
             return is_string($x) && (preg_match("/^[A-Za-z]+[A-Za-z \\s]*\$/", $x) == true);
@@ -64,31 +65,23 @@
         private static function phone($x) {
             return is_string($x) && (preg_match("/^[0-9]{10,11}\$/", $x) == true);
         }
-        private static function zipcode($x) {
-            return is_string($x) && (preg_match("/^[1-9][0-9]{3}[a-zA-Z]{2}\$/", $x) == true);
-        }
-        private static function price($x) {
-            return is_string($x) && (preg_match("/^[0-9.,]*(([.,][-])|([.,][0-9]{2}))?\$/", $x) == true);
-        }
 
-        // Extract filters (defined in get_filters()) from the docstrings of functions
-        // and map them to the above declared set of filters ($_FILTERS) and ensure
-        // the arguments passed to each parameter satisfy their filters.
-        //
-        // 1. Get all declared function filters, filter to those that exist.
-        // 2. Get all arguments whose parameter requires filtering.
-        // 3. Fail if any one of the filters fails; if all succeed, return true.
-        //
-        // Note: if there are more filters on the method than arguments passed, they
-        // will NOT be accounted for!! Missing parameters should be checked beforehand.
-        public static function sift($vars, $defs) {
+        // Apply a set of validation functors to an array of vars. Each var must
+        // match a validator and each validator MUST exist in this class as a
+        // static func. If any of the filters fails to apply correctly to a var,
+        // an exception is thrown.
+        public static function apply($vars, $defs) {
             foreach ($defs as $param_name => $filter_name) {
                 if (!array_key_exists($param_name, $vars))
                     throw new HTTPException("parameter $param_name does not exist", 400);
-                if ($filter_name !== '' && !method_exists('Filters', $filter_name))
+
+                // If the `not_` prefix exists, then flip the condition.
+                $cond = (0 === strpos($filter_name, 'not_')) ? true : false;
+                if ($cond) $filter_name = preg_replace('/not_/', '', $filter_name);
+                if ($filter_name !== 'apply' && !method_exists('Validators', $filter_name))
                     throw new HTTPException("filter $filter_name does not exist", 400);
 
-                if (!call_user_func(['Filters', $filter_name], $vars[$param_name]))
+                if (call_user_func(['Validators', $filter_name], $vars[$param_name]) === $cond)
                     throw new HTTPException("$param_name does not match filter type '$filter_name'", 400);
             }
             return true;
@@ -130,7 +123,7 @@
         // with the current method name and arguments passed in. If it is not used
         // in this exact way, or a method's argument does not exist, it will fail.
         //
-        // Usage: $res = Dynamics::uninvoke(__METHOD__, func_get_args());
+        // Usage: $res = Dynamics::extract(__METHOD__, func_get_args());
         //
         // TODO: Make `__METHOD__, func_get_args()` go away.
         public static function uninvoke($method, $arguments) {

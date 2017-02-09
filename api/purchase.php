@@ -7,7 +7,7 @@
 
         public static function add($username, $organization, $budget, $item, $reason,
                                    $vendor, $cost, $comments) {
-            $purchase = Dynamics::uninvoke(__METHOD__, func_get_args());
+            $purchase = Dynamics::extract(__METHOD__, func_get_args());
 
             // Make sure we have rights to update the purchase.
             if (Flight::get('user') != $username &&
@@ -59,7 +59,7 @@
                                       $reason = null, $vendor = null, $cost = null, $comments = null,
                                       $status = null, $fundsource = null, $purchasedate = null,
                                       $receipt = null) {
-            $purchase = Dynamics::uninvoke(__METHOD__, func_get_args());
+            $purchase = Dynamics::extract(__METHOD__, func_get_args());
 
             // Make sure we have rights to update the purchase.
             if (Flight::get('user') != $username &&

@@ -7,7 +7,7 @@
 
         public static function add($organization, $year, $source, $type, $amount,
                                    $item, $status, $comments) {
-            $income = Dynamics::uninvoke(__METHOD__, func_get_args());
+            $income = Dynamics::extract(__METHOD__, func_get_args());
             $income["username"] = Flight::get('user');
 
             // Ensure proper privileges to create an income.
@@ -27,7 +27,7 @@
 
         public static function update($incomeid, $year = null, $source = null,
                                       $type = null, $item = null, $status = null, $comments = null) {
-            $income = Dynamics::uninvoke(__METHOD__, func_get_args());
+            $income = Dynamics::extract(__METHOD__, func_get_args());
 
             // FIXME: Use $incomeid to get the params and check against those first.
             // Ensure proper privileges to update an income.

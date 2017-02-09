@@ -9,7 +9,7 @@
         // Note: if `organization = '*' && budget = '*' && amount = -1 && year = 0`, this
         // is considered "root" privilege.
         public static function grant($username, $organization, $budget, $year, $amount) {
-            $right = Dynamics::uninvoke(__METHOD__, func_get_args());
+            $right = Dynamics::extract(__METHOD__, func_get_args());
             $right["granter"] = Flight::get('user');
 
             // Enforce the proper schema for a root privileged right.
@@ -33,7 +33,7 @@
         }
 
         public static function revoke($username, $organization, $budget, $year) {
-            $right = Dynamics::uninvoke(__METHOD__, func_get_args());
+            $right = Dynamics::extract(__METHOD__, func_get_args());
 
             // Ensure proper privileges to revoke rights.
             // FIXME: Confirm that -1 amount enforces [revoker > revokee].

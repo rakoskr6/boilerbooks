@@ -6,7 +6,7 @@
         protected function __clone() {}
 
         public static function add($organization, $name, $year, $amount) {
-            $budget = Dynamics::uninvoke(__METHOD__, func_get_args());
+            $budget = Dynamics::extract(__METHOD__, func_get_args());
 
             // Ensure proper privileges to create a budget.
             if(!Rights::check_rights(Flight::get('user'), $organization, "*", $year, -1)[0]["result"]) {
@@ -24,7 +24,7 @@
         }
 
         public static function remove($organization, $name, $year) {
-            $budget = Dynamics::uninvoke(__METHOD__, func_get_args());
+            $budget = Dynamics::extract(__METHOD__, func_get_args());
 
             // Ensure proper privileges to delete a budget.
             if(!Rights::check_rights(Flight::get('user'), $organization, "*", $year, -1)[0]["result"]) {
@@ -48,7 +48,7 @@
         }
 
         public static function update($organization, $name, $year, $amount) {
-            $budget = Dynamics::uninvoke(__METHOD__, func_get_args());
+            $budget = Dynamics::extract(__METHOD__, func_get_args());
             unset($budget["amount"]);
 
             // Ensure proper privileges to update a budget.

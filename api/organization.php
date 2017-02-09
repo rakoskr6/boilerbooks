@@ -6,7 +6,7 @@
         protected function __clone() {}
 
         public static function add($name, $parent = null) {
-            $org = Dynamics::uninvoke(__METHOD__, func_get_args());
+            $org = Dynamics::extract(__METHOD__, func_get_args());
 
             // Ensure proper privileges to create a(n) (sub-)organization.
             if(!Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
