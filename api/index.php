@@ -1,6 +1,6 @@
 <?php
     require 'lib/meedo.php';
-    require 'lib/php-jwt/JWT.php';
+    require 'lib/jwt.php';
     require 'lib/flight/Flight.php';
 
     // By versioning the API, we ensure that clients are aware of the specific

@@ -11,6 +11,12 @@
                                    $email, $address, $city, $state, $zip) {
 
             $user = Dynamics::extract(__METHOD__, func_get_args());
+            Validators::apply($user, [
+                'username' => 'username', 'password' => 'not_empty'
+                'first' => 'alpha', 'last' => 'alpha', 'email' => 'not_empty',
+                'address' => 'not_empty', 'city' => 'alpha', 'state' => 'alpha',
+                'zip' => 'not_empty'
+            ]);
             $user["password"] = password_hash($password, PASSWORD_DEFAULT);
 
             // Make sure any cert file is a valid Resource.
@@ -29,6 +35,9 @@
         }
 
         public static function remove($username) {
+            $user = Dynamics::extract(__METHOD__, func_get_args());
+            Validators::apply($user, ['username' => 'username']);
+
             // Make sure we have rights to delete users.
             if(Flight::get('user') != $username &&
                !Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
@@ -62,6 +71,12 @@
                                       $email = null, $address = null, $city = null, $state = null,
                                       $zip = null, $cert = null) {
             $user = Dynamics::extract(__METHOD__, func_get_args());
+            Validators::apply($user, [
+                'username' => 'username', 'password' => 'not_empty'
+                'first' => 'alpha', 'last' => 'alpha', 'email' => 'not_empty',
+                'address' => 'not_empty', 'city' => 'alpha', 'state' => 'alpha',
+                'zip' => 'not_empty'
+            ]);
 
             // Make sure we have rights to update the user.
             if (Flight::get('user') != $username &&

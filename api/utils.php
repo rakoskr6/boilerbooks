@@ -40,6 +40,9 @@
 
     // Filters...
     class Validators {
+        protected function __construct() {}
+        protected function __clone() {}
+
         private static function username($x) {
             return  is_string($x) && in_array(strlen($x), range(3, 16)) &&
                     preg_match('/^([a-z0-9]+(?:[._][a-z0-9]+)*)\$/i', $x);
@@ -90,6 +93,8 @@
 
     // Dynamics...
     class Dynamics {
+        protected function __construct() {}
+        protected function __clone() {}
 
         // Dynamically invokes a method and maps the associative array of arguments
         // onto the method's parameter names. If any non-optional arguments are
@@ -115,7 +120,7 @@
                 }
                 $values[$p->getPosition()] = $exists ? $arguments[$name] : $p->getDefaultValue();
             }
-            return call_user_func_array($method, $values);
+            return $method(...$values);
         }
 
         // Unpacks a function's arguments from their positions into an associative
