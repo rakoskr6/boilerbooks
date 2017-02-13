@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory, IndexRedirect } from 'react-router';
 import './index.css';
 import Layout from './components/layout.js';
-import Me from './pages/me.js';
-import UserView from './components/user.js';
+import User from './pages/user.js';
+import UserView from './components/userview.js';
 import Login from './pages/login.js';
 import Register from './pages/register.js';
 import Dashboard from './pages/dashboard.js';
@@ -69,7 +69,7 @@ class Index extends React.Component {
                         <Route path="/income" component={Dashboard} />
                         <Route path="/budget" component={Dashboard} />
 
-                        <Route path="/me" component={Me} />
+                        <Route path="/me" component={User} />
                         <Route path="/user/:user" component={UserView} />
                     </Route>
                 </Router>

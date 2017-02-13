@@ -28,6 +28,7 @@ class Layout extends React.Component {
         user: "",
         openPopover: false,
         anchorElement: null,
+        logoutConfirm: false
     };
     observer = null;
 
@@ -121,7 +122,7 @@ class Layout extends React.Component {
                 <div style={{ marginTop: 56, paddingBottom: 32, width: '100%', overflowY: 'auto' }}>
                     {this.props.children}
                 </div>
-                <Paper rounded={false} zDepth={5} style={{ backgroundColor: lightBlue900 }}>
+                <Paper rounded={false} zDepth={5} style={{ backgroundColor: lightBlue900, position: 'absolute', bottom: 0, width: '100%' }}>
                     <Subheader style={{ color: fade(fullWhite, 0.7) }}>{copyright(2017, "Aditya Vaidyam, Matt Molo, Kyle Rakos")}</Subheader>
                 </Paper>
                 <Dialog
