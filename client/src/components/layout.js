@@ -1,24 +1,33 @@
 import React from 'react'
 import { withRouter } from 'react-router';
-
-import { Toolbar, ToolbarLeft, ToolbarRight, ToolbarTitle } from './toolbar.js'
-import {Card, CardTitle, CardText } from 'material-ui/Card';
+import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar'
+import Subheader from 'material-ui/Subheader';
 import {Tabs, Tab} from 'material-ui/Tabs';
-import FlatButton from 'material-ui/FlatButton';
-import IconButton from 'material-ui/IconButton';
-import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-
+import Paper from 'material-ui/Paper';
+import Popover from 'material-ui/Popover';
+import IconButton from 'material-ui/IconButton';
+import Menu from 'material-ui/Menu';
 import SessionStore from '../flux/store.js'
+import Avatar from 'material-ui/Avatar';
+import { lightBlue900, fullWhite } from 'material-ui/styles/colors';
+import { fade } from 'material-ui/utils/colorManipulator';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 
-import * as Auth from '../Auth.js';
+// Quick util function to generate a copyright notice.
+function copyright(startYear, authors) {
+    var thisYear  = new Date().getFullYear()
+    var years = (thisYear > startYear ? startYear + '-' + thisYear : startYear)
+    return "Copyright © " + years + " " + authors
+}
 
 class Layout extends React.Component {
-
     state = {
         title: document.title,
-        user: ""
+        user: "",
+        openPopover: false,
+        anchorElement: null,
     };
     observer = null;
 
@@ -42,77 +51,96 @@ class Layout extends React.Component {
         this.observer.disconnect();
     }
 
-    goLogin = () => {
-        this.props.router.replace('/login')
-    }
-
-    goRegister = () => {
-        this.props.router.replace('/register')
+    goProfile = () => {
+        this.props.router.replace('/me')
     }
 
     tabChange = (val, val2) => {
         this.props.router.replace(val)
     }
 
-    menuSelect = (event, val) => {
-        this.props.router.replace(val)
+    avatarSelect = (event) => {
+        this.setState({
+            openPopover: true,
+            anchorElement: event.currentTarget,
+        });
+    }
+
+    avatarClose = () => {
+        this.setState({
+            openPopover: false,
+        });
+    };
+
+    goLogout = () => {
+        this.setState({logoutConfirm: true})
+    }
+    confirmLogout = () => {
+        this.props.router.replace('/logout')
+    }
+    cancelLogout = () => {
+        this.setState({logoutConfirm: false})
     }
 
     render() {
-        const style = {
-            backgroundColor: '#00bcd4',
-            color: 'white',
-            fontWeight: 100,
-        }
-
         return (
             <div>
-                <Toolbar style={style}>
-                    {Auth.loggedIn() ?
-                        [
-                            <ToolbarLeft key={1}>
-                                <ToolbarTitle>BoilerBooks</ToolbarTitle>
-                                <div style={{ width: 400, float: 'left' }}>
-                                    <Tabs style={style} tabItemContainerStyle={{height: 56}} onChange={this.tabChange} value={this.props.location.pathname}>
-                                        <Tab label="Dashboard" value="/dashboard" />
-                                        <Tab label="Purchases" value="/purchases" />
-                                        <Tab label="Income" value="/income" />
-                                        <Tab label="Budget" value="/budget" />
-                                    </Tabs>
-                                </div>
-                            </ToolbarLeft>,
-                            <ToolbarRight key={2}>
-                                <IconMenu
-                                    style={{height: '56px'}}
-                                    iconStyle={{color: "white", height: "32px"}}
-                                    iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                                    targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                                    anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                                    onChange={this.menuSelect}
-                                >
-                                    <MenuItem primaryText="Profile" value="/me"/>
-                                    <MenuItem primaryText="Logout" value="/logout"/>
-                                </IconMenu>
-                            </ToolbarRight>
-                    ] : [
-                            <ToolbarLeft key={1}>
-                                <ToolbarTitle>BoilerBooks</ToolbarTitle>
-                            </ToolbarLeft>,
-                            <ToolbarRight key={2}>
-                                <FlatButton label="Register" onClick={this.goRegister} style={style}/>
-                                <FlatButton label="Login" onClick={this.goLogin} style={style}/>
-                            </ToolbarRight>
-
+                <Paper rounded={false} zDepth={3} style={{ position: 'fixed', top: 0, width: '100%' }}>
+                    <Toolbar style={{ backgroundColor: lightBlue900 }}>
+                        <ToolbarGroup float="left">
+                            <ToolbarTitle text="BoilerBooks" style={{ color: fullWhite }} />
+                            <div style={{ width: 400 }}>
+                                <Tabs tabItemContainerStyle={{height: 56}} onChange={this.tabChange} value={this.props.location.pathname}>
+                                    <Tab label="Dashboard" value="/dashboard" />
+                                    <Tab label="Purchases" value="/purchases" />
+                                    <Tab label="Income" value="/income" />
+                                    <Tab label="Budget" value="/budget" />
+                                </Tabs>
+                            </div>
+                        </ToolbarGroup>
+                        <ToolbarGroup lastChild={true} float="right">
+                            <IconButton style={{ width: 96, height: 96 }} onClick={this.avatarSelect}>
+                                <Avatar backgroundColor="white" color={lightBlue900}>A</Avatar>
+                            </IconButton>
+                            {/* FIXME: Popover.marginRight doesn't work here for whatever reason.*/}
+                            <Popover
+                                open={this.state.openPopover}
+                                anchorEl={this.state.anchorElement}
+                                anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                                targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                                style={{ marginTop:-16, marginRight:16 }}
+                                onRequestClose={this.avatarClose}>
+                                <Menu>
+                                    <MenuItem primaryText="Profile" onTouchTap={this.goProfile} />
+                                    <MenuItem primaryText="Logout" onTouchTap={this.goLogout} />
+                                </Menu>
+                            </Popover>
+                        </ToolbarGroup>
+                    </Toolbar>
+                </Paper>
+                <div style={{ marginTop: 56, paddingBottom: 32, width: '100%', overflowY: 'auto' }}>
+                    {this.props.children}
+                </div>
+                <Paper rounded={false} zDepth={5} style={{ backgroundColor: lightBlue900 }}>
+                    <Subheader style={{ color: fade(fullWhite, 0.7) }}>{copyright(2017, "Aditya Vaidyam, Matt Molo, Kyle Rakos")}</Subheader>
+                </Paper>
+                <Dialog
+                    title="Are you sure you want to log out of BoilerBooks right now?"
+                    actions={[
+                        <FlatButton
+                            label="Cancel"
+                            secondary={true}
+                            onTouchTap={this.cancelLogout} />,
+                        <FlatButton
+                            label="Logout"
+                            primary={true}
+                            keyboardFocused={true}
+                            onTouchTap={this.confirmLogout} />
                     ]}
-                </Toolbar>
-                <Card className="content">
-                    <CardTitle title={this.state.title} />
-                    <CardText>
-                        <div>
-                            {this.props.children}
-                        </div>
-                    </CardText>
-                </Card>
+                    modal={false}
+                    open={this.state.logoutConfirm}
+                    onRequestClose={this.cancelLogout}>
+                </Dialog>
             </div>
         );
     }

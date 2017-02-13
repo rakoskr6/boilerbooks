@@ -1,12 +1,15 @@
 import React from 'react';
 import { withRouter } from 'react-router';
+import { Flex, withReflex } from 'reflexbox'
 
+import Paper from 'material-ui/Paper';
 import Snackbar from 'material-ui/Snackbar';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import { User } from "../API.js";
-import * as Auth from "../Auth.js"
+import { User, Authenticate } from "../API.js";
+
+const PaperFlex = withReflex()(Paper)
 
 const inputSubmitStyle = {
     cursor: 'pointer',
@@ -174,7 +177,10 @@ class Register extends React.Component {
                 })
             }
             else if (res['result']){
-                Auth.login(this.state.username, this.state.password).then(res => {
+                Authenticate.authenticate({
+                    username: this.state.username,
+                    password: this.state.password
+                }).then(res => {
                     if (res['error'] !== undefined) {
                         this.props.router.replace('/login')
                     }
@@ -194,125 +200,138 @@ class Register extends React.Component {
         })
     }
 
+    handleLogin = (event) => {
+        this.props.router.push('/login')
+    }
+
     render() {
         return (
-            <div style={{ width: '450px', margin: '0 auto' }}>
-                    <form action="" onSubmit={this.handleSubmit}>
-                        <TextField
-                            hintText="Mitch"
-                            floatingLabelText="First Name"
-                            style={{width: '100%'}}
-                            name="firstname"
-                            value={this.state.firstname}
-                            errorText={this.state.firstnameErrText}
-                            onChange={this.handleChange}
-                        />
-                        <br />
-                        <TextField
-                            hintText="Daniels"
-                            floatingLabelText="Last Name"
-                            style={{width: '100%'}}
-                            name="lastname"
-                            value={this.state.lastname}
-                            errorText={this.state.lastnameErrText}
-                            onChange={this.handleChange}
-                        />
-                        <br />
-                        <TextField
-                            hintText="president@purdue.edu"
-                            floatingLabelText="Email"
-                            style={{width: '100%'}}
-                            name="email"
-                            value={this.state.email}
-                            errorText={this.state.emailErrText}
-                            onChange={this.handleChange}
-                        />
-                        <br />
-                        <TextField
-                            hintText="610 Purdue Mall"
-                            floatingLabelText="Address"
-                            style={{width: '100%'}}
-                            name="address"
-                            value={this.state.address}
-                            errorText={this.state.addressErrText}
-                            onChange={this.handleChange}
-                        />
-                        <br />
-                        <TextField
-                            hintText="West Lafayette"
-                            floatingLabelText="City"
-                            style={{width: '100%'}}
-                            name="city"
-                            value={this.state.city}
-                            errorText={this.state.cityErrText}
-                            onChange={this.handleChange}
-                        />
-                        <TextField
-                            hintText="IN"
-                            floatingLabelText="State"
-                            style={{width: '100%'}}
-                            name="state"
-                            value={this.state.state}
-                            errorText={this.state.stateErrText}
-                            onChange={this.handleChange}
-                        />
-                        <TextField
-                            hintText="47906"
-                            floatingLabelText="Zip"
-                            style={{width: '100%'}}
-                            name="zip"
-                            value={this.state.zip}
-                            errorText={this.state.zipErrText}
-                            onChange={this.handleChange}
-                        />
-                        <br />
-                        <TextField
-                            hintText="mdaniels"
-                            floatingLabelText="Username"
-                            style={{width: '100%'}}
-                            name="username"
-                            value={this.state.username}
-                            errorText={this.state.usernameErrText}
-                            onChange={this.handleChange}
-                        />
-                        <br />
-                        <TextField
-                            hintText="********"
-                            floatingLabelText="Password"
-                            type="password"
-                            style={{width: '100%'}}
-                            name="password"
-                            value={this.state.password}
-                            errorText={this.state.passwordErrText}
-                            onChange={this.handleChange}
-                        />
-                        <br />
-                        <TextField
-                            hintText="********"
-                            floatingLabelText="Renter Password"
-                            type="password"
-                            style={{width: '100%'}}
-                            name="password2"
-                            value={this.state.password2}
-                            errorText={this.state.password2ErrText}
-                            onChange={this.handleChange}
-                        />
-                        <br /> <br />
-                        <RaisedButton
-                            label="Login"
-                            primary={true}
-                            className="submit"
-                            style={{width: '100%'}}
-                            onClick={this.handleSubmit}>
-                            <input type="submit" style={inputSubmitStyle}/>
-                        </RaisedButton>
-                    </form>
-                    <Snackbar
-                        open={this.state.errorText !== ""}
-                        message={this.state.errorText}
-                        autoHideDuration={2000}
-                    />
-            </div>
+            <Flex justify='space-around' align='center' style={{marginTop: '48px'}}>
+                <PaperFlex flexColumn={true} justify='center' align='center' p={2} zDepth={3} col={4}>
+                    <h1>Create an account.</h1>
+                        <form action="" onSubmit={this.handleSubmit}>
+                            <TextField
+                                hintText="Mitch"
+                                floatingLabelText="First Name"
+                                style={{width: '100%'}}
+                                name="firstname"
+                                value={this.state.firstname}
+                                errorText={this.state.firstnameErrText}
+                                onChange={this.handleChange}
+                                />
+                            <br />
+                            <TextField
+                                hintText="Daniels"
+                                floatingLabelText="Last Name"
+                                style={{width: '100%'}}
+                                name="lastname"
+                                value={this.state.lastname}
+                                errorText={this.state.lastnameErrText}
+                                onChange={this.handleChange}
+                                />
+                            <br />
+                            <TextField
+                                hintText="president@purdue.edu"
+                                floatingLabelText="Email"
+                                style={{width: '100%'}}
+                                name="email"
+                                value={this.state.email}
+                                errorText={this.state.emailErrText}
+                                onChange={this.handleChange}
+                                />
+                            <br />
+                            <TextField
+                                hintText="610 Purdue Mall"
+                                floatingLabelText="Address"
+                                style={{width: '100%'}}
+                                name="address"
+                                value={this.state.address}
+                                errorText={this.state.addressErrText}
+                                onChange={this.handleChange}
+                                />
+                            <br />
+                            <TextField
+                                hintText="West Lafayette"
+                                floatingLabelText="City"
+                                style={{width: '100%'}}
+                                name="city"
+                                value={this.state.city}
+                                errorText={this.state.cityErrText}
+                                onChange={this.handleChange}
+                                />
+                            <TextField
+                                hintText="IN"
+                                floatingLabelText="State"
+                                style={{width: '100%'}}
+                                name="state"
+                                value={this.state.state}
+                                errorText={this.state.stateErrText}
+                                onChange={this.handleChange}
+                                />
+                            <TextField
+                                hintText="47906"
+                                floatingLabelText="Zip"
+                                style={{width: '100%'}}
+                                name="zip"
+                                value={this.state.zip}
+                                errorText={this.state.zipErrText}
+                                onChange={this.handleChange}
+                                />
+                            <br />
+                            <TextField
+                                hintText="mdaniels"
+                                floatingLabelText="Username"
+                                style={{width: '100%'}}
+                                name="username"
+                                value={this.state.username}
+                                errorText={this.state.usernameErrText}
+                                onChange={this.handleChange}
+                                />
+                            <br />
+                            <TextField
+                                hintText="********"
+                                floatingLabelText="Password"
+                                type="password"
+                                style={{width: '100%'}}
+                                name="password"
+                                value={this.state.password}
+                                errorText={this.state.passwordErrText}
+                                onChange={this.handleChange}
+                                />
+                            <br />
+                            <TextField
+                                hintText="********"
+                                floatingLabelText="Renter Password"
+                                type="password"
+                                style={{width: '100%'}}
+                                name="password2"
+                                value={this.state.password2}
+                                errorText={this.state.password2ErrText}
+                                onChange={this.handleChange}
+                                />
+                            <br /> <br />
+                            <RaisedButton
+                                label="Login"
+                                primary={false}
+                                style={{width: '45%'}}
+                                onClick={this.handleLogin}>
+                            </RaisedButton>
+                            <RaisedButton
+                                label="Register"
+                                primary={true}
+                                className="submit"
+                                style={{float: 'right', width: '45%'}}
+                                onClick={this.handleSubmit}>
+                                <input type="submit" style={inputSubmitStyle}/>
+                            </RaisedButton>
+                        </form>
+                        <Snackbar
+                            open={this.state.errorText !== ""}
+                            message={this.state.errorText}
+                            autoHideDuration={2000}
+                            />
+                </PaperFlex>
+            </Flex>
         );
     }
 }

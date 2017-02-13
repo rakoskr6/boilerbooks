@@ -1,65 +1,76 @@
-// React + BoilerBooks
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, IndexRoute, browserHistory } from 'react-router';
-
+import { Router, Route, browserHistory, IndexRedirect } from 'react-router';
 import './index.css';
-
 import Layout from './components/layout.js';
-
 import Me from './pages/me.js';
 import UserView from './components/user.js';
-import Home from './pages/home.js';
 import Login from './pages/login.js';
 import Register from './pages/register.js';
 import Dashboard from './pages/dashboard.js';
-
-import * as Auth from './Auth.js';
-
-// MaterialUI
+import { APISession } from './API.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import {lightBlue900} from 'material-ui/styles/colors';
 
-class App extends React.Component {
+// This is the UI theme for the entire app.
+const theme = getMuiTheme({
+    palette: {
+        primary1Color: lightBlue900,
+    }, appBar: {
+        height: 48,
+    }, ripple: {
+        color: lightBlue900,
+    },
+});
+
+// The Index controls all authentication + routing to ensure pages work.
+class Index extends React.Component {
     state = {}
 
-    requireAuth = (nextState, replace) => {
-        if (!Auth.loggedIn()) {
-            replace('/login')
-        }
-    }
-
-    goToDash = (nextState, replace) => {
-        if (Auth.loggedIn()) {
+    // Entry assistant: withoutAuthorization
+    withoutAuthorization = (nextState, replace) => {
+        if (APISession.state)
             replace('/dashboard')
-        }
     }
 
-    logout = (nextState, replace) => {
-        Auth.logout()
+    // Entry assistant: requireAuthorization
+    requireAuthorization = (nextState, replace) => {
+        if (!APISession.state)
+            replace('/login')
+    }
+
+    // Entry assistant: destroyAuthorization
+    destroyAuthorization = (nextState, replace) => {
+        APISession.state = null
         replace('/')
     }
 
-    // Routing stuff.
     render() {
         return (
-            <MuiThemeProvider>
+            <MuiThemeProvider muiTheme={theme}>
                 <Router history={browserHistory}>
-                    <Route path="/" component={Layout} onEnter={this.goToDash}>
-                        <IndexRoute component={Home}></IndexRoute>
-                        <Route path="/login" component={Login}></Route>
-                        <Route path="/register" component={Register}></Route>
+
+                    {/* The following routes are those that do not require
+                        authorization; i.e. entry points to the App. */}
+                    <Route path="/" onEnter={this.withoutAuthorization}>
+                        <IndexRedirect to="/login" />
+                        <Route path="/login" component={Login} />
+                        <Route path="/register" component={Register} />
                     </Route>
 
-                    <Route path="/logout" onEnter={this.logout}></Route>
+                    {/* The following routes are those that MUST and DO require
+                        authorization; i.e. actual content within the App. */}
+                    <Route component={Layout} onEnter={this.requireAuthorization}>
+                        <Route path="/logout" onEnter={this.destroyAuthorization} />
 
-                    <Route component={Layout} onEnter={this.requireAuth}>
-                        <Route path="/dashboard" component={Dashboard}></Route>
-                        <Route path="/purchases" component={Dashboard}></Route>
-                        <Route path="/income" component={Dashboard}></Route>
-                        <Route path="/budget" component={Dashboard}></Route>
+                        <Route path="/dashboard" component={Dashboard} />
+                        <Route path="/purchases" component={Dashboard} />
+                        <Route path="/income" component={Dashboard} />
+                        <Route path="/budget" component={Dashboard} />
 
-                        <Route path="/me" component={Me}></Route>
-                        <Route path="/user/:user" component={UserView}></Route>
+                        <Route path="/me" component={Me} />
+                        <Route path="/user/:user" component={UserView} />
                     </Route>
                 </Router>
             </MuiThemeProvider>
@@ -71,5 +82,5 @@ class App extends React.Component {
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
-// This mounts our App to the root div in the HTML.
-ReactDOM.render(<App />, document.getElementById('root'));
+// This mounts our Index to the root div in the HTML.
+ReactDOM.render(<Index />, document.getElementById('root'));

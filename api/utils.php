@@ -151,6 +151,7 @@
             ->header('Content-Type', 'application/json; charset='.$charset)
             ->header('Access-Control-Allow-Credentials', 'true')
             ->header('Access-Control-Allow-Origin', $origin_header)
+            ->header('Access-Control-Allow-Headers', "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
             ->write($json)
             ->send();
     });

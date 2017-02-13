@@ -7,7 +7,7 @@ import { Flex, withReflex } from 'reflexbox'
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import * as Auth from '../Auth.js';
+import { APISession, Authenticate } from "../API.js";
 
 const inputSubmitStyle = {
     cursor: 'pointer',
@@ -48,18 +48,20 @@ class Login extends React.Component {
     handleSubmit = (event) => {
         event.preventDefault();
 
-        Auth.login(this.state.username, this.state.password)
-            .then(res => {
+        Authenticate.authenticate({
+            username: this.state.username,
+            password: this.state.password
+        }).then(res => {
                 if (res['error'] !== undefined) {
                     this.setState({
                         errorText: `Error: ${res['error']}`
                     })
-                }
-                else if (res['result']){
+                } else if (res['result']) {
+                    APISession.state = res['result']
+                    console.debug(localStorage);
                     this.props.router.replace('/dashboard')
                 }
-            })
-            .catch(err => {
+            }).catch(err => {
                 console.warn("Error with auth request", err)
                 this.setState({
                     errorText: "Error: Please try again"
@@ -67,9 +69,13 @@ class Login extends React.Component {
             })
     }
 
+    handleRegister = (event) => {
+        this.props.router.push('/register')
+    }
+
     render() {
         return (
-            <Flex justify='space-around' align='center'>
+            <Flex justify='space-around' align='center' style={{marginTop: '48px'}}>
                 <PaperFlex flexColumn={true} justify='center' align='center' p={2} zDepth={3} col={4}>
                     <h1>Please log in.</h1>
                     <form action="" onSubmit={this.handleSubmit}>
@@ -93,10 +99,16 @@ class Login extends React.Component {
                         />
                         <br /> <br />
                         <RaisedButton
+                            label="Register"
+                            primary={false}
+                            style={{width: '45%'}}
+                            onClick={this.handleRegister}>
+                        </RaisedButton>
+                        <RaisedButton
                             label="Login"
                             primary={true}
                             className="submit"
-                            style={{width: '100%'}}
+                            style={{float: 'right', width: '45%'}}
                             onClick={this.handleSubmit}>
                             <input type="submit" style={inputSubmitStyle}/>
                         </RaisedButton>
