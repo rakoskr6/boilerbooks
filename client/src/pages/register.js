@@ -1,12 +1,12 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import { Flex, withReflex } from 'reflexbox'
-
 import Paper from 'material-ui/Paper';
 import Snackbar from 'material-ui/Snackbar';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-
+import { lightBlue900 } from 'material-ui/styles/colors';
+import Subheader from 'material-ui/Subheader';
 import { User, Authenticate } from "../API.js";
 
 const PaperFlex = withReflex()(Paper)
@@ -208,7 +208,9 @@ class Register extends React.Component {
         return (
             <Flex justify='space-around' align='center' style={{marginTop: '48px'}}>
                 <PaperFlex flexColumn={true} justify='center' align='center' p={2} zDepth={3} col={4}>
-                    <h1>Create an account.</h1>
+                    <h1 style={{ marginTop: '0.67em', marginBottom: 0 }}>Create an account.</h1>
+                    {/*<h3 style={{ margin: '0.0em', color: lightBlue900 }}>BoilerBooks</h3>*/}
+                    <Subheader style={{ lineHeight: '0.5em', paddingLeft: 0, color: lightBlue900 }}>BoilerBooks</Subheader>
                         <form action="" onSubmit={this.handleSubmit}>
                             <TextField
                                 hintText="Mitch"

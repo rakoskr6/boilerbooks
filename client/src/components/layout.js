@@ -15,7 +15,6 @@ import { fade } from 'material-ui/utils/colorManipulator';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
-
 // Quick util function to generate a copyright notice.
 function copyright(startYear, authors) {
     var thisYear = new Date().getFullYear()
