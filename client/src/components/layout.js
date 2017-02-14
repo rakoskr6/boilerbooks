@@ -93,7 +93,7 @@ class Layout extends React.Component {
         return (
             <div>
                 <Paper rounded={false} zDepth={3} style={{ position: 'fixed', top: 0, width: '100%' }}>
-                    <Toolbar style={{ backgroundColor: lightBlue900, zIndex: 99999999 }}>
+                    <Toolbar style={{ backgroundColor: lightBlue900, zIndex: 2147483647 }}>
                         <ToolbarGroup>
                             <ToolbarTitle text="BoilerBooks" style={{ color: fullWhite }} />
                             <div style={{ width: 400 }}>
