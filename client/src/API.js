@@ -7,6 +7,16 @@ import cookie from 'react-cookie'
 const TOKEN_COOKIE = "BOILERBOOKS-JWT"
 const API_PREFIX = "http://devmoney.krakos.net/api"
 
+// The APIError is thrown when an API endpoint returns an error instead of
+// a result with a payload.
+class APIError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = 'APIError'
+        this.message = message
+    }
+}
+
 // Destructured/named parameters defaulted to this function will throw an
 // error if that parameter is missing. (Instead of marking optional/null).
 function required() {
@@ -14,15 +24,23 @@ function required() {
 }
 
 // Convenience method to wrap most of the Fetch API's nuances away.
-function api_fetch(method, route, data) {
+function APIFetch(method, route, data) {
     const options = {
         method: method,
         credentials: 'include'
     }
-    if (data !== undefined)
+    if (data !== undefined) {
         options.body = JSON.stringify(data)
+    }
     return fetch(`${API_PREFIX}${route}`, options)
-        .then(res => res.json())
+            .then(res => res.json())
+            .then(res => {
+                if (res['error'] !== undefined) {
+                    throw new APIError(res['error'])
+                } else if (res['result']) {
+                    return res['result']
+                }
+            })
 }
 
 // Wrapper around the JWT we get from the API as an API session.
@@ -42,11 +60,11 @@ export class APISession {
 export class Authenticate {
 
     static authenticate({username = required(), password = required()} = {}) {
-        return api_fetch('POST', `/authenticate`, arguments[0])
+        return APIFetch('POST', `/authenticate`, arguments[0])
     }
 
     static revoke({username = required()} = {}) {
-        return api_fetch('DELETE', `/authenticate`, arguments[0])
+        return APIFetch('DELETE', `/authenticate`, arguments[0])
     }
 }
 
@@ -55,28 +73,25 @@ export class User {
     static add({username = required(), password = required(), first = required(),
         last = required(), email = required(), address = required(), city = required(),
         state = required(), zip = required()} = {}) {
-        return api_fetch('POST', `/user/${username}`, arguments[0])
+        return APIFetch('POST', `/user/${username}`, arguments[0])
     }
 
     static remove({username = required()} = {}) {
-        return api_fetch('DELETE', `/user/${username}`, arguments[0])
+        return APIFetch('DELETE', `/user/${username}`, arguments[0])
     }
 
-    // FIXME: It's likely possible to auto-object the method params,
-    // and then filter out null defaults to pass that to the server.
     static update({username = required(), password, first, last, email,
         address, city, state, zip} = {}) {
-        return api_fetch('PATCH', `/user/${username}`, arguments[0])
+        return APIFetch('PATCH', `/user/${username}`, arguments[0])
     }
 
     static view({username = required()} = {}) {
-        return api_fetch('GET', `/user/${username}`)
+        return APIFetch('GET', `/user/${username}`)
     }
 
-    // FIXME: GET request can't have a body so data, must be passed in as query params
     // eslint-disable-next-line
     static search({} = {}) {
-        return api_fetch('GET', `/users`)
+        return APIFetch('GET', `/users`)
     }
 
     static uploadCert({username = required(), file = required()}) {
@@ -99,17 +114,16 @@ export class User {
 export class Organization {
 
     static add({name = required(), parent} = {}) {
-        return api_fetch('POST', `/organization/${name}`, arguments[0])
+        return APIFetch('POST', `/organization/${name}`, arguments[0])
     }
 
     static remove({name = required()} = {}) {
-        return api_fetch('REMOVE', `/organization/${name}`, arguments[0])
+        return APIFetch('REMOVE', `/organization/${name}`, arguments[0])
     }
 
-    // FIXME: GET request can't have a body so data, must be passed in as query params
     static search() {
         // GET request can't have a body, must be passed in as query params
-        return api_fetch('GET', `/organizations`)
+        return APIFetch('GET', `/organizations`)
     }
 }
 

@@ -12,7 +12,7 @@
 
             $user = Dynamics::extract(__METHOD__, func_get_args());
             Validators::apply($user, [
-                'username' => 'username', 'password' => 'not_empty'
+                'username' => 'username', 'password' => 'not_empty',
                 'first' => 'alpha', 'last' => 'alpha', 'email' => 'not_empty',
                 'address' => 'not_empty', 'city' => 'alpha', 'state' => 'alpha',
                 'zip' => 'not_empty'
@@ -72,7 +72,7 @@
                                       $zip = null, $cert = null) {
             $user = Dynamics::extract(__METHOD__, func_get_args());
             Validators::apply($user, [
-                'username' => 'username', 'password' => 'not_empty'
+                'username' => 'username', 'password' => 'not_empty',
                 'first' => 'alpha', 'last' => 'alpha', 'email' => 'not_empty',
                 'address' => 'not_empty', 'city' => 'alpha', 'state' => 'alpha',
                 'zip' => 'not_empty'

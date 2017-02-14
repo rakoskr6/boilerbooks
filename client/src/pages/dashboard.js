@@ -3,7 +3,7 @@ import {Card, CardTitle, CardText } from 'material-ui/Card';
 
 export default class Dashboard extends React.Component {
 
-    componentDidMount() {
+    componentWillMount() {
         document.title = "Dashboard"
     }
 

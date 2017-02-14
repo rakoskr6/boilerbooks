@@ -6,8 +6,8 @@ import Snackbar from 'material-ui/Snackbar';
 import { Flex, withReflex } from 'reflexbox'
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-
-import { APISession, Authenticate } from "../API.js";
+import * as Actions from '../flux/actions.js'
+import { APISession, Authenticate, User } from "../API.js";
 
 const inputSubmitStyle = {
     cursor: 'pointer',
@@ -52,21 +52,18 @@ class Login extends React.Component {
             username: this.state.username,
             password: this.state.password
         }).then(res => {
-                if (res['error'] !== undefined) {
-                    this.setState({
-                        errorText: `Error: ${res['error']}`
-                    })
-                } else if (res['result']) {
-                    APISession.state = res['result']
-                    console.debug(localStorage);
-                    this.props.router.replace('/dashboard')
-                }
-            }).catch(err => {
-                console.warn("Error with auth request", err)
-                this.setState({
-                    errorText: "Error: Please try again"
-                })
+            APISession.state = res
+            return User.view({username: 'me'})
+        }).then(res => {
+            console.debug(res)
+            Actions.setUser(res)
+            this.props.router.replace('/dashboard')
+        }).catch(err => {
+            console.warn("error with auth request", err)
+            this.setState({
+                errorText: `error: ${err.message}`
             })
+        })
     }
 
     handleRegister = (event) => {

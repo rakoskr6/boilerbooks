@@ -8,9 +8,9 @@ class User extends React.Component {
         return (
             <Card style={{ width: '80%', marginTop: 20, marginLeft: 'auto', marginRight: 'auto' }}>
                 <CardTitle title={document.title} />
-                <UserView user="master" />
+                <UserView user="me" />
                 <CardText>Upload a new certificate:</CardText>
-                <CertUpload user="master" style={{width: '100%', height: 100}}/>
+                <CertUpload user="me" style={{width: '100%', height: 100}}/>
             </Card>
         );
     }

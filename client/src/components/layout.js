@@ -15,17 +15,18 @@ import { fade } from 'material-ui/utils/colorManipulator';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
+
 // Quick util function to generate a copyright notice.
 function copyright(startYear, authors) {
-    var thisYear  = new Date().getFullYear()
+    var thisYear = new Date().getFullYear()
     var years = (thisYear > startYear ? startYear + '-' + thisYear : startYear)
-    return "Copyright © " + years + " " + authors
+    return `Copyright © ${years} ${authors}`
 }
 
 class Layout extends React.Component {
     state = {
         title: document.title,
-        user: "",
+        user: SessionStore.getSession().user,
         openPopover: false,
         anchorElement: null,
         logoutConfirm: false
@@ -74,13 +75,19 @@ class Layout extends React.Component {
     };
 
     goLogout = () => {
-        this.setState({logoutConfirm: true})
+        this.setState({
+            openPopover: false,
+            logoutConfirm: true
+        })
     }
     confirmLogout = () => {
         this.props.router.replace('/logout')
     }
     cancelLogout = () => {
-        this.setState({logoutConfirm: false})
+        this.setState({
+            openPopover: true,
+            logoutConfirm: false
+        })
     }
 
     render() {
@@ -88,7 +95,7 @@ class Layout extends React.Component {
             <div>
                 <Paper rounded={false} zDepth={3} style={{ position: 'fixed', top: 0, width: '100%' }}>
                     <Toolbar style={{ backgroundColor: lightBlue900 }}>
-                        <ToolbarGroup float="left">
+                        <ToolbarGroup>
                             <ToolbarTitle text="BoilerBooks" style={{ color: fullWhite }} />
                             <div style={{ width: 400 }}>
                                 <Tabs tabItemContainerStyle={{height: 56}} onChange={this.tabChange} value={this.props.location.pathname}>
@@ -99,9 +106,11 @@ class Layout extends React.Component {
                                 </Tabs>
                             </div>
                         </ToolbarGroup>
-                        <ToolbarGroup lastChild={true} float="right">
+                        <ToolbarGroup lastChild={true}>
                             <IconButton style={{ width: 96, height: 96 }} onClick={this.avatarSelect}>
-                                <Avatar backgroundColor="white" color={lightBlue900}>A</Avatar>
+                                <Avatar backgroundColor="white" color={lightBlue900}>
+                                    { (this.state.user !== "" ? this.state.user.first : '?').charAt(0) }
+                                </Avatar>
                             </IconButton>
                             {/* FIXME: Popover.marginRight doesn't work here for whatever reason.*/}
                             <Popover
@@ -141,6 +150,7 @@ class Layout extends React.Component {
                     modal={false}
                     open={this.state.logoutConfirm}
                     onRequestClose={this.cancelLogout}>
+                    If you've made some changes, make sure they're saved before you continue to log out.
                 </Dialog>
             </div>
         );

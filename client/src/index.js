@@ -8,6 +8,9 @@ import UserView from './components/userview.js';
 import Login from './pages/login.js';
 import Register from './pages/register.js';
 import Dashboard from './pages/dashboard.js';
+import Purchases from './pages/purchases.js';
+import Income from './pages/income.js';
+import Budget from './pages/budget.js';
 import { APISession } from './API.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -65,9 +68,9 @@ class Index extends React.Component {
                         <Route path="/logout" onEnter={this.destroyAuthorization} />
 
                         <Route path="/dashboard" component={Dashboard} />
-                        <Route path="/purchases" component={Dashboard} />
-                        <Route path="/income" component={Dashboard} />
-                        <Route path="/budget" component={Dashboard} />
+                        <Route path="/purchases" component={Purchases} />
+                        <Route path="/income" component={Income} />
+                        <Route path="/budget" component={Budget} />
 
                         <Route path="/me" component={User} />
                         <Route path="/user/:user" component={UserView} />

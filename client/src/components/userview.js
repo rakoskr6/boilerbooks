@@ -1,22 +1,18 @@
 import React from 'react'
 import {Table, TableBody, TableRow, TableRowColumn} from 'material-ui/Table';
-
-
 import {User} from '../API.js'
 
 export default class UserView extends React.Component {
     state = { userData: {}, certLink: "" }
 
     componentDidMount() {
-        document.title = "Me"
-
         const userToGet = this.props.user || this.props.params.user || "";
-
         User.view({username: userToGet})
-            .then(res => this.setState({userData: res.result}))
+            .then(res => this.setState({userData: res}))
             .catch(e => console.debug(e));
-
-        this.setState({certLink: User.certificateLink({username: userToGet})});
+        this.setState({
+            certLink: User.certificateLink({username: userToGet})
+        });
     }
 
     render() {

@@ -1,5 +1,4 @@
 import { EventEmitter } from "events";
-
 import dispatcher from "./dispatcher";
 
 class SessionStore extends EventEmitter {
@@ -7,19 +6,18 @@ class SessionStore extends EventEmitter {
         user: ""
     }
 
-    setUser(user) {
+    setUser = (user) => {
         this.session.user = user
-
         this.emit("SESSION_CHANGE")
     }
 
-    getSession() {
+    getSession = () => {
         return this.session;
     }
 
-    handleActions(action) {
+    handleActions = (action) => {
         switch(action.type) {
-            case "LOGIN": {
+            case "setUser": {
                 this.setUser(action.payload);
                 break;
             }
@@ -31,6 +29,6 @@ class SessionStore extends EventEmitter {
 }
 
 const sessionStore = new SessionStore();
-dispatcher.register(sessionStore.handleActions.bind(sessionStore));
+dispatcher.register(sessionStore.handleActions);
 
 export default sessionStore;

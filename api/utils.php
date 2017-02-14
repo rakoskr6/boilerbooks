@@ -44,8 +44,9 @@
         protected function __clone() {}
 
         private static function username($x) {
-            return  is_string($x) && in_array(strlen($x), range(3, 16)) &&
-                    preg_match('/^([a-z0-9]+(?:[._][a-z0-9]+)*)\$/i', $x);
+            return  $x === 'me' ||
+                    (is_string($x) && in_array(strlen($x), range(3, 16)) &&
+                    preg_match('/^([a-z0-9]+(?:[._][a-z0-9]+)*)\$/i', $x));
         }
         private static function date($x) {
             return is_string($x) && (preg_match('/^[0-9]{4}[-/][0-9]{1,2}[-/][0-9]{1,2}$/', $x) == true);
@@ -131,7 +132,7 @@
         // Usage: $res = Dynamics::extract(__METHOD__, func_get_args());
         //
         // TODO: Make `__METHOD__, func_get_args()` go away.
-        public static function uninvoke($method, $arguments) {
+        public static function extract($method, $arguments) {
             $values = [];
             $all = (new \ReflectionMethod($method))->getParameters();
             foreach ($all as $p) {
@@ -154,6 +155,9 @@
             ->header('Access-Control-Allow-Headers', "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
             ->write($json)
             ->send();
+    });
+    Flight::route('OPTIONS *', function() {
+        return Flight::json('');
     });
 
     // Using this is very convenient; we always receive an exception result.
