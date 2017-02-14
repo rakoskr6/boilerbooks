@@ -58,17 +58,30 @@ export class APISession {
 }
 
 export class Authenticate {
+    // eslint-disable-next-line
+    static check({} = {}) {
+        return APIFetch('GET', `/authenticate`, arguments[0])
+    }
 
-    static authenticate({username = required(), password = required()} = {}) {
+    static login({username = required(), password = required()} = {}) {
         return APIFetch('POST', `/authenticate`, arguments[0])
     }
 
-    static revoke({username = required()} = {}) {
+    // eslint-disable-next-line
+    static refresh({} = {}) {
+        return APIFetch('PATCH', `/authenticate`, arguments[0])
+    }
+
+    // eslint-disable-next-line
+    static revoke({} = {}) {
         return APIFetch('DELETE', `/authenticate`, arguments[0])
     }
 }
 
 export class User {
+    static view({username = required()} = {}) {
+        return APIFetch('GET', `/user/${username}`)
+    }
 
     static add({username = required(), password = required(), first = required(),
         last = required(), email = required(), address = required(), city = required(),
@@ -76,38 +89,18 @@ export class User {
         return APIFetch('POST', `/user/${username}`, arguments[0])
     }
 
-    static remove({username = required()} = {}) {
-        return APIFetch('DELETE', `/user/${username}`, arguments[0])
-    }
-
     static update({username = required(), password, first, last, email,
         address, city, state, zip} = {}) {
         return APIFetch('PATCH', `/user/${username}`, arguments[0])
     }
 
-    static view({username = required()} = {}) {
-        return APIFetch('GET', `/user/${username}`)
+    static remove({username = required()} = {}) {
+        return APIFetch('DELETE', `/user/${username}`, arguments[0])
     }
 
     // eslint-disable-next-line
     static search({} = {}) {
         return APIFetch('GET', `/users`)
-    }
-
-    static uploadCert({username = required(), file = required()}) {
-        let data = new FormData()
-        data.append('certificate', file)
-
-        return fetch(`${API_PREFIX}/user/${username}/certificate`, {
-            method: 'POST',
-            credentials: 'include',
-            body: data
-        })
-        .then(res => res.json());
-    }
-
-    static certificateLink({username = required()}) {
-        return `${API_PREFIX}/user/${username}/certificate`;
     }
 }
 
@@ -118,27 +111,81 @@ export class Organization {
     }
 
     static remove({name = required()} = {}) {
-        return APIFetch('REMOVE', `/organization/${name}`, arguments[0])
+        return APIFetch('DELETE', `/organization/${name}`, arguments[0])
     }
 
-    static search() {
+    // eslint-disable-next-line
+    static search({} = {}) {
         // GET request can't have a body, must be passed in as query params
         return APIFetch('GET', `/organizations`)
     }
 }
 
 export class Rights {
+    static check({username = required(), organization = required(), budget = required(),
+        year = required(), amount = required()} = {}) {
+        return APIFetch('GET', `/check/${username}`)
+    }
 
+    static view({username = required()} = {}) {
+        return APIFetch('GET', `/rights/${username}`)
+    }
+
+    static grant({username = required(), organization = required(), budget = required(),
+        year = required(), amount = required()} = {}) {
+        return APIFetch('POST', `/rights/${username}`, arguments[0])
+    }
+
+    static revoke({username = required(), organization = required(), budget = required(),
+        year = required()} = {}) {
+        return APIFetch('DELETE', `/rights/${username}`, arguments[0])
+    }
+
+    // eslint-disable-next-line
+    static search({} = {}) {
+        return APIFetch('GET', `/rights`)
+    }
 }
 
 export class Purchase {
+    static view({purchaseid = required()} = {}) {
+        return APIFetch('GET', `/purchase/${purchaseid}`)
+    }
 
+    // eslint-disable-next-line
+    static search({} = {}) { // FIXME: offset, limit
+        return APIFetch('GET', `/purchases`)
+    }
 }
 
 export class Budget {
+    static add({organization = required(), name = required(), year = required(),
+        amount = required()} = {}) {
+        return APIFetch('POST', `/budget/${name}`, arguments[0])
+    }
 
+    static update({organization = required(), name = required(), year = required(),
+        amount = required()} = {}) {
+        return APIFetch('PATCH', `/budget/${name}`, arguments[0])
+    }
+
+    static remove({organization = required(), name = required(), year = required()} = {}) {
+        return APIFetch('DELETE', `/budget/${name}`, arguments[0])
+    }
+
+    // eslint-disable-next-line
+    static search({} = {}) {
+        return APIFetch('GET', `/budgets`)
+    }
 }
 
 export class Income {
+    static view({incomeid = required()} = {}) {
+        return APIFetch('GET', `/income/${incomeid}`)
+    }
 
+    // eslint-disable-next-line
+    static search({} = {}) {
+        return APIFetch('GET', `/incomes`)
+    }
 }

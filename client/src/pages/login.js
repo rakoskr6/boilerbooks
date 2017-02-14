@@ -49,7 +49,7 @@ class Login extends React.Component {
     handleSubmit = (event) => {
         event.preventDefault();
 
-        Authenticate.authenticate({
+        Authenticate.login({
             username: this.state.username,
             password: this.state.password
         }).then(res => {

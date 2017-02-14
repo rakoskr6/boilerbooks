@@ -177,7 +177,7 @@ class Register extends React.Component {
                 })
             }
             else if (res['result']){
-                Authenticate.authenticate({
+                Authenticate.login({
                     username: this.state.username,
                     password: this.state.password
                 }).then(res => {
