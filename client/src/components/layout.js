@@ -93,7 +93,7 @@ class Layout extends React.Component {
         return (
             <div>
                 <Paper rounded={false} zDepth={3} style={{ position: 'fixed', top: 0, width: '100%' }}>
-                    <Toolbar style={{ backgroundColor: lightBlue900 }}>
+                    <Toolbar style={{ backgroundColor: lightBlue900, zIndex: 99999999 }}>
                         <ToolbarGroup>
                             <ToolbarTitle text="BoilerBooks" style={{ color: fullWhite }} />
                             <div style={{ width: 400 }}>
@@ -127,10 +127,10 @@ class Layout extends React.Component {
                         </ToolbarGroup>
                     </Toolbar>
                 </Paper>
-                <div style={{ marginTop: 56, paddingBottom: 32, width: '100%', overflowY: 'auto' }}>
+                <div style={{ marginTop: 56, paddingBottom: 56, width: '100%', overflowY: 'auto' }}>
                     {this.props.children}
                 </div>
-                <Paper rounded={false} zDepth={5} style={{ backgroundColor: lightBlue900, position: 'absolute', bottom: 0, width: '100%' }}>
+                <Paper rounded={false} zDepth={5} style={{ backgroundColor: lightBlue900, position: 'fixed', bottom: 0, width: '100%' }}>
                     <Subheader style={{ color: fade(fullWhite, 0.7) }}>{copyright(2017, "Aditya Vaidyam, Matt Molo, Kyle Rakos")}</Subheader>
                 </Paper>
                 <Dialog
