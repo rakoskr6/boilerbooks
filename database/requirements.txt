@@ -1,0 +1,6 @@
+appdirs==1.4.0
+packaging==16.8
+peewee==2.8.5
+PyMySQL==0.7.9
+pyparsing==2.1.10
+six==1.10.0

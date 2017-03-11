@@ -1,0 +1,6 @@
+{
+    "MYSQL-HOST": "localhost",
+    "MYSQL-USER": "root",
+    "MYSQL-PASS": "password",
+    "MYSQL-DB": "boilerbooks"
+}
