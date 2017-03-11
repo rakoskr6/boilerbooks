@@ -176,9 +176,177 @@
         }
     }
 
+    /**
+     * @SWG\Get(path="/users/{username}",
+     *   tags={"users"},
+     *   summary="",
+     *   description="",
+     *   operationId="User::view",
+     *   produces={"application/json"},
+     *   @SWG\Parameter(
+     *     name="username",
+     *     in="path",
+     *     description="",
+     *     required=true,
+     *     type="string"
+     *   ),
+     *   @SWG\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @SWG\Schema(
+     *       type="object",
+     *       additionalProperties={
+     *         "type":"integer",
+     *         "format":"int32"
+     *       }
+     *     )
+     *   ),
+     *   @SWG\Response(
+     *     response=400,
+     *     description="Invalid username supplied"
+     *   ),
+     *   security={{
+     *     "api_key":{}
+     *   }}
+     * )
+     */
     Flight::dynamic_route('GET /user/@username', 'User::view');
+
+    /**
+     * @SWG\Post(path="/users/{username}",
+     *   tags={"users"},
+     *   summary="",
+     *   description="",
+     *   operationId="User::add",
+     *   produces={"application/json"},
+     *   @SWG\Parameter(
+     *     name="username",
+     *     in="path",
+     *     description="",
+     *     required=true,
+     *     type="string"
+     *   ),
+     *   @SWG\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @SWG\Schema(
+     *       type="object",
+     *       additionalProperties={
+     *         "type":"integer",
+     *         "format":"int32"
+     *       }
+     *     )
+     *   ),
+     *   @SWG\Response(
+     *     response=400,
+     *     description="Invalid username supplied"
+     *   ),
+     *   security={{
+     *     "api_key":{}
+     *   }}
+     * )
+     */
     Flight::dynamic_route('POST /user/@username', 'User::add', false);
+
+    /**
+     * @SWG\Patch(path="/users/{username}",
+     *   tags={"users"},
+     *   summary="",
+     *   description="",
+     *   operationId="User::update",
+     *   produces={"application/json"},
+     *   @SWG\Parameter(
+     *     name="username",
+     *     in="path",
+     *     description="",
+     *     required=true,
+     *     type="string"
+     *   ),
+     *   @SWG\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @SWG\Schema(
+     *       type="object",
+     *       additionalProperties={
+     *         "type":"integer",
+     *         "format":"int32"
+     *       }
+     *     )
+     *   ),
+     *   @SWG\Response(
+     *     response=400,
+     *     description="Invalid username supplied"
+     *   ),
+     *   security={{
+     *     "api_key":{}
+     *   }}
+     * )
+     */
     Flight::dynamic_route('PATCH /user/@username', 'User::update');
+
+    /**
+     * @SWG\Delete(path="/users/{username}",
+     *   tags={"users"},
+     *   summary="",
+     *   description="",
+     *   operationId="User::remove",
+     *   produces={"application/json"},
+     *   @SWG\Parameter(
+     *     name="username",
+     *     in="path",
+     *     description="",
+     *     required=true,
+     *     type="string"
+     *   ),
+     *   @SWG\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @SWG\Schema(
+     *       type="object",
+     *       additionalProperties={
+     *         "type":"integer",
+     *         "format":"int32"
+     *       }
+     *     )
+     *   ),
+     *   @SWG\Response(
+     *     response=400,
+     *     description="Invalid username supplied"
+     *   ),
+     *   security={{
+     *     "api_key":{}
+     *   }}
+     * )
+     */
     Flight::dynamic_route('DELETE /user/@username', 'User::remove');
+
+    /**
+     * @SWG\Get(path="/users",
+     *   tags={"users"},
+     *   summary="",
+     *   description="",
+     *   operationId="User::search",
+     *   produces={"application/json"},
+     *   parameters={},
+     *   @SWG\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @SWG\Schema(
+     *       type="object",
+     *       additionalProperties={
+     *         "type":"integer",
+     *         "format":"int32"
+     *       }
+     *     )
+     *   ),
+     *   @SWG\Response(
+     *     response=400,
+     *     description="Invalid username supplied"
+     *   ),
+     *   security={{
+     *     "api_key":{}
+     *   }}
+     * )
+     */
     Flight::dynamic_route('GET /users', 'User::search');
 ?>

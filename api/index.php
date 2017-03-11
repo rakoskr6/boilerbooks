@@ -3,6 +3,19 @@
     require 'lib/jwt.php';
     require 'lib/flight/Flight.php';
 
+    /**
+     * @SWG\Info(title="BoilerBooks", version="2.0.0")
+     *
+     * @SWG\Tag(
+     *   name="user",
+     *   description="User",
+     *   @SWG\ExternalDocumentation(
+     *     description="Find out more",
+     *     url="http://swagger.io"
+     *   )
+     * )
+     */
+
     // By versioning the API, we ensure that clients are aware of the specific
     // calls and will be explicit in their intent.  By default use newest API
     // (this) if no version is specified, but return an error on older versions
