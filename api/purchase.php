@@ -98,7 +98,7 @@
 
             // Make sure we have rights to view the purchase.
             if (!Flight::get('user')) {
-                return http_return(401, ["error" => "insufficient privileges to view a purchase"]);
+                throw new HTTPException("insufficient privileges to view a purchase", 401);
             }
 
             // Execute the actual SQL query after confirming its formedness.
@@ -115,7 +115,7 @@
 
             // Make sure we have rights to view the income.
             if (!Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
-                return http_return(401, ["error" => "insufficient privileges to view all purchases"]);
+                throw new HTTPException("insufficient privileges to view all purchases", 401);
             }
 
             // Execute the actual SQL query after confirming its formedness.

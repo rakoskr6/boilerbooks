@@ -22,7 +22,8 @@
     // that aren't supported.
     define("API_VERSION", 2);
     if (isset(getallheaders()['Version']) && getallheaders()["Version"] !== API_VERSION) {
-        return http_return(400, ["error" => "incorrect API version number"]);
+        // throw new HTTPException(...)
+        return Flight::json(["error" => "incorrect API version number"], 400);
     }
 
     // The `server_info.php` file contains database and token secrets and will

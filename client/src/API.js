@@ -35,7 +35,10 @@ function APIFetch(method, route, data) {
     return fetch(`${API_PREFIX}${route}`, options)
             .then(res => res.json())
             .then(res => {
-                if (res['error'] !== undefined) {
+                if (res['fatal'] !== undefined) {
+                    throw new APIError('SERVER: ' + res['fatal']['message'] +
+                                       '\n' + res['fatal']['trace'])
+                } else if (res['error'] !== undefined) {
                     throw new APIError(res['error'])
                 } else if (res['result']) {
                     return res['result']

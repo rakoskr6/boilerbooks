@@ -63,7 +63,7 @@
             // FIXME: Use $incomeid to get the params and check against those first.
             // Make sure we have rights to view the income.
             if (!Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
-                return http_return(401, ["error" => "insufficient privileges to view an income"]);
+                throw new HTTPException("insufficient privileges to view an income", 401);
             }
 
             // Execute the actual SQL query after confirming its formedness.
@@ -80,7 +80,7 @@
 
             // Make sure we have rights to view the income.
             if (!Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
-                return http_return(401, ["error" => "insufficient privileges to view an income"]);
+                throw new HTTPException("insufficient privileges to view an income", 401);
             }
 
             // Execute the actual SQL query after confirming its formedness.

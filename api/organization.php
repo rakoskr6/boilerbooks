@@ -50,7 +50,7 @@
 
             // Make sure we have rights to view the organizations.
             if (!Flight::get('user')) {
-                return http_return(401, ["error" => "insufficient privileges to organizations"]);
+                throw new HTTPException("insufficient privileges to view organizations", 401);
             }
 
             // Execute the actual SQL query after confirming its formedness.
