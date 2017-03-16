@@ -1,42 +1,36 @@
 import React from 'react'
 import {Table, TableBody, TableRow, TableRowColumn} from 'material-ui/Table';
-import {User} from '../API.js'
+import CertUpload from '../components/certupload.js'
 
 export default class UserView extends React.Component {
-    state = { userData: {}, certLink: "" }
-
+    /*state = { certLink: "" }
     componentDidMount() {
-        const userToGet = this.props.user || this.props.params.user || "";
-        User.view({username: userToGet})
-            .then(res => this.setState({userData: res}))
-            .catch(e => console.debug(e));
         this.setState({
-            certLink: User.certificateLink({username: userToGet})
+            certLink: API.User.certificateLink({username: userToGet})
         });
-    }
+    }*/
 
     render() {
-        const rows = Object.keys(this.state.userData).map((key) => {
-            return (
-                <TableRow key={key}>
-                    <TableRowColumn>{key}</TableRowColumn>
-                    <TableRowColumn>{this.state.userData[key]}</TableRowColumn>
-                </TableRow>
-            )
-        });
-
         return (
-            <Table selectable={false}>
-                <TableBody displayRowCheckbox={false}>
-                    {rows}
-                    <TableRow key="cert">
-                        <TableRowColumn>Certificate</TableRowColumn>
-                        <TableRowColumn>
-                            <a href={this.state.certLink} target="_blank">Certificate</a>
-                        </TableRowColumn>
-                    </TableRow>
-                </TableBody>
-            </Table>
+            <div>
+                <Table selectable={false}>
+                    <TableBody displayRowCheckbox={false}>
+                        {Object.keys(this.props.user || {}).map((key) =>
+                            <TableRow key={key}>
+                                <TableRowColumn>{key}</TableRowColumn>
+                                <TableRowColumn>{this.props.user[key]}</TableRowColumn>
+                            </TableRow>
+                        )}
+                        <TableRow key="cert">
+                            <TableRowColumn>Certificate</TableRowColumn>
+                            <TableRowColumn>
+                                <a href="#" target="_blank">Certificate</a>
+                            </TableRowColumn>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+                <CertUpload user="me" style={{width: '100%', height: 100}}/>
+            </div>
         );
     }
 }

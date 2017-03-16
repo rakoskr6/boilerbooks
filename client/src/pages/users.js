@@ -6,6 +6,9 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import UserView from '../components/userview.js'
 
 export default class Users extends React.Component {
     state = {
@@ -58,7 +61,8 @@ export default class Users extends React.Component {
                     <Table
                         fixedHeader={true}
                         selectable={true}
-                        multiSelectable={false}>
+                        multiSelectable={false}
+                        onCellClick={this.rowSelect}>
                         <TableHeader
                             displaySelectAll={true}
                             adjustForCheckbox={true}>
@@ -92,6 +96,21 @@ export default class Users extends React.Component {
                         </TableBody>
                     </Table>
                 </Card>
+                <Dialog
+                    title={`${document.title} / View`}
+                    actions={[
+                        <FlatButton
+                            label="Close"
+                            primary={true}
+                            keyboardFocused={false}
+                            onTouchTap={this.closeIndivDialog} />
+                    ]}
+                    modal={false}
+                    open={this.state.selectedItem !== null}
+                    onRequestClose={this.closeIndivDialog}
+                    autoScrollBodyContent={true}>
+                    <UserView user={this.state.selectedItem} />
+                </Dialog>
             </div>
         );
     }

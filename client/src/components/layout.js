@@ -14,6 +14,8 @@ import { lightBlue900, fullWhite } from 'material-ui/styles/colors';
 import { fade } from 'material-ui/utils/colorManipulator';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import UserView from '../components/userview.js'
+import * as API from '../API.js'
 
 // Quick util function to generate a copyright notice.
 function copyright(startYear, authors) {
@@ -26,34 +28,29 @@ class Layout extends React.Component {
     state = {
         title: document.title,
         user: SessionStore.getSession().user,
+        openProfile: false,
         openPopover: false,
         anchorElement: null,
-        logoutConfirm: false
+        logoutConfirm: false,
+        me: null
     };
     observer = null;
 
     // Match the AppBar title with the document title.
     componentDidMount() {
-        this.observer = new MutationObserver((mutations) => {
-            console.log("Mutation")
-            this.setState({ title: document.title })
-        });
-        this.observer.observe(document.querySelector('title'),
-            { subtree: true, characterData: true });
-
         SessionStore.on("change", () => {
             this.setState({
                 user: SessionStore.getSession().user
             })
         });
+
+        API.User.view({username: 'me'})
+            .then(res => this.setState({me: res}))
+            .catch(e => console.debug(e));
     }
 
     componentWillUnmount() {
         this.observer.disconnect();
-    }
-
-    goProfile = () => {
-        this.props.router.replace('/me')
     }
 
     tabChange = (val, val2) => {
@@ -70,6 +67,18 @@ class Layout extends React.Component {
     avatarClose = () => {
         this.setState({
             openPopover: false,
+        });
+    };
+
+    openProfile = () => {
+        this.setState({
+            openProfile: true,
+        });
+    };
+
+    closeProfile = () => {
+        this.setState({
+            openProfile: false,
         });
     };
 
@@ -123,7 +132,7 @@ class Layout extends React.Component {
                                 style={{ marginTop:-16, marginRight:16 }}
                                 onRequestClose={this.avatarClose}>
                                 <Menu>
-                                    <MenuItem primaryText="Profile" onTouchTap={this.goProfile} />
+                                    <MenuItem primaryText="Profile" onTouchTap={this.openProfile} />
                                     <MenuItem primaryText="Logout" onTouchTap={this.goLogout} />
                                 </Menu>
                             </Popover>
@@ -136,6 +145,21 @@ class Layout extends React.Component {
                 <Paper rounded={false} zDepth={5} style={{ backgroundColor: lightBlue900, position: 'fixed', bottom: 0, width: '100%' }}>
                     <Subheader style={{ color: fade(fullWhite, 0.7) }}>{copyright(2017, "Aditya Vaidyam, Matt Molo, Kyle Rakos")}</Subheader>
                 </Paper>
+                <Dialog
+                    title={`${document.title} / View`}
+                    actions={[
+                        <FlatButton
+                            label="Close"
+                            primary={true}
+                            keyboardFocused={false}
+                            onTouchTap={this.closeProfile} />
+                    ]}
+                    modal={false}
+                    open={this.state.openProfile}
+                    onRequestClose={this.closeProfile}
+                    autoScrollBodyContent={true}>
+                    <UserView user={this.state.me} />
+                </Dialog>
                 <Dialog
                     title="Are you sure you want to log out of BoilerBooks right now?"
                     actions={[

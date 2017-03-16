@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory, IndexRedirect } from 'react-router';
 import './index.css';
 import Layout from './components/layout.js';
-import User from './components/user.js';
-import UserView from './components/userview.js';
 import Login from './pages/login.js';
 import Register from './pages/register.js';
 import Dashboard from './pages/dashboard.js';
@@ -76,11 +74,7 @@ class Index extends React.Component {
                         <Route path="/budgets" component={Budgets} />
                         <Route path="/organizations" component={Organizations} />
                         <Route path="/rights" component={Rights} />
-                        <Route path="/users" component={Users} />
-
-                        <Route path="/me" component={User} />
-                        <Route path="/user/:user" component={UserView} />
-                    </Route>
+                        <Route path="/users" component={Users} />                    </Route>
                 </Router>
             </MuiThemeProvider>
         )
