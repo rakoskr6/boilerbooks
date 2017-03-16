@@ -50,12 +50,12 @@ function APIFetch(method, route, data) {
 // TODO: Should be gone...
 export class APISession {
     static get state() {
-        return cookie.load(TOKEN_COOKIE) !== undefined
+        return cookie.load(TOKEN_COOKIE)
     }
     static set state(value) {
-        if (value === null && cookie.load(TOKEN_COOKIE) !== undefined)
+        if (value === null)
             cookie.remove(TOKEN_COOKIE)
-        else if (value !== null && cookie.load(TOKEN_COOKIE) === undefined)
+        else if (value !== null)
             cookie.save(TOKEN_COOKIE, value)
     }
 }

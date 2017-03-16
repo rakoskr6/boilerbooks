@@ -1,14 +1,19 @@
 import React from 'react'
-import { Card, CardTitle } from 'material-ui/Card';
+import { Card } from 'material-ui/Card';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import * as API from '../API.js'
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import IncomeView from '../components/incomeview.js';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 
-export default class Income extends React.Component {
+export default class Incomes extends React.Component {
     state = {
         selectedItem: null,
+        category: 0,
         data: []
     }
 
@@ -22,8 +27,11 @@ export default class Income extends React.Component {
     }
 
     rowSelect = (event, rowNumber) => {
-        event.preventDefault()
         this.setState({selectedItem: this.state.data[rowNumber]});
+    }
+
+    catSelect = (event, value) => {
+        this.setState({category: value})
     }
 
     closeIndivDialog = () => {
@@ -31,10 +39,23 @@ export default class Income extends React.Component {
     }
 
     render() {
+        const fabStyle = {
+            margin: 0,
+            top: 'auto',
+            right: 24,
+            bottom: 64,
+            left: 'auto',
+            position: 'fixed',
+        }
+
         return (
             <div>
+                <FloatingActionButton secondary={true} style={fabStyle}><ContentAdd /></FloatingActionButton>
                 <Card style={{ width: '80%', marginTop: 20, marginLeft: 'auto', marginRight: 'auto' }}>
-                    <CardTitle title={`${document.title} / View All`} style={{paddingBottom: 4}} />
+                    <DropDownMenu value={this.state.category} onChange={this.catSelect} style={{paddingHeight: 8}}>
+                        <MenuItem value={0} primaryText="All Incomes" />
+                        <MenuItem value={1} primaryText="My Incomes" />
+                    </DropDownMenu>
                 </Card>
                 <Card style={{ width: '80%', marginTop: 20, marginLeft: 'auto', marginRight: 'auto' }}>
                     {/*TEMPORARILY SINGLE-SELECT, SHOULD BE MULTI-SELECT LATER*/}
@@ -47,7 +68,6 @@ export default class Income extends React.Component {
                             displaySelectAll={true}
                             adjustForCheckbox={true}>
                             <TableRow>
-                                <TableHeaderColumn tooltip="ID">ID</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Organization">Organization</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Year">Year</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Username">Username</TableHeaderColumn>
@@ -66,11 +86,6 @@ export default class Income extends React.Component {
                             showRowHover={true}>
                             {this.state.data.map((row, index) => (
                                 <TableRow key={row.incomeid}>
-                                    <TableRowColumn>
-                                        <FlatButton
-                                            label={`View`}
-                                            onTouchTap={(ev) => this.rowSelect(ev, index)} />
-                                    </TableRowColumn>
                                     <TableRowColumn>{row.organization}</TableRowColumn>
                                     <TableRowColumn>{row.year}</TableRowColumn>
                                     <TableRowColumn>{row.username}</TableRowColumn>
@@ -97,7 +112,8 @@ export default class Income extends React.Component {
                     ]}
                     modal={false}
                     open={this.state.selectedItem !== null}
-                    onRequestClose={this.closeIndivDialog}>
+                    onRequestClose={this.closeIndivDialog}
+                    autoScrollBodyContent={true}>
                     <IncomeView income={this.state.selectedItem} />
                 </Dialog>
             </div>

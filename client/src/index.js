@@ -3,14 +3,17 @@ import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory, IndexRedirect } from 'react-router';
 import './index.css';
 import Layout from './components/layout.js';
-import User from './pages/user.js';
+import User from './components/user.js';
 import UserView from './components/userview.js';
 import Login from './pages/login.js';
 import Register from './pages/register.js';
 import Dashboard from './pages/dashboard.js';
 import Purchases from './pages/purchases.js';
-import Income from './pages/income.js';
-import Budget from './pages/budget.js';
+import Incomes from './pages/incomes.js';
+import Budgets from './pages/budgets.js';
+import Organizations from './pages/organizations.js';
+import Rights from './pages/rights.js';
+import Users from './pages/users.js';
 import { APISession } from './API.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -69,8 +72,11 @@ class Index extends React.Component {
 
                         <Route path="/dashboard" component={Dashboard} />
                         <Route path="/purchases" component={Purchases} />
-                        <Route path="/income" component={Income} />
-                        <Route path="/budget" component={Budget} />
+                        <Route path="/incomes" component={Incomes} />
+                        <Route path="/budgets" component={Budgets} />
+                        <Route path="/organizations" component={Organizations} />
+                        <Route path="/rights" component={Rights} />
+                        <Route path="/users" component={Users} />
 
                         <Route path="/me" component={User} />
                         <Route path="/user/:user" component={UserView} />

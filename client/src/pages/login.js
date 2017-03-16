@@ -47,7 +47,7 @@ class Login extends React.Component {
     }
 
     handleSubmit = (event) => {
-        event.preventDefault();
+        event.preventDefault()
 
         Authenticate.login({
             username: this.state.username,
