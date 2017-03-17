@@ -20,12 +20,11 @@ export default class Users extends React.Component {
     componentWillMount() {
         document.title = "Users"
         API.User.search().then(res => {
-            console.debug(res[0])
             this.setState({ data: res })
         })
     }
 
-    rowSelect = (event, rowNumber) => {
+    rowSelect = (rowNumber, columnId) => {
         this.setState({selectedItem: this.state.data[rowNumber]});
     }
 

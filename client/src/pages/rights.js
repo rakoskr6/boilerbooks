@@ -21,7 +21,7 @@ export default class Rights extends React.Component {
         })
     }
 
-    rowSelect = (event, rowNumber) => {
+    rowSelect = (rowNumber, columnId) => {
         this.setState({selectedItem: this.state.data[rowNumber]});
     }
 

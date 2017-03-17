@@ -26,7 +26,7 @@ export default class Purchases extends React.Component {
         }).catch(r => console.error(r))
     }
 
-    rowSelect = (event, rowNumber) => {
+    rowSelect = (rowNumber, columnId) => {
         this.setState({selectedItem: this.state.data[rowNumber]});
     }
 

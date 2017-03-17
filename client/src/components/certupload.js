@@ -2,7 +2,7 @@ import React from 'react';
 
 import {User} from '../API.js';
 
-import UploadZone from './upload.js'
+import UploadZone from './uploadzone.js'
 
 export default class CertUpload extends React.Component {
 
