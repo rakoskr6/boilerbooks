@@ -6,6 +6,7 @@
     class HTTPException extends Exception {}
 
     // A static container class for logging functions.
+    // Remember! `chmod 662`!
     class log {
         protected function __construct() {}
         protected function __clone() {}
@@ -22,12 +23,13 @@
         //
         // Note: if you pass a PDOException, it will automatically log the message and SQL.
         public static function err($exc, $log) {
-            if ($log instanceof Exception) {
-                $log = $log->getMessage();
+            if ($exc instanceof Exception) {
+                $exc = $exc->getMessage();
             }
+            error_log($exc);
 
             $uuid = uniqid('sql_');
-            file_put_contents('./errors.log', "[{${date("Y-m-d h:i:sa")}}] [$uuid] $exc => $log\n", FILE_APPEND);
+            file_put_contents('./errors.log', "[{date(\"Y-m-d h:i:sa\")}] [$uuid] $exc => $log\n", FILE_APPEND);
             return $uuid;
         }
 
@@ -171,6 +173,7 @@
             if ($e instanceof HTTPException) {
                 return Flight::json(["error" => $e->getMessage()], $e->getCode());
             } else {
+                error_log($e->getMessage() . '\n' . $e->getTraceAsString());
                 return Flight::json(["fatal" => [
                     "message" => $e->getMessage(),
                     "trace" => $e->getTraceAsString()
@@ -256,5 +259,23 @@
             });
             return Flight::json(["result" => $res]);
         }, true);
+    });
+
+    // If the query contains any fields specified, only return those.
+    // The URL should contain `?fields=<field>,<field>,...` to match.
+    Flight::map('fields', function($default_fields) {
+        $fields = explode(',', Flight::request()->query['fields'] ?: '');
+        $fields = array_filter($fields, function($v) { return $v !== ''; });
+
+        if (count($fields) === 0) {
+            return $default_fields;
+        } else {
+            foreach ($fields as $field) {
+                if(!in_array($field, $default_fields)) {
+                    throw new HTTPException("invalid field '$field'", 400);
+                }
+            }
+            return $fields;
+        }
     });
 ?>

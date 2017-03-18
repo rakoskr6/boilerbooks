@@ -55,7 +55,8 @@
 
             // Execute the actual SQL query after confirming its formedness.
             try {
-                $result = Flight::db()->select("Organizations", "*");
+                $selector = Flight::fields(["name", "parent"]);
+                $result = Flight::db()->select("Organizations", $selector);
 
                 return $result;
             } catch(PDOException $e) {

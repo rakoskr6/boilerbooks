@@ -98,7 +98,8 @@
 
             // Execute the actual SQL query after confirming its formedness.
             try {
-                $result = Flight::db()->select("Budgets", "*");
+                $selector = Flight::fields(["organization", "name", "year", "amount"]);
+                $result = Flight::db()->select("Budgets", $selector);
 
                 return $result;
             } catch(PDOException $e) {

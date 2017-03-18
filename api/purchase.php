@@ -103,7 +103,12 @@
 
             // Execute the actual SQL query after confirming its formedness.
             try {
-                $result = Flight::db()->select("Purchases", "*", ["purchaseid" => $purchaseid]);
+                $selector = Flight::fields(["purchaseid", "username", "approvedby",
+                                            "item", "purchasereason", "vendor", "cost",
+                                            "comments", "status", "fundsource",
+                                            "purchasedate", "receipt", "organization",
+                                            "budget", "year"]);//, "modify"]);
+                $result = Flight::db()->select("Purchases", $selector, ["purchaseid" => $purchaseid]);
 
                 return $result;
             } catch(PDOException $e) {
@@ -120,7 +125,12 @@
 
             // Execute the actual SQL query after confirming its formedness.
             try {
-                $result = Flight::db()->select("Purchases", "*");
+                $selector = Flight::fields(["purchaseid", "username", "approvedby",
+                                            "item", "purchasereason", "vendor", "cost",
+                                            "comments", "status", "fundsource",
+                                            "purchasedate", "receipt", "organization",
+                                            "budget", "year"]);//, "modify"]);
+                $result = Flight::db()->select("Purchases", $selector);
 
                 return $result;
             } catch(PDOException $e) {

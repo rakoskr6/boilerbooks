@@ -20,6 +20,7 @@
             $user["password"] = password_hash($password, PASSWORD_DEFAULT);
 
             // Make sure any cert file is a valid Resource.
+            // FIXME: No cert yet.
             if(!Resource::exists($cert)) {
                 throw new HTTPException("certificate was not a valid resource", 400);
             }
@@ -148,7 +149,8 @@
 
             // Execute the actual SQL query after confirming its formedness.
             try {
-                $selector = ["username", "first", "last", "email", "address", "city", "state", "zip", "cert"];
+                $selector = Flight::fields(["username", "first", "last", "email",
+                                            "address", "city", "state", "zip", "cert"]);
                 $result = Flight::db()->select("Users", $selector, ["username" => $username]);
                 if (count($result) == 0) {
                     throw new HTTPException("no such user '$username'", 404);
@@ -160,7 +162,7 @@
             }
         }
 
-        // TODO: MIN(), MAX(), AVG(), SUM(), COUNT()
+        // TODO: MIN(), MAX(), AVG(), SUM(), COUNT(), LEN()
         public static function search() {
             if(!Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
                 throw new HTTPException("insufficient privileges to view all users", 401);
@@ -168,7 +170,9 @@
 
             // Execute the actual SQL query after confirming its formedness.
             try {
-                $result = Flight::db()->select("Users", ["username", "first", "last", "email", "address", "city", "state", "zip"]);
+                $selector = Flight::fields(["username", "first", "last", "email",
+                                            "address", "city", "state", "zip"]);
+                $result = Flight::db()->select("Users", $selector);
 
                 return $result;
             } catch(PDOException $e) {
