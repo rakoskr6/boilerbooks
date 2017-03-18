@@ -110,5 +110,5 @@
     Flight::dynamic_route('POST /budget/@name', 'Budget::add');
     Flight::dynamic_route('PATCH /budget/@name', 'Budget::update');
     Flight::dynamic_route('DELETE /budget/@name', 'Budget::remove');
-    Flight::dynamic_route('GET /budgets', 'Budget::search');
+    Flight::dynamic_route('GET /budget', 'Budget::search');
 ?>

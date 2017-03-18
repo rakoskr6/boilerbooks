@@ -97,5 +97,5 @@
     Flight::dynamic_route('GET /income/@incomeid', 'Income::view');
     Flight::dynamic_route('POST /income/@incomeid', 'Income::add');
     Flight::dynamic_route('PATCH /income/@incomeid', 'Income::update');
-    Flight::dynamic_route('GET /incomes', 'Income::search');
+    Flight::dynamic_route('GET /income', 'Income::search');
 ?>

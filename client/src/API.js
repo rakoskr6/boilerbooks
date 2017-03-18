@@ -103,7 +103,7 @@ export class User {
 
     // eslint-disable-next-line
     static search({} = {}) {
-        return APIFetch('GET', `/users`)
+        return APIFetch('GET', `/user`)
     }
 }
 
@@ -120,7 +120,7 @@ export class Organization {
     // eslint-disable-next-line
     static search({} = {}) {
         // GET request can't have a body, must be passed in as query params
-        return APIFetch('GET', `/organizations`)
+        return APIFetch('GET', `/organization`)
     }
 }
 
@@ -157,7 +157,7 @@ export class Purchase {
 
     // eslint-disable-next-line
     static search({} = {}) { // FIXME: offset, limit
-        return APIFetch('GET', `/purchases`)
+        return APIFetch('GET', `/purchase`)
     }
 }
 
@@ -178,7 +178,7 @@ export class Budget {
 
     // eslint-disable-next-line
     static search({} = {}) {
-        return APIFetch('GET', `/budgets`)
+        return APIFetch('GET', `/budget`)
     }
 }
 
@@ -189,6 +189,6 @@ export class Income {
 
     // eslint-disable-next-line
     static search({} = {}) {
-        return APIFetch('GET', `/incomes`)
+        return APIFetch('GET', `/income`)
     }
 }

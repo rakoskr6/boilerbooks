@@ -66,5 +66,5 @@
 
     Flight::dynamic_route('POST /organization/@name', 'Organization::add');
     Flight::dynamic_route('DELETE /organization/@name', 'Organization::remove');
-    Flight::dynamic_route('GET /organizations', 'Organization::search');
+    Flight::dynamic_route('GET /organization', 'Organization::search');
 ?>

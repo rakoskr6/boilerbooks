@@ -160,6 +160,7 @@
             }
         }
 
+        // TODO: MIN(), MAX(), AVG(), SUM(), COUNT()
         public static function search() {
             if(!Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
                 throw new HTTPException("insufficient privileges to view all users", 401);
@@ -348,5 +349,5 @@
      *   }}
      * )
      */
-    Flight::dynamic_route('GET /users', 'User::search');
+    Flight::dynamic_route('GET /user', 'User::search');
 ?>

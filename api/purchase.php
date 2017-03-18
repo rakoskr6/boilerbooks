@@ -132,5 +132,5 @@
     Flight::dynamic_route('GET /purchase/@purchaseid', 'Purchase::view');
     Flight::dynamic_route('POST /purchase/@purchaseid', 'Purchase::add');
     Flight::dynamic_route('PATCH /purchase/@purchaseid', 'Purchase::update');
-    Flight::dynamic_route('GET /purchases', 'Purchase::search');
+    Flight::dynamic_route('GET /purchase', 'Purchase::search');
 ?>
