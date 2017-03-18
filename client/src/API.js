@@ -119,7 +119,6 @@ export class Organization {
 
     // eslint-disable-next-line
     static search({} = {}) {
-        // GET request can't have a body, must be passed in as query params
         return APIFetch('GET', `/organization`)
     }
 }
@@ -156,7 +155,7 @@ export class Purchase {
     }
 
     // eslint-disable-next-line
-    static search({} = {}) { // FIXME: offset, limit
+    static search({} = {}) {
         return APIFetch('GET', `/purchase`)
     }
 }

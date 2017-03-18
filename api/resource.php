@@ -95,5 +95,3 @@ class Resource {
 
 Flight::dynamic_route('POST /resource/@username', 'Resource::upload');
 Flight::dynamic_route('GET /resource/@username', 'Resource::download');
-
-?>
