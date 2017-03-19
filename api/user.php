@@ -30,6 +30,7 @@ class User {
         try {
             Flight::db()->insert("Users", $user);
             log::transact(Flight::db()->last_query());
+            Realtime::record(__CLASS__, Realtime::create, $user);
             return $user;
         } catch(PDOException $e) {
             throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
@@ -59,6 +60,7 @@ class User {
             // Make sure 1 row was acted on, otherwise the user did not exist
             if ($result == 1) {
                 log::transact(Flight::db()->last_query());
+                Realtime::record(__CLASS__, Realtime::delete, $username);
                 return $username;
             } else {
                 throw new HTTPException("user not found", 404);
@@ -125,8 +127,8 @@ class User {
 
             $result = Flight::db()->update("Users", $updates, ["username" => $username]);
             log::transact(Flight::db()->last_query());
-
             unset($updates["revoke_counter[+]"]);
+            Realtime::record(__CLASS__, Realtime::update, $updates);
             return $updates;
         } catch(PDOException $e) {
             throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
@@ -168,9 +170,6 @@ class User {
         if(!Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
             throw new HTTPException("insufficient privileges to view all users", 401);
         }
-
-        error_log(json_encode(Realtime::record(__CLASS__, Realtime::create, ['new'])));
-        error_log(json_encode(Realtime::collect()));
 
         // Execute the actual SQL query after confirming its formedness.
         try {

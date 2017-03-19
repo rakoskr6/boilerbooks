@@ -19,6 +19,7 @@ class Income {
         try {
             Flight::db()->insert("Income", $income);
             log::transact(Flight::db()->last_query());
+            Realtime::record(__CLASS__, Realtime::create, $income);
             return $income;
         } catch(PDOException $e) {
             throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
@@ -49,6 +50,7 @@ class Income {
             // Make sure 1 row was acted on, otherwise the income did not exist
             if ($result == 1) {
                 log::transact(Flight::db()->last_query());
+                Realtime::record(__CLASS__, Realtime::update, $updates);
                 return $updates;
             } else {
                 throw new HTTPException("no such income available", 404);

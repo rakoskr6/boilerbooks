@@ -17,6 +17,7 @@ class Budget {
         try {
             Flight::db()->insert("Budgets", $budget);
             log::transact(Flight::db()->last_query());
+            Realtime::record(__CLASS__, Realtime::create, $budget);
             return $budget;
         } catch(PDOException $e) {
             throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
@@ -38,6 +39,7 @@ class Budget {
             // Make sure 1 row was acted on, otherwise the user did not exist
             if ($result == 1) {
                 log::transact(Flight::db()->last_query());
+                Realtime::record(__CLASS__, Realtime::delete, $budget);
                 return $budget;
             } else {
                 throw new HTTPException("no such budget item", 404);
@@ -63,6 +65,7 @@ class Budget {
             // Make sure 1 row was acted on, otherwise the budget did not exist.
             if ($result == 1) {
                 log::transact(Flight::db()->last_query());
+                Realtime::record(__CLASS__, Realtime::update, $budget);
                 return $budget;
             } else {
                 throw new HTTPException("no such budget item", 404);

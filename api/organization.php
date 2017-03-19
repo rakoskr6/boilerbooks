@@ -17,6 +17,7 @@ class Organization {
         try {
             Flight::db()->insert("Organizations", ["name" => $name, "parent" => $parent]);
             log::transact(Flight::db()->last_query());
+            Realtime::record(__CLASS__, Realtime::create, $org);
             return $org;
         } catch(PDOException $e) {
             throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
@@ -37,6 +38,7 @@ class Organization {
             // Make sure 1 row was acted on, otherwise the user did not exist
             if ($result == 1) {
                 log::transact(Flight::db()->last_query());
+                Realtime::record(__CLASS__, Realtime::delete, $name);
                 return $name;
             } else {
                 throw new HTTPException("no such organization", 404);

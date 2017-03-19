@@ -3,6 +3,8 @@
 // An SSE implementation that pulls all changes since the last given ID.
 // If no ID is given, it returns only the last recorded ID. The client should
 // then cache this and use it when making future requests.
+//
+// TODO: Add security/rights filtering when collect() is called.
 class Realtime {
 
     // The four technically supported "CRUD" operations.

@@ -24,6 +24,7 @@ class Purchase {
             // Get the last entered row's ID and return that.
             $pid = Flight::db()->query("SELECT @@IDENTITY AS PID")->fetch();
             $purchase['purchaseid'] = $pid["PID"];
+            Realtime::record(__CLASS__, Realtime::create, $purchase);
             return $purchase;
         } catch(PDOException $e) {
             throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
@@ -85,6 +86,7 @@ class Purchase {
             // Make sure 1 row was acted on, otherwise the income did not exist
             if ($result == 1) {
                 log::transact(Flight::db()->last_query());
+                Realtime::record(__CLASS__, Realtime::update, $purchase);
                 return $purchase;
             } else {
                 throw new HTTPException("no such purchase", 404);

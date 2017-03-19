@@ -26,7 +26,8 @@ class Rights {
         try {
             Flight::db()->insert("Rights", $right);
             log::transact(Flight::db()->last_query());
-            return $username;
+            Realtime::record(__CLASS__, Realtime::create, $right);
+            return $right;
         } catch(PDOException $e) {
             throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
         }
@@ -48,7 +49,8 @@ class Rights {
             // Make sure 1 row was acted on, otherwise the income did not exist
             if ($result === 1) {
                 log::transact(Flight::db()->last_query());
-                return $updates;
+                Realtime::record(__CLASS__, Realtime::delete, $right);
+                return $right;
             } else {
                 throw new HTTPException("no such right existed", 404);
             }
