@@ -1,5 +1,8 @@
 <?php
 
+// An SSE implementation that pulls all changes since the last given ID.
+// If no ID is given, it returns only the last recorded ID. The client should
+// then cache this and use it when making future requests.
 class Realtime {
 
     // The four technically supported "CRUD" operations.
@@ -32,7 +35,7 @@ class Realtime {
 
     // Return all changes recorded since $since (>= 0), and if $since is null,
     // return the number of records found.
-    public static function collect($since = 0) {
+    public static function collect($since = null) {
         $where = ["id[>]" => $since ?: 0,
                   "ORDER" => ["id" => "DESC"]];
         if ($since === null) {
@@ -42,44 +45,12 @@ class Realtime {
         // Execute the actual SQL query after confirming its formedness.
         try {
             $result = Flight::db()->select("Changelog", "*", $where);
-            return $result;
+            return $since === null ? ["id" => $result[0]['id']] : $result;
         } catch(PDOException $e) {
             throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
         }
     }
-
-    // An SSE implementation that pulls all changes since the last given ID.
-    // If no ID is given, it returns only the last recorded ID. The client should
-    // then cache this and use it when making future requests.
-    public static function listen($lastId = null) {
-        $stream = new Stream();
-        if ($lastId !== null) {
-            error_log('lastid given');
-            foreach (Realtime::collect($lastId) as $message) {
-                error_log(json_encode($message));
-                $stream
-                    ->event()
-                        ->setData(json_encode($message))
-                    ->end();
-            }
-        } else {
-            error_log('lastid not given');
-            $stream
-                ->event()
-                    ->setData(json_encode(["hi" => "test"]))
-                ->end();
-        }
-        $stream->flush();
-    }
 }
 
-// Wrap Realtime::listen() by opening an EventStream.
-Flight::route('/realtime', function() {
-    set_time_limit(0);
-    foreach (Stream::getHeaders() as $name => $value) {
-        header("$name: $value");
-    }
-    $lastId = filter_input(INPUT_SERVER, 'HTTP_LAST_EVENT_ID');
-
-    Realtime::listen($lastId);
-});
+Flight::dynamic_route('GET /realtime', 'Realtime::collect');
+Flight::dynamic_route('GET /realtime/@since', 'Realtime::collect');

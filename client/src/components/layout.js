@@ -48,11 +48,13 @@ class Layout extends React.Component {
             .then(res => this.setState({me: res}))
             .catch(e => console.debug(e));
 
-        API.Realtime.listen({endpoint:'a', handler:'b'});
-    }
-
-    componentWillUnmount() {
-        this.observer.disconnect();
+        API.Realtime.listen((res) => {
+            console.log('data: ')
+            console.debug(res)
+        }).then(res => {
+            console.log('error: ')
+            console.debug(res)
+        });
     }
 
     tabChange = (val, val2) => {
@@ -92,6 +94,7 @@ class Layout extends React.Component {
     }
     confirmLogout = () => {
         this.props.router.replace('/logout')
+        API.Realtime.unlistenAll(null)
     }
     cancelLogout = () => {
         this.setState({

@@ -192,33 +192,64 @@ export class Income {
     }
 }
 
-var stream = null;
+// TODO: Make this longpoll logic its own class.
+var eventID = null
+var listeners = []
+var failures = []
 export class Realtime {
-    static listen({endpoint = required(), handler = required()} = {}) {
-        if (stream == null) {
-            stream = new EventSource(`${API_PREFIX}/realtime`, { withCredentials: true })
-            stream.addEventListener('message', function(event) {
-                console.log('stream message!')
-                alert(JSON.parse(event.data))
-                console.debug(event)
-                console.debug(JSON.parse(event.data))
-            }, false)
-            stream.addEventListener('error', function(event) {
-                console.debug(event)
-            }, false)
-            stream.addEventListener('init', function(event) {
-                console.log('stream message!')
-                alert(JSON.parse(event.data))
-                console.debug(event)
-                console.debug(JSON.parse(event.data))
-            }, false)
-            stream.addEventListener('User', function(event) {
-                console.log('stream message!')
-                alert(JSON.parse(event.data))
-                console.debug(event)
-                console.debug(JSON.parse(event.data))
-            }, false)
+
+    // Update the cached event ID and resume looping.
+    // If an error occurs, the promise initially given is rejected.
+    static eventLoop() {
+        if(eventID == null)
+            return
+
+        APIFetch('GET', `/realtime/${eventID}`).then(res => {
+            if (res.length > 0) {
+                eventID = res[0]['id']
+            }
+
+            // Remove the id from the listeners' view and convert JSON.
+            res.map(obj => {
+                delete obj['id']
+                obj['updates'] = JSON.parse(obj['updates'])
+                return obj
+            })
+
+            // Notify all listeners and continue event loop.
+            listeners.forEach(l => l(res))
+            setTimeout(Realtime.eventLoop, 3000)
+        }).catch(err => {
+            Realtime.unlistenAll(err)
+        })
+    }
+
+    static listen(handler) {
+        if(typeof handler === 'function') {
+            listeners.push(handler)
         }
-        console.log('adding new handler')
+        var p = new Promise(function(resolve, reject) {
+            failures.push({resolve: resolve, reject: reject})
+        })
+
+        // If the event loop isn't happening, bootstrap it with the latest ID.
+        if(eventID == null) {
+            APIFetch('GET', `/realtime`).then(res => {
+                console.debug(res)
+                eventID = res['id']
+                Realtime.eventLoop()
+            })
+        }
+        return p
+    }
+
+    static unlistenAll(err) {
+        console.error('event loop encountered error!')
+        console.debug(err)
+
+        eventID = null
+        failures.forEach(l => l.reject(err))
+        listeners = []
+        failures = []
     }
 }

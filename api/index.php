@@ -2,7 +2,6 @@
 require_once 'lib/meedo.php';
 require_once 'lib/jwt.php';
 require_once 'lib/flight/Flight.php';
-require_once 'lib/EventSource.php';
 
 /**
  * @SWG\Info(title="BoilerBooks", version="2.0.0")
