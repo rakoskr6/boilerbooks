@@ -11,11 +11,11 @@ class Realtime {
 
     // When a record is modified, this method adds a changelog entry
     // and notifies any listening clients of batched changes.
-    public static function record($endpoint, $operation, $change) {
+    public static function record($endpoint, $operation, $updates) {
         $record = Dynamics::extract(__METHOD__, func_get_args());
         //$record['#modify_time'] = 'NOW()';
         $record['modify_user'] = Flight::get('user');
-        $record['change'] = json_encode($change);
+        $record['updates'] = json_encode($updates);
 
         // Execute the actual SQL query after confirming its formedness.
         try {
@@ -51,22 +51,22 @@ class Realtime {
     // An SSE implementation that pulls all changes since the last given ID.
     // If no ID is given, it returns only the last recorded ID. The client should
     // then cache this and use it when making future requests.
-    public static function listen() {
-        $lastId = filter_input(INPUT_SERVER, 'HTTP_LAST_EVENT_ID');
-        if ($lastId) {
+    public static function listen($lastId = null) {
+        $stream = new Stream();
+        if ($lastId !== null) {
+            error_log('lastid given');
             foreach (Realtime::collect($lastId) as $message) {
+                error_log(json_encode($message));
                 $stream
                     ->event()
-                        ->setId($message['id'])
-                        ->setEvent($message['endpoint'])
-                        ->setData($message['data']);
+                        ->setData(json_encode($message))
                     ->end();
             }
         } else {
+            error_log('lastid not given');
             $stream
                 ->event()
-                    ->setId(Realtime::collect(null))
-                    ->setEvent('init');
+                    ->setData(json_encode(["hi" => "test"]))
                 ->end();
         }
         $stream->flush();
@@ -79,6 +79,7 @@ Flight::route('/realtime', function() {
     foreach (Stream::getHeaders() as $name => $value) {
         header("$name: $value");
     }
+    $lastId = filter_input(INPUT_SERVER, 'HTTP_LAST_EVENT_ID');
 
-    Realtime::listen();
+    Realtime::listen($lastId);
 });

@@ -191,3 +191,34 @@ export class Income {
         return APIFetch('GET', `/income`)
     }
 }
+
+var stream = null;
+export class Realtime {
+    static listen({endpoint = required(), handler = required()} = {}) {
+        if (stream == null) {
+            stream = new EventSource(`${API_PREFIX}/realtime`, { withCredentials: true })
+            stream.addEventListener('message', function(event) {
+                console.log('stream message!')
+                alert(JSON.parse(event.data))
+                console.debug(event)
+                console.debug(JSON.parse(event.data))
+            }, false)
+            stream.addEventListener('error', function(event) {
+                console.debug(event)
+            }, false)
+            stream.addEventListener('init', function(event) {
+                console.log('stream message!')
+                alert(JSON.parse(event.data))
+                console.debug(event)
+                console.debug(JSON.parse(event.data))
+            }, false)
+            stream.addEventListener('User', function(event) {
+                console.log('stream message!')
+                alert(JSON.parse(event.data))
+                console.debug(event)
+                console.debug(JSON.parse(event.data))
+            }, false)
+        }
+        console.log('adding new handler')
+    }
+}

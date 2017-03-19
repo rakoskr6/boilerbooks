@@ -9,7 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Igorw\EventSource;
+class EchoHandler
+{
+    public function __invoke($chunk)
+    {
+        http_response_code(200);
+        echo $chunk;
+        ob_flush();
+        flush();
+    }
+}
 
 class Event
 {
@@ -127,5 +136,107 @@ class Event
     static public function create()
     {
         return new static();
+    }
+}
+
+class EventWrapper
+{
+    private $event;
+    private $source;
+
+    public function __construct(Event $event, \Closure $source = null)
+    {
+        $this->event = $event;
+        $this->source = $source;
+    }
+
+    public function getWrappedEvent()
+    {
+        return $this->event;
+    }
+
+    public function end()
+    {
+        if ($this->source) {
+            return call_user_func($this->source);
+        }
+    }
+
+    public function __call($name, $args)
+    {
+        if (!method_exists($this->event, $name)) {
+            $message = "Could not call non-existent method '$name' on wrapped event.\n";
+            $message .= 'Must be one of: '.implode(', ', get_class_methods('Igorw\EventSource\Event'));
+            throw new \InvalidArgumentException($message);
+        }
+
+        $method = array($this->event, $name);
+        $value = call_user_func_array($method, $args);
+
+        if ($this->event === $value) {
+            return $this;
+        }
+
+        return $value;
+    }
+}
+
+
+/**
+ * Generates a stream in the W3C EventSource format
+ * http://dev.w3.org/html5/eventsource/
+ */
+class Stream
+{
+    private $buffer;
+    private $handler;
+
+    public function __construct($handler = null)
+    {
+        $this->buffer = new \SplQueue();
+        $this->buffer->setIteratorMode(\SplQueue::IT_MODE_DELETE);
+        $this->handler = $handler ?: new EchoHandler();
+    }
+
+    public function event()
+    {
+        $event = new Event();
+        $this->buffer->enqueue($event);
+
+        $that = $this;
+
+        $wrapper = new EventWrapper($event, function () use ($that) {
+            return $that;
+        });
+
+        return $wrapper;
+    }
+
+    public function flush()
+    {
+        foreach ($this->buffer as $event) {
+            $chunk = $event->dump();
+            if ('' !== $chunk) {
+                call_user_func($this->handler, $chunk);
+            }
+        }
+    }
+
+    public function getHandler()
+    {
+        return $this->handler;
+    }
+
+    static public function getHeaders()
+    {
+        $origin_header = isset(getallheaders()['Origin']) ? getallheaders()['Origin'] : '*';
+        error_log(json_encode(getallheaders()));
+        return array(
+            'Content-Type'  => 'text/event-stream',
+            'Transfer-Encoding' => 'identity',
+            'Cache-Control' => 'no-cache',
+            'Access-Control-Allow-Origin' => $origin_header,
+            'Access-Control-Allow-Credentials' => 'true'
+        );
     }
 }

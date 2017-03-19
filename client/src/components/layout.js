@@ -47,6 +47,8 @@ class Layout extends React.Component {
         API.User.view({username: 'me'})
             .then(res => this.setState({me: res}))
             .catch(e => console.debug(e));
+
+        API.Realtime.listen({endpoint:'a', handler:'b'});
     }
 
     componentWillUnmount() {
