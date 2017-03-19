@@ -1,0 +1,46 @@
+{
+    "0001": "none: unspecified error",
+    "0002": "insufficient privileges to view aggregate data",
+
+    "1001": "authenticate: user does not exist",
+    "1002": "authenticate: incorrect password",
+
+    "2001": "budget: insufficient privileges to add a budget item",
+    "2002": "budget: insufficient privileges to delete a budget item",
+    "2003": "budget: no such budget item",
+    "2004": "budget: insufficient privileges to update a budget item",
+    "2005": "budget: insufficient privileges to view all budgets",
+
+    "3001": "income: insufficient privileges to add an income",
+    "3002": "income: insufficient privileges to update an income",
+    "3003": "income: no updates to commit",
+    "3004": "income: no such income available",
+    "3005": "income: insufficient privileges to view an income",
+
+    "4001": "organization: insufficient privileges to create organizations",
+    "4002": "organization: insufficient privileges to delete organizations",
+    "4003": "organization: no such organization",
+    "4004": "organization: insufficient privileges to view organizations",
+
+    "5001": "purchase: insufficient privileges to add other users' purchases",
+    "5002": "purchase: insufficient privileges to edit other users' purchases",
+    "5003": "purchase: insufficient privileges to view a purchase",
+    "5004": "purchase: insufficient privileges to view all purchases",
+
+    "6001": "rights: improperly formed root privileged right",
+    "6002": "rights: insufficient privileges to grant privileges",
+    "6003": "rights: insufficient privileges to revoke rights",
+    "6004": "rights: no such right existed",
+    "6005": "rights: insufficient privileges to check rights",
+    "6006": "rights: no rights for that user",
+    "6007": "rights: insufficient privileges to view other users' rights",
+    "6008": "rights: insufficient privileges to view all rights",
+
+    "7001": "user: certificate was not a valid resource",
+    "7002": "user: insufficient privileges to delete users",
+    "7003": "user: user not found",
+    "7004": "user: insufficient privileges to update other users",
+    "7005": "user: no updates to commit",
+    "7006": "user: insufficient privileges to view other users",
+    "7007": "user: insufficient privileges to view all users",
+}

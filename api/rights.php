@@ -107,9 +107,9 @@ class Rights {
 
         // Execute the actual SQL query after confirming its formedness.
         try {
-            $selector = Flight::fields(["username", "granter", "organization",
+            $queried = Flight::fields(["username", "granter", "organization",
                                         "budget", "year", "amount"]);
-            $result = Flight::db()->select("Rights", $selector, ["username" => $username]);
+            $result = Flight::db()->select("Rights", $queried['fields'], ["username" => $username]);
             if (count($result) < 1) {
                 throw new HTTPException("no results", 404);
             }
@@ -129,9 +129,9 @@ class Rights {
 
         // Execute the actual SQL query after confirming its formedness.
         try {
-            $selector = Flight::fields(["username", "granter", "organization",
+            $queried = Flight::fields(["username", "granter", "organization",
                                         "budget", "year", "amount"]);
-            $result = Flight::db()->select("Rights", $selector);
+            $result = Flight::db()->select("Rights", $queried['fields']);
             if (count($result) < 1) {
                 throw new HTTPException("no results", 404);
             }

@@ -70,10 +70,10 @@ class Income {
 
         // Execute the actual SQL query after confirming its formedness.
         try {
-            $selector = Flight::fields(["incomeid", "year", "source",
+            $queried = Flight::fields(["incomeid", "year", "source",
                                         "type", "amount", "item", "status",
                                         "comments", "organization", "username"]);//, "modify"]);
-            $result = Flight::db()->select("Income", $selector, ["incomeid" => $incomeid]);
+            $result = Flight::db()->select("Income", $queried['fields'], ["incomeid" => $incomeid]);
 
             return $result;
         } catch(PDOException $e) {
@@ -90,10 +90,10 @@ class Income {
 
         // Execute the actual SQL query after confirming its formedness.
         try {
-            $selector = Flight::fields(["incomeid", "year", "source",
+            $queried = Flight::fields(["incomeid", "year", "source",
                                         "type", "amount", "item", "status",
                                         "comments", "organization", "username"]);//, "modify"]);
-            $result = Flight::db()->select("Income", $selector);
+            $result = Flight::db()->select("Income", $queried['fields']);
 
             return $result;
         } catch(PDOException $e) {

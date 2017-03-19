@@ -84,7 +84,7 @@ export class Authenticate {
 export class User {
     static view({username = required(), fields = []} = {}) {
         var suffix = ''
-        if (fields.count > 0) {
+        if (fields.length > 0) {
             suffix = '?fields=' + fields.join(',')
         }
         return APIFetch('GET', `/user/${username}${suffix}`)
@@ -108,9 +108,10 @@ export class User {
     // eslint-disable-next-line
     static search({fields = []} = {}) {
         var suffix = ''
-        if (fields.count > 0) {
+        if (fields.length > 0) {
             suffix = '?fields=' + fields.join(',')
         }
+        console.log(`GET /user${suffix}`)
         return APIFetch('GET', `/user${suffix}`)
     }
 }
@@ -128,7 +129,7 @@ export class Organization {
     // eslint-disable-next-line
     static search({fields = []} = {}) {
         var suffix = ''
-        if (fields.count > 0) {
+        if (fields.length > 0) {
             suffix = '?fields=' + fields.join(',')
         }
         return APIFetch('GET', `/organization${suffix}`)
@@ -143,7 +144,7 @@ export class Rights {
 
     static view({username = required(), fields = []} = {}) {
         var suffix = ''
-        if (fields.count > 0) {
+        if (fields.length > 0) {
             suffix = '?fields=' + fields.join(',')
         }
         return APIFetch('GET', `/rights/${username}${suffix}`)
@@ -162,7 +163,7 @@ export class Rights {
     // eslint-disable-next-line
     static search({fields = []} = {}) {
         var suffix = ''
-        if (fields.count > 0) {
+        if (fields.length > 0) {
             suffix = '?fields=' + fields.join(',')
         }
         return APIFetch('GET', `/rights${suffix}`)
@@ -172,7 +173,7 @@ export class Rights {
 export class Purchase {
     static view({purchaseid = required(), fields = []} = {}) {
         var suffix = ''
-        if (fields.count > 0) {
+        if (fields.length > 0) {
             suffix = '?fields=' + fields.join(',')
         }
         return APIFetch('GET', `/purchase/${purchaseid}${suffix}`)
@@ -181,7 +182,7 @@ export class Purchase {
     // eslint-disable-next-line
     static search({fields = []} = {}) {
         var suffix = ''
-        if (fields.count > 0) {
+        if (fields.length > 0) {
             suffix = '?fields=' + fields.join(',')
         }
         return APIFetch('GET', `/purchase${suffix}`)
@@ -206,7 +207,7 @@ export class Budget {
     // eslint-disable-next-line
     static search({fields = []} = {}) {
         var suffix = ''
-        if (fields.count > 0) {
+        if (fields.length > 0) {
             suffix = '?fields=' + fields.join(',')
         }
         return APIFetch('GET', `/budget${suffix}`)
@@ -216,7 +217,7 @@ export class Budget {
 export class Income {
     static view({incomeid = required(), fields = []} = {}) {
         var suffix = ''
-        if (fields.count > 0) {
+        if (fields.length > 0) {
             suffix = '?fields=' + fields.join(',')
         }
         return APIFetch('GET', `/income/${incomeid}${suffix}`)
@@ -225,7 +226,7 @@ export class Income {
     // eslint-disable-next-line
     static search({fields = []} = {}) {
         var suffix = ''
-        if (fields.count > 0) {
+        if (fields.length > 0) {
             suffix = '?fields=' + fields.join(',')
         }
         return APIFetch('GET', `/income${suffix}`)

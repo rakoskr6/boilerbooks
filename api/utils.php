@@ -263,18 +263,38 @@ Flight::map('dynamic_route', function($match, $to, $require_auth = true) {
 
 // If the query contains any fields specified, only return those.
 // The URL should contain `?fields=<field>,<field>,...` to match.
-Flight::map('fields', function($default_fields) {
+// If any aggregates (i.e. functions applied to fields) are used,
+// They are returned as well after being validated.
+//
+// Return value: ["aggregates" => [...], "fields" => [...]]
+Flight::map('fields', function($default_fields, $operators = ['min', 'max', 'avg', 'sum', 'count']) {
     $fields = explode(',', Flight::request()->query['fields'] ?: '');
     $fields = array_filter($fields, function($v) { return $v !== ''; });
 
     if (count($fields) === 0) {
-        return $default_fields;
+        return ["aggregates" => [],
+                "fields" => $default_fields];
     } else {
+        $aggregates = [];
+        $valid_fields = [];
         foreach ($fields as $field) {
+
+            // Support for prefixed operators like min:x, max:y, and so on.
+            $parts = explode(':', $field);
+            if (count($parts) === 1) {
+                $field = $parts[0];
+                array_push($valid_fields, $field);
+            } else {
+                $op = $parts[0];
+                $field = $parts[1];
+                array_push($aggregates, ["op" => $op, "field" => $field]);
+            }
+
             if(!in_array($field, $default_fields)) {
                 throw new HTTPException("invalid field '$field'", 400);
             }
         }
-        return $fields;
+        return ["aggregates" => $aggregates,
+                "fields" => $valid_fields];
     }
 });

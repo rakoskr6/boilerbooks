@@ -152,9 +152,9 @@ class User {
 
         // Execute the actual SQL query after confirming its formedness.
         try {
-            $selector = Flight::fields(["username", "first", "last", "email",
+            $queried = Flight::fields(["username", "first", "last", "email",
                                         "address", "city", "state", "zip", "cert"]);
-            $result = Flight::db()->select("Users", $selector, ["username" => $username]);
+            $result = Flight::db()->select("Users", $queried['fields'], ["username" => $username]);
             if (count($result) == 0) {
                 throw new HTTPException("no such user '$username'", 404);
             }
@@ -165,18 +165,35 @@ class User {
         }
     }
 
-    // TODO: MIN(), MAX(), AVG(), SUM(), COUNT(), LEN()
     public static function search() {
-        if(!Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
-            throw new HTTPException("insufficient privileges to view all users", 401);
-        }
 
         // Execute the actual SQL query after confirming its formedness.
         try {
-            $selector = Flight::fields(["username", "first", "last", "email",
+            $queried = Flight::fields(["username", "first", "last", "email",
                                         "address", "city", "state", "zip"]);
-            $result = Flight::db()->select("Users", $selector);
 
+            // Short circuit if we find any aggregates!
+            if (count($queried['aggregates']) > 0) {
+                if (!Flight::get('user')) {
+                    throw new HTTPException("insufficient privileges to view aggregate data", 401);
+                }
+
+                $agg_res = [];
+                foreach ($queried['aggregates'] as $agg) {
+                    $meta = call_user_func_array(
+                        [Flight::db(), $agg['op']],
+                        ["Users", $agg['field']]
+                    );
+                    $agg_res[$agg['op'].':'.$agg['field']] = $meta;
+                }
+                return $agg_res;
+            }
+
+            if(!Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
+                throw new HTTPException("insufficient privileges to view all users", 401);
+            }
+
+            $result = Flight::db()->select("Users", $queried['fields']);
             return $result;
         } catch(PDOException $e) {
             throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);

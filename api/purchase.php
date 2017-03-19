@@ -105,12 +105,12 @@ class Purchase {
 
         // Execute the actual SQL query after confirming its formedness.
         try {
-            $selector = Flight::fields(["purchaseid", "username", "approvedby",
+            $queried = Flight::fields(["purchaseid", "username", "approvedby",
                                         "item", "purchasereason", "vendor", "cost",
                                         "comments", "status", "fundsource",
                                         "purchasedate", "receipt", "organization",
                                         "budget", "year"]);//, "modify"]);
-            $result = Flight::db()->select("Purchases", $selector, ["purchaseid" => $purchaseid]);
+            $result = Flight::db()->select("Purchases", $queried['fields'], ["purchaseid" => $purchaseid]);
 
             return $result;
         } catch(PDOException $e) {
@@ -120,20 +120,37 @@ class Purchase {
 
     public static function search($offset = 0, $limit = 250) {
 
-        // Make sure we have rights to view the income.
-        if (!Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
-            throw new HTTPException("insufficient privileges to view all purchases", 401);
-        }
-
         // Execute the actual SQL query after confirming its formedness.
         try {
-            $selector = Flight::fields(["purchaseid", "username", "approvedby",
+            $queried = Flight::fields(["purchaseid", "username", "approvedby",
                                         "item", "purchasereason", "vendor", "cost",
                                         "comments", "status", "fundsource",
                                         "purchasedate", "receipt", "organization",
                                         "budget", "year"]);//, "modify"]);
-            $result = Flight::db()->select("Purchases", $selector);
 
+            // Short circuit if we find any aggregates!
+            if (count($queried['aggregates']) > 0) {
+                if (!Flight::get('user')) {
+                    throw new HTTPException("insufficient privileges to view aggregate data", 401);
+                }
+
+                $agg_res = [];
+                foreach ($queried['aggregates'] as $agg) {
+                    $meta = call_user_func_array(
+                        [Flight::db(), $agg['op']],
+                        ["Purchases", $agg['field']]
+                    );
+                    $agg_res[$agg['op'].':'.$agg['field']] = $meta;
+                }
+                return $agg_res;
+            }
+
+            // Make sure we have rights to view the purchase.
+            if (!Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
+                throw new HTTPException("insufficient privileges to view all purchases", 401);
+            }
+
+            $result = Flight::db()->select("Purchases", $queried['fields']);
             return $result;
         } catch(PDOException $e) {
             throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
