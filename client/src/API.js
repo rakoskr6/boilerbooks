@@ -82,8 +82,12 @@ export class Authenticate {
 }
 
 export class User {
-    static view({username = required()} = {}) {
-        return APIFetch('GET', `/user/${username}`)
+    static view({username = required(), fields = []} = {}) {
+        var suffix = ''
+        if (fields.count > 0) {
+            suffix = '?fields=' + fields.join(',')
+        }
+        return APIFetch('GET', `/user/${username}${suffix}`)
     }
 
     static add({username = required(), password = required(), first = required(),
@@ -102,8 +106,12 @@ export class User {
     }
 
     // eslint-disable-next-line
-    static search({} = {}) {
-        return APIFetch('GET', `/user`)
+    static search({fields = []} = {}) {
+        var suffix = ''
+        if (fields.count > 0) {
+            suffix = '?fields=' + fields.join(',')
+        }
+        return APIFetch('GET', `/user${suffix}`)
     }
 }
 
@@ -118,8 +126,12 @@ export class Organization {
     }
 
     // eslint-disable-next-line
-    static search({} = {}) {
-        return APIFetch('GET', `/organization`)
+    static search({fields = []} = {}) {
+        var suffix = ''
+        if (fields.count > 0) {
+            suffix = '?fields=' + fields.join(',')
+        }
+        return APIFetch('GET', `/organization${suffix}`)
     }
 }
 
@@ -129,8 +141,12 @@ export class Rights {
         return APIFetch('GET', `/check/${username}`)
     }
 
-    static view({username = required()} = {}) {
-        return APIFetch('GET', `/rights/${username}`)
+    static view({username = required(), fields = []} = {}) {
+        var suffix = ''
+        if (fields.count > 0) {
+            suffix = '?fields=' + fields.join(',')
+        }
+        return APIFetch('GET', `/rights/${username}${suffix}`)
     }
 
     static grant({username = required(), organization = required(), budget = required(),
@@ -144,19 +160,31 @@ export class Rights {
     }
 
     // eslint-disable-next-line
-    static search({} = {}) {
-        return APIFetch('GET', `/rights`)
+    static search({fields = []} = {}) {
+        var suffix = ''
+        if (fields.count > 0) {
+            suffix = '?fields=' + fields.join(',')
+        }
+        return APIFetch('GET', `/rights${suffix}`)
     }
 }
 
 export class Purchase {
-    static view({purchaseid = required()} = {}) {
-        return APIFetch('GET', `/purchase/${purchaseid}`)
+    static view({purchaseid = required(), fields = []} = {}) {
+        var suffix = ''
+        if (fields.count > 0) {
+            suffix = '?fields=' + fields.join(',')
+        }
+        return APIFetch('GET', `/purchase/${purchaseid}${suffix}`)
     }
 
     // eslint-disable-next-line
-    static search({} = {}) {
-        return APIFetch('GET', `/purchase`)
+    static search({fields = []} = {}) {
+        var suffix = ''
+        if (fields.count > 0) {
+            suffix = '?fields=' + fields.join(',')
+        }
+        return APIFetch('GET', `/purchase${suffix}`)
     }
 }
 
@@ -176,19 +204,31 @@ export class Budget {
     }
 
     // eslint-disable-next-line
-    static search({} = {}) {
-        return APIFetch('GET', `/budget`)
+    static search({fields = []} = {}) {
+        var suffix = ''
+        if (fields.count > 0) {
+            suffix = '?fields=' + fields.join(',')
+        }
+        return APIFetch('GET', `/budget${suffix}`)
     }
 }
 
 export class Income {
-    static view({incomeid = required()} = {}) {
-        return APIFetch('GET', `/income/${incomeid}`)
+    static view({incomeid = required(), fields = []} = {}) {
+        var suffix = ''
+        if (fields.count > 0) {
+            suffix = '?fields=' + fields.join(',')
+        }
+        return APIFetch('GET', `/income/${incomeid}${suffix}`)
     }
 
     // eslint-disable-next-line
-    static search({} = {}) {
-        return APIFetch('GET', `/income`)
+    static search({fields = []} = {}) {
+        var suffix = ''
+        if (fields.count > 0) {
+            suffix = '?fields=' + fields.join(',')
+        }
+        return APIFetch('GET', `/income${suffix}`)
     }
 }
 
