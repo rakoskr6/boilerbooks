@@ -14,7 +14,7 @@ class log {
     // The internal sys_log() function is for any non-database logs to be recorded
     // along with a timestamp of when it occurred. Should be used sparingly.
     public static function sys($log) {
-        file_put_contents('./sys.log', "[{${date("Y-m-d h:i:sa")}}] $log\n", FILE_APPEND);
+        file_put_contents('./sys.log', "[{date(\"Y-m-d h:i:sa\")}] $log\n", FILE_APPEND);
     }
 
     // The internal error_log() function is for any database errors to be recorded
@@ -35,8 +35,8 @@ class log {
 
     // The internal transact_log() function is for any database transactions to be recorded
     // along with a timestamp of when it occurred.
-    public static function transact() {
-        file_put_contents('./transactions.log', "[{${date("Y-m-d h:i:sa")}}] $log\n", FILE_APPEND);
+    public static function transact($log) {
+        file_put_contents('./transactions.log', "[{date(\"Y-m-d h:i:sa\")}] $log\n", FILE_APPEND);
     }
 }
 

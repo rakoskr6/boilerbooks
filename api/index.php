@@ -1,7 +1,8 @@
 <?php
-require 'lib/meedo.php';
-require 'lib/jwt.php';
-require 'lib/flight/Flight.php';
+require_once 'lib/meedo.php';
+require_once 'lib/jwt.php';
+require_once 'lib/flight/Flight.php';
+require_once 'lib/EventSource/Stream.php';
 
 /**
  * @SWG\Info(title="BoilerBooks", version="2.0.0")
@@ -55,6 +56,7 @@ require_once 'budget.php';
 require_once 'income.php';
 require_once 'organization.php';
 require_once 'purchase.php';
+require_once 'realtime.php';
 require_once 'resource.php';
 require_once 'user.php';
 Flight::start();

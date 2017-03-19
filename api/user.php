@@ -1,6 +1,7 @@
 <?php
 require_once 'rights.php';
 require_once 'resource.php';
+require_once 'realtime.php';
 
 class User {
     protected function __construct() {}
@@ -167,6 +168,9 @@ class User {
         if(!Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
             throw new HTTPException("insufficient privileges to view all users", 401);
         }
+
+        error_log(json_encode(Realtime::record(__CLASS__, Realtime::create, ['new'])));
+        error_log(json_encode(Realtime::collect()));
 
         // Execute the actual SQL query after confirming its formedness.
         try {

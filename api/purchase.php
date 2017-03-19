@@ -22,8 +22,8 @@ class Purchase {
             log::transact(Flight::db()->last_query());
 
             // Get the last entered row's ID and return that.
-            $pid = Flight::db()->query("SELECT @@IDENTITY AS PID")->fetchAll();
-            $purchase['purchaseid'] = $pid;
+            $pid = Flight::db()->query("SELECT @@IDENTITY AS PID")->fetch();
+            $purchase['purchaseid'] = $pid["PID"];
             return $purchase;
         } catch(PDOException $e) {
             throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
