@@ -47,7 +47,8 @@ class Realtime {
         // Execute the actual SQL query after confirming its formedness.
         try {
             $result = Flight::db()->select("Changelog", "*", $where);
-            return $since === null ? ["id" => $result[0]['id']] : $result;
+            $id = count($result) != 0 ? $result[0]['id'] : 0;
+            return $since === null ? ["id" => $id] : $result;
         } catch(PDOException $e) {
             throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
         }

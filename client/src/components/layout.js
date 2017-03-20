@@ -152,7 +152,7 @@ class Layout extends React.Component {
                     <Subheader style={{ color: fade(fullWhite, 0.7) }}>{copyright(2017, "Aditya Vaidyam, Matt Molo, Kyle Rakos")}</Subheader>
                 </Paper>
                 <Dialog
-                    title={`${document.title} / View`}
+                    title={`Profile`}
                     actions={[
                         <FlatButton
                             label="Close"
