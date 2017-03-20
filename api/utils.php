@@ -330,6 +330,7 @@ Flight::map('filters', function($default_fields, $op_map = null) {
             }
             $selector[$item[0].''.$op_map[$item[1]]] = $item[2];
         }
+        $selector = ["AND" => $selector];
     }
     return $selector;
 });

@@ -119,6 +119,7 @@ class Layout extends React.Component {
                                     <Tab label="Organizations" value="/organizations" />
                                     <Tab label="Rights" value="/rights" />
                                     <Tab label="Users" value="/users" />
+                                    <Tab label="Debug" value="/debug" />
                                 </Tabs>
                             </div>
                         </ToolbarGroup>

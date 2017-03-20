@@ -12,7 +12,9 @@
     "react-cookie": "^1.0.4",
     "react-dom": "^15.4.2",
     "react-dropzone": "^3.9.2",
+    "react-json-tree": "^0.10.7",
     "react-router": "^2.8.1",
+    "react-sortable-tree": "^0.1.12",
     "react-tap-event-plugin": "^2.0.1",
     "reflexbox": "^2.2.3"
   },

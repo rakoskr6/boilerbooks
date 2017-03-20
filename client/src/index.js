@@ -12,6 +12,7 @@ import Budgets from './pages/budgets.js';
 import Organizations from './pages/organizations.js';
 import Rights from './pages/rights.js';
 import Users from './pages/users.js';
+import Debug from './pages/debug.js';
 import { APISession } from './API.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -74,7 +75,9 @@ class Index extends React.Component {
                         <Route path="/budgets" component={Budgets} />
                         <Route path="/organizations" component={Organizations} />
                         <Route path="/rights" component={Rights} />
-                        <Route path="/users" component={Users} />                    </Route>
+                        <Route path="/users" component={Users} />
+                        <Route path="/debug" component={Debug} />
+                    </Route>
                 </Router>
             </MuiThemeProvider>
         )
