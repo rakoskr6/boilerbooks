@@ -13,6 +13,7 @@ import UserView from '../components/userview.js'
 export default class Users extends React.Component {
     state = {
         selectedItem: null,
+        editable: false,
         category: 0,
         data: []
     }
@@ -25,15 +26,24 @@ export default class Users extends React.Component {
     }
 
     rowSelect = (rowNumber, columnId) => {
-        this.setState({selectedItem: this.state.data[rowNumber]});
+        this.setState({selectedItem: this.state.data[rowNumber], editable: false})
     }
 
     catSelect = (event, value) => {
-        this.setState({category: value})
+        this.setState({category: value, editable: false})
     }
 
     closeIndivDialog = () => {
-        this.setState({selectedItem: null});
+        this.setState({selectedItem: null, editable: false})
+    }
+
+    // Edit mode allows individual item changes; should be disabled when
+    // the item is switched.
+    enterEditMode = () => {
+        this.setState({editable: true})
+    }
+    saveChanges = () => {
+        this.setState({editable: false});
     }
 
     render() {
@@ -63,9 +73,9 @@ export default class Users extends React.Component {
                         multiSelectable={false}
                         onCellClick={this.rowSelect}>
                         <TableHeader
-                            displaySelectAll={true}
-                            adjustForCheckbox={true}>
-                            <TableRow>=
+                            displaySelectAll={false}
+                            adjustForCheckbox={false}>
+                            <TableRow>
                                 <TableHeaderColumn tooltip="Username">Username</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="First Name">First Name</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Last Name">Last Name</TableHeaderColumn>
@@ -77,7 +87,7 @@ export default class Users extends React.Component {
                             </TableRow>
                         </TableHeader>
                         <TableBody
-                            displayRowCheckbox={true}
+                            displayRowCheckbox={false}
                             deselectOnClickaway={true}
                             showRowHover={true}>
                             {this.state.data.map((row, index) => (
@@ -96,8 +106,21 @@ export default class Users extends React.Component {
                     </Table>
                 </Card>
                 <Dialog
-                    title={`${document.title} / View`}
+                    title={`${document.title} / ` + (this.state.editable ? 'Edit' : 'View')}
                     actions={[
+                        !this.state.editable ?
+                        <FlatButton
+                            label="Edit"
+                            primary={false}
+                            keyboardFocused={false}
+                            onTouchTap={this.enterEditMode} />
+                        :
+                        <FlatButton
+                            label="Save"
+                            primary={false}
+                            keyboardFocused={false}
+                            onTouchTap={this.saveChanges} />,
+
                         <FlatButton
                             label="Close"
                             primary={true}
@@ -108,7 +131,7 @@ export default class Users extends React.Component {
                     open={this.state.selectedItem !== null}
                     onRequestClose={this.closeIndivDialog}
                     autoScrollBodyContent={true}>
-                    <UserView user={this.state.selectedItem} />
+                    <UserView user={this.state.selectedItem} editable={this.state.editable} />
                 </Dialog>
             </div>
         );

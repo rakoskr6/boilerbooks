@@ -59,15 +59,15 @@ export default class Organizations extends React.Component {
                         selectable={true}
                         multiSelectable={false}>
                         <TableHeader
-                            displaySelectAll={true}
-                            adjustForCheckbox={true}>
+                            displaySelectAll={false}
+                            adjustForCheckbox={false}>
                             <TableRow>=
                                 <TableHeaderColumn tooltip="Name">Name</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Parent">Parent</TableHeaderColumn>
                             </TableRow>
                         </TableHeader>
                         <TableBody
-                            displayRowCheckbox={true}
+                            displayRowCheckbox={false}
                             deselectOnClickaway={true}
                             showRowHover={true}>
                             {this.state.data.map((row, index) => (

@@ -13,6 +13,7 @@ import MenuItem from 'material-ui/MenuItem';
 export default class Incomes extends React.Component {
     state = {
         selectedItem: null,
+        editable: false,
         category: 0,
         data: []
     }
@@ -27,15 +28,24 @@ export default class Incomes extends React.Component {
     }
 
     rowSelect = (rowNumber, columnId) => {
-        this.setState({selectedItem: this.state.data[rowNumber]});
+        this.setState({selectedItem: this.state.data[rowNumber], editable: false})
     }
 
     catSelect = (event, value) => {
-        this.setState({category: value})
+        this.setState({category: value, editable: false})
     }
 
     closeIndivDialog = () => {
-        this.setState({selectedItem: null});
+        this.setState({selectedItem: null, editable: false})
+    }
+
+    // Edit mode allows individual item changes; should be disabled when
+    // the item is switched.
+    enterEditMode = () => {
+        this.setState({editable: true})
+    }
+    saveChanges = () => {
+        this.setState({editable: false});
     }
 
     render() {
@@ -65,8 +75,8 @@ export default class Incomes extends React.Component {
                         multiSelectable={false}
                         onCellClick={this.rowSelect}>
                         <TableHeader
-                            displaySelectAll={true}
-                            adjustForCheckbox={true}>
+                            displaySelectAll={false}
+                            adjustForCheckbox={false}>
                             <TableRow>
                                 <TableHeaderColumn tooltip="Organization">Organization</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Year">Year</TableHeaderColumn>
@@ -81,7 +91,7 @@ export default class Incomes extends React.Component {
                             </TableRow>
                         </TableHeader>
                         <TableBody
-                            displayRowCheckbox={true}
+                            displayRowCheckbox={false}
                             deselectOnClickaway={true}
                             showRowHover={true}>
                             {this.state.data.map((row, index) => (
@@ -102,8 +112,21 @@ export default class Incomes extends React.Component {
                     </Table>
                 </Card>
                 <Dialog
-                    title={`${document.title} / View`}
+                    title={`${document.title} / ` + (this.state.editable ? 'Edit' : 'View')}
                     actions={[
+                        !this.state.editable ?
+                        <FlatButton
+                            label="Edit"
+                            primary={false}
+                            keyboardFocused={false}
+                            onTouchTap={this.enterEditMode} />
+                        :
+                        <FlatButton
+                            label="Save"
+                            primary={false}
+                            keyboardFocused={false}
+                            onTouchTap={this.saveChanges} />,
+
                         <FlatButton
                             label="Close"
                             primary={true}
@@ -114,7 +137,7 @@ export default class Incomes extends React.Component {
                     open={this.state.selectedItem !== null}
                     onRequestClose={this.closeIndivDialog}
                     autoScrollBodyContent={true}>
-                    <IncomeView income={this.state.selectedItem} />
+                    <IncomeView income={this.state.selectedItem} editable={this.state.editable} />
                 </Dialog>
             </div>
         );

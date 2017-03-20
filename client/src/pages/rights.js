@@ -59,8 +59,8 @@ export default class Rights extends React.Component {
                         selectable={true}
                         multiSelectable={false}>
                         <TableHeader
-                            displaySelectAll={true}
-                            adjustForCheckbox={true}>
+                            displaySelectAll={false}
+                            adjustForCheckbox={false}>
                             <TableRow>
                                 <TableHeaderColumn tooltip="Username">Username</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Granter">Granter</TableHeaderColumn>
@@ -71,7 +71,7 @@ export default class Rights extends React.Component {
                             </TableRow>
                         </TableHeader>
                         <TableBody
-                            displayRowCheckbox={true}
+                            displayRowCheckbox={false}
                             deselectOnClickaway={true}
                             showRowHover={true}>
                             {this.state.data.map((row, index) => (

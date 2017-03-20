@@ -4,7 +4,7 @@ import CertUpload from '../components/certupload.js'
 import TextField from 'material-ui/TextField'
 
 function ucfirst(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 export default class UserView extends React.Component {
@@ -24,23 +24,23 @@ export default class UserView extends React.Component {
                             <TableRow key={key}>
                                 <TableRowColumn style={{width:'20%'}}>{ucfirst(key)}</TableRowColumn>
                                 <TableRowColumn>
-                                    {this.props.editable !== false ?
-                                        <TextField
-                                        disabled={true}
-                                        multiLine={true}
-                                        fullWidth={true}
-                                        underlineShow={false}
-                                        style={{cursor: 'text'}}
-                                        textareaStyle={{color: 'black'}}
-                                        id={this.props.user[key]}
-                                        value={this.props.user[key]} />
-                                    :
-                                        <TextField
-                                        multiLine={true}
-                                        fullWidth={true}
-                                        hintText={key}
-                                        id={this.props.user[key]}
-                                        defaultValue={this.props.user[key]} />
+                                    {!this.props.editable
+                                    ?    <TextField
+                                            disabled={true}
+                                            multiLine={true}
+                                            fullWidth={true}
+                                            underlineShow={false}
+                                            style={{cursor: 'text'}}
+                                            textareaStyle={{color: 'black'}}
+                                            id={this.props.user[key]}
+                                            value={this.props.user[key]} />
+                                    :   <TextField
+                                            onChange={() => window.dispatchEvent(new Event('resize'))}
+                                            multiLine={true}
+                                            fullWidth={true}
+                                            hintText={key}
+                                            id={this.props.user[key]}
+                                            defaultValue={this.props.user[key]} />
                                     }
                                 </TableRowColumn>
                             </TableRow>
@@ -53,7 +53,10 @@ export default class UserView extends React.Component {
                         </TableRow>
                     </TableBody>
                 </Table>
-                <CertUpload user={this.props.user} style={{width: '100%', height: 96}}/>
+                {this.props.editable
+                    ? <CertUpload user={this.props.user} style={{width: '100%', height: 96}} />
+                    : <div />
+                }
             </div>
         );
     }
