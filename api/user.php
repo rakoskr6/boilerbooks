@@ -16,12 +16,6 @@ class User {
         ]);
         $user["password"] = password_hash($password, PASSWORD_DEFAULT);
 
-        // Make sure any cert file is a valid Resource.
-        // FIXME: No cert yet.
-        if(!Resource::exists($cert)) {
-            throw new HTTPException("certificate was not a valid resource", 400);
-        }
-
         // Execute the actual SQL query after confirming its formedness.
         try {
             Flight::db()->insert("Users", $user);
@@ -33,6 +27,8 @@ class User {
         }
     }
 
+    // TODO: Perhaps deleting the cert is a bad idea: existing reimbursements
+    // and pending ones will rely on the cert at the Treasurer side of things.
     public static function remove($username) {
         $user = Dynamics::extract(__METHOD__, func_get_args());
         Validators::apply($user, ['username' => 'username']);
@@ -45,12 +41,6 @@ class User {
 
         // Execute the actual SQL query after confirming its formedness.
         try {
-            // Make sure any cert file is a valid Resource. If so, delete it.
-            $cert = Flight::db()->get("Users", "cert", ["username" => $username]);
-            if (isset($cert)) {
-                Resource::delete($cert);
-            }
-
             $result = Flight::db()->delete("Users", ["username" => $username]);
 
             // Make sure 1 row was acted on, otherwise the user did not exist
@@ -81,18 +71,9 @@ class User {
             throw new HTTPException("insufficient privileges to update other users", 401);
         }
 
-        // Make sure any cert file is a valid Resource. If so, delete the old one.
-        try {
-            if(!Resource::exists($cert)) {
-                throw new HTTPException("certificate was not a valid resource", 400);
-            } else {
-                $cert = Flight::db()->get("Users", "cert", ["username" => $username]);
-                if (isset($cert)) {
-                    Resource::delete($cert);
-                }
-            }
-        } catch(PDOException $e) {
-            throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
+        // Make sure any cert id is a valid Resource.
+        if($cert !== null && !Resource::exists($cert)) {
+            throw new HTTPException("certificate was not a valid resource", 400);
         }
 
         // Scrub the parameters into an updates array.

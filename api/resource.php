@@ -101,6 +101,15 @@ class Resource {
         }
     }
 
+    public static function exists($id) {
+        try {
+            $result = Flight::db()->has("Resources", ["id" => $id]);
+            return $result;
+        } catch(PDOException $e) {
+            throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
+        }
+    }
+
     public static function delete($id) {
         try {
             $res = Flight::db()->delete("Resources", ["id" => $id]);
