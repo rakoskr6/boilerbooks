@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, browserHistory, IndexRedirect } from 'react-router';
+import { Router, Route, hashHistory, IndexRedirect } from 'react-router';
 import './index.css';
 import Layout from './components/layout.js';
 import Login from './pages/login.js';
@@ -54,7 +54,7 @@ class Index extends React.Component {
     render() {
         return (
             <MuiThemeProvider muiTheme={theme}>
-                <Router history={browserHistory}>
+                <Router history={hashHistory}>
 
                     {/* The following routes are those that do not require
                         authorization; i.e. entry points to the App. */}
