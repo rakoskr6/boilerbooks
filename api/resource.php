@@ -3,7 +3,6 @@
 class Resource {
 
     public static function upload() {
-        //Flight::check_token();
         if (!isset($_FILES['resource'])) {
             throw new HTTPException("no resource present", 400);
         }
@@ -74,9 +73,6 @@ class Resource {
     }
 
     public static function download($id) {
-        //Flight::check_token();
-
-        // Execute the actual SQL query after confirming its formedness.
         try {
             $res = Flight::db()->select("Resources", ["mimetype", "data"], ["id" => $id]);
             if (count($res) === 0) {
@@ -96,10 +92,8 @@ class Resource {
     }
 
     public static function list() {
-        //Flight::check_token();
-
         try {
-            $_user = Flight::get('user') ?: 'test';
+            $_user = Flight::get('user');
             $result = Flight::db()->select("Resources", ["id", "mimetype"], ["username" => $_user]);
             return $result;
         } catch(PDOException $e) {
@@ -108,8 +102,6 @@ class Resource {
     }
 
     public static function delete($id) {
-        //Flight::check_token();
-
         try {
             $res = Flight::db()->delete("Resources", ["id" => $id]);
             if (count($res) === 0) {
@@ -124,13 +116,19 @@ class Resource {
 }
 
 // TODO: Add a GET method that returns meta: mimetype, size, etc.
-Flight::route('GET /resource/@id', 'Resource::download');
-Flight::route('GET /resource', function() {
-    return Flight::json(["result" => Resource::list()]);
+Flight::route('GET /resource/@id', function($id) {
+    Flight::check_token();
+    return Resource::download($id); // no JSON! "IT'S RAWW!"
 });
 Flight::route('POST /resource', function() {
+    Flight::check_token();
     return Flight::json(["result" => Resource::upload()]);
 });
 Flight::route('DELETE /resource/@id', function($id) {
+    Flight::check_token();
     return Flight::json(["result" => Resource::delete($id)]);
+});
+Flight::route('GET /resource', function() {
+    Flight::check_token();
+    return Flight::json(["result" => Resource::list()]);
 });
