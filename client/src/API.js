@@ -219,6 +219,31 @@ export class Income {
     }
 }
 
+export class Resource {
+    // eslint-disable-next-line
+    static upload({} = {}) {
+        // TODO: Support multipart/form-data
+        return APIFetch('POST', `/resource`)
+    }
+
+    static downloadURL({id = required()} = {}) {
+        return `${API_PREFIX}/resource/${id}`
+    }
+
+    static download({id = required()} = {}) {
+        return APIFetch('GET', `/resource/${id}`)
+    }
+
+    static delete({id = required()} = {}) {
+        return APIFetch('DELETE', `/resource/${id}`)
+    }
+
+    // eslint-disable-next-line
+    static list({} = {}) {
+        return APIFetch('GET', `/resource`)
+    }
+}
+
 // TODO: Make this longpoll logic its own class.
 var eventID = null
 var listeners = []

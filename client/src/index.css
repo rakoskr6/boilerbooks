@@ -1,3 +1,20 @@
+* {
+    -webkit-touch-callout:none;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    cursor: default;
+}
+input, textarea, .contenteditable {
+    -webkit-touch-callout:default;
+    -webkit-user-select:text;
+    -moz-user-select:text;
+    -ms-user-select:text;
+    user-select:text;
+    cursor: text;
+}
+
 html, body {
     background-color: #FEFEFE;
     margin: 0;

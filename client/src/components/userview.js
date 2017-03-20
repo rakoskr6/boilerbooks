@@ -2,18 +2,30 @@ import React from 'react'
 import {Table, TableBody, TableRow, TableRowColumn} from 'material-ui/Table';
 import CertUpload from '../components/certupload.js'
 import TextField from 'material-ui/TextField'
+import * as API from '../API.js'
+import FlatButton from 'material-ui/FlatButton';
+import Popover from 'material-ui/Popover'
 
 function ucfirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 export default class UserView extends React.Component {
+    state = {
+        certURL: '',
+        openCert: null
+    }
     /*state = { certLink: "" }
     componentDidMount() {
         this.setState({
             certLink: API.User.certificateLink({username: userToGet})
         });
     }*/
+
+    componentDidMount() {
+        var url = API.Resource.downloadURL({id: this.props.user['cert']});
+        this.setState({certURL: url});
+    }
 
     render() {
         return (
@@ -45,10 +57,14 @@ export default class UserView extends React.Component {
                                 </TableRowColumn>
                             </TableRow>
                         )}
-                        <TableRow key="cert">
+                        <TableRow key="certificate">
                             <TableRowColumn>Certificate</TableRowColumn>
                             <TableRowColumn>
-                                <a href="#" target="_blank">Certificate</a>
+                                <FlatButton
+                                    label="View"
+                                    primary={false}
+                                    keyboardFocused={false}
+                                    onTouchTap={(event) => this.setState({openCert: event.currentTarget})} />
                             </TableRowColumn>
                         </TableRow>
                     </TableBody>
@@ -57,6 +73,19 @@ export default class UserView extends React.Component {
                     ? <CertUpload user={this.props.user} style={{width: '100%', height: 96}} />
                     : <div />
                 }
+                <Popover
+                  open={this.state.openCert != null}
+                  anchorEl={this.state.openCert}
+                  anchorOrigin={{horizontal: 'middle', vertical: 'center'}}
+                  targetOrigin={{horizontal: 'middle', vertical: 'center'}}
+                  onRequestClose={(event) => this.setState({openCert: null})}>
+                    <div>
+                        <a href={this.state.certURL} target='_blank'>
+                            <img style={{width: 600, height: 'auto'}}
+                                 src={this.state.certURL} alt="Certificate" />
+                        </a>
+                    </div>
+                </Popover>
             </div>
         );
     }

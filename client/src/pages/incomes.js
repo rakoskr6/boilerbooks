@@ -180,7 +180,7 @@ export default class Incomes extends React.Component {
                 </Popover>
                 <Snackbar
                     open={this.state.userMsg != null}
-                    message={this.state.userMsg}
+                    message={this.state.userMsg || ''}
                     autoHideDuration={3000}
                     onRequestClose={() => this.setState({userMsg: null})} />
             </div>
