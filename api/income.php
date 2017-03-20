@@ -83,18 +83,37 @@ class Income {
 
     public static function search() {
 
-        // Make sure we have rights to view the income.
-        if (!Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
-            throw new HTTPException("insufficient privileges to view an income", 401);
-        }
-
         // Execute the actual SQL query after confirming its formedness.
         try {
-            $queried = Flight::fields(["incomeid", "year", "source",
-                                        "type", "amount", "item", "status",
-                                        "comments", "organization", "username"]);//, "modify"]);
-            $result = Flight::db()->select("Income", $queried['fields']);
+            $columns = ["incomeid", "year", "source",
+                        "type", "amount", "item", "status",
+                        "comments", "organization", "username"];//, "modify"];
+            $queried = Flight::fields($columns);
+            $selector = Flight::filters($columns);
 
+            // Short circuit if we find any aggregates!
+            if (count($queried['aggregates']) > 0) {
+                if (!Flight::get('user')) {
+                    throw new HTTPException("insufficient privileges to view aggregate data", 401);
+                }
+
+                $agg_res = [];
+                foreach ($queried['aggregates'] as $agg) {
+                    $meta = call_user_func_array(
+                        [Flight::db(), $agg['op']],
+                        ["Income", $agg['field'], $selector]
+                    );
+                    $agg_res[$agg['op'].':'.$agg['field']] = $meta;
+                }
+                return $agg_res;
+            }
+
+            // Make sure we have rights to view the income.
+            if (!Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
+                throw new HTTPException("insufficient privileges to view an income", 401);
+            }
+
+            $result = Flight::db()->select("Income", $queried['fields'], $selector);
             return $result;
         } catch(PDOException $e) {
             throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);

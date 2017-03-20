@@ -7,7 +7,6 @@ class User {
     protected function __construct() {}
     protected function __clone() {}
 
-    // TODO: Check username, password and other field correctness.
     public static function add($username, $password, $first, $last,
                                $email, $address, $city, $state, $zip) {
 
@@ -169,10 +168,10 @@ class User {
 
         // Execute the actual SQL query after confirming its formedness.
         try {
-            $queried = Flight::fields(["username", "first", "last", "email",
-                                        "address", "city", "state", "zip"]);
-            $selector = Flight::filters(["username", "first", "last", "email",
-                                         "address", "city", "state", "zip"]);
+            $columns = ["username", "first", "last", "email",
+                        "address", "city", "state", "zip"];
+            $queried = Flight::fields($columns);
+            $selector = Flight::filters($columns);
 
             // Short circuit if we find any aggregates!
             if (count($queried['aggregates']) > 0) {

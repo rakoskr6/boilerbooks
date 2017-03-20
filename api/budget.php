@@ -94,16 +94,35 @@ class Budget {
         }
         */
 
-        // Ensure proper privileges to view all budgets.
-        if(!Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
-            throw new HTTPException("insufficient privileges to view all budgets", 401);
-        }
-
         // Execute the actual SQL query after confirming its formedness.
         try {
-            $queried = Flight::fields(["organization", "name", "year", "amount"]);
-            $result = Flight::db()->select("Budgets", $queried['fields']);
+            $columns = ["organization", "name", "year", "amount"];
+            $queried = Flight::fields($columns);
+            $selector = Flight::filters($columns);
 
+            // Short circuit if we find any aggregates!
+            if (count($queried['aggregates']) > 0) {
+                if (!Flight::get('user')) {
+                    throw new HTTPException("insufficient privileges to view aggregate data", 401);
+                }
+
+                $agg_res = [];
+                foreach ($queried['aggregates'] as $agg) {
+                    $meta = call_user_func_array(
+                        [Flight::db(), $agg['op']],
+                        ["Budgets", $agg['field'], $selector]
+                    );
+                    $agg_res[$agg['op'].':'.$agg['field']] = $meta;
+                }
+                return $agg_res;
+            }
+
+            // Ensure proper privileges to view all budgets.
+            if(!Rights::check_rights(Flight::get('user'), "*", "*", 0, -1)[0]["result"]) {
+                throw new HTTPException("insufficient privileges to view all budgets", 401);
+            }
+
+            $result = Flight::db()->select("Budgets", $queried['fields'], $selector);
             return $result;
         } catch(PDOException $e) {
             throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);

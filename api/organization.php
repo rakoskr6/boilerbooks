@@ -57,9 +57,24 @@ class Organization {
 
         // Execute the actual SQL query after confirming its formedness.
         try {
-            $queried = Flight::fields(["name", "parent"]);
-            $result = Flight::db()->select("Organizations", $queried['fields']);
+            $columns = ["name", "parent"];
+            $queried = Flight::fields($columns);
+            $selector = Flight::filters($columns);
 
+            // Short circuit if we find any aggregates!
+            if (count($queried['aggregates']) > 0) {
+                $agg_res = [];
+                foreach ($queried['aggregates'] as $agg) {
+                    $meta = call_user_func_array(
+                        [Flight::db(), $agg['op']],
+                        ["Organizations", $agg['field'], $selector]
+                    );
+                    $agg_res[$agg['op'].':'.$agg['field']] = $meta;
+                }
+                return $agg_res;
+            }
+
+            $result = Flight::db()->select("Organizations", $queried['fields'], $selector);
             return $result;
         } catch(PDOException $e) {
             throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
