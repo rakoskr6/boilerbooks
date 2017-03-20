@@ -171,6 +171,8 @@ class User {
         try {
             $queried = Flight::fields(["username", "first", "last", "email",
                                         "address", "city", "state", "zip"]);
+            $selector = Flight::filters(["username", "first", "last", "email",
+                                         "address", "city", "state", "zip"]);
 
             // Short circuit if we find any aggregates!
             if (count($queried['aggregates']) > 0) {
@@ -182,7 +184,7 @@ class User {
                 foreach ($queried['aggregates'] as $agg) {
                     $meta = call_user_func_array(
                         [Flight::db(), $agg['op']],
-                        ["Users", $agg['field']]
+                        ["Users", $agg['field'], $selector]
                     );
                     $agg_res[$agg['op'].':'.$agg['field']] = $meta;
                 }
@@ -193,7 +195,7 @@ class User {
                 throw new HTTPException("insufficient privileges to view all users", 401);
             }
 
-            $result = Flight::db()->select("Users", $queried['fields']);
+            $result = Flight::db()->select("Users", $queried['fields'], $selector);
             return $result;
         } catch(PDOException $e) {
             throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);

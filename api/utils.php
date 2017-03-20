@@ -298,3 +298,38 @@ Flight::map('fields', function($default_fields, $operators = ['min', 'max', 'avg
                 "fields" => $valid_fields];
     }
 });
+
+// TODO: Support complex `OR` and `()` operations.
+// Each query item must follow the `<name>:<operator>:<compare>` syntax.
+Flight::map('filters', function($default_fields, $op_map = null) {
+
+    // Maps all query operators to medoo DB operators.
+    // `like` and `diff` support the SQL `%` and `_` wildcards.
+    // Note: in HTTP requests, % is encoded as `%25`.
+    if ($op_map === null) {
+        $op_map = [
+            "is" => "", "not" => "[!]",
+            "like" => "[~]", "diff" => "[!~]",
+            "lt" => "[<]", "lte" => "[<=]",
+            "gt" => "[>]", "gte" => "[>=]"
+        ];
+    }
+
+    $selector = null;
+    $filter = explode(',', Flight::request()->query['filter'] ?: '');
+    $filter = array_filter($filter, function($v) { return $v !== ''; });
+    if (count($filter) > 0) {
+        $selector = [];
+        foreach ($filter as $item2) {
+            $item = explode(':', $item2);
+            if (count($item) !== 3) {
+                throw new HTTPException("query field not propertly formatted: $item2", 400);
+            }
+            if (!array_key_exists($item[1], $op_map)) {
+                throw new HTTPException("query operator does not exist: $item[1]", 400);
+            }
+            $selector[$item[0].''.$op_map[$item[1]]] = $item[2];
+        }
+    }
+    return $selector;
+});

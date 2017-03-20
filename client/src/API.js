@@ -17,6 +17,23 @@ class APIError extends Error {
     }
 }
 
+// Take arrays of fields and query filters and form an HTTP string for
+// GET requests. If neither arrays have contents, an empty string is returned.
+function query_params(fields, filter) {
+    var suffix = ''
+    var params = []
+    if (fields.length > 0) {
+        params.push('fields=' + fields.join(','))
+    }
+    if (filter.length > 0) {
+        params.push('filter=' + filter.join(','))
+    }
+    if (params.length > 0) {
+        suffix = '?' + params.join('&')
+    }
+    return suffix
+}
+
 // Destructured/named parameters defaulted to this function will throw an
 // error if that parameter is missing. (Instead of marking optional/null).
 function required() {
@@ -82,11 +99,8 @@ export class Authenticate {
 }
 
 export class User {
-    static view({username = required(), fields = []} = {}) {
-        var suffix = ''
-        if (fields.length > 0) {
-            suffix = '?fields=' + fields.join(',')
-        }
+    static view({username = required(), fields = [], filter = []} = {}) {
+        var suffix = query_params(fields, filter)
         return APIFetch('GET', `/user/${username}${suffix}`)
     }
 
@@ -106,12 +120,8 @@ export class User {
     }
 
     // eslint-disable-next-line
-    static search({fields = []} = {}) {
-        var suffix = ''
-        if (fields.length > 0) {
-            suffix = '?fields=' + fields.join(',')
-        }
-        console.log(`GET /user${suffix}`)
+    static search({fields = [], filter = []} = {}) {
+        var suffix = query_params(fields, filter)
         return APIFetch('GET', `/user${suffix}`)
     }
 }
@@ -127,11 +137,8 @@ export class Organization {
     }
 
     // eslint-disable-next-line
-    static search({fields = []} = {}) {
-        var suffix = ''
-        if (fields.length > 0) {
-            suffix = '?fields=' + fields.join(',')
-        }
+    static search({fields = [], filter = []} = {}) {
+        var suffix = query_params(fields, filter)
         return APIFetch('GET', `/organization${suffix}`)
     }
 }
@@ -142,11 +149,8 @@ export class Rights {
         return APIFetch('GET', `/check/${username}`)
     }
 
-    static view({username = required(), fields = []} = {}) {
-        var suffix = ''
-        if (fields.length > 0) {
-            suffix = '?fields=' + fields.join(',')
-        }
+    static view({username = required(), fields = [], filter = []} = {}) {
+        var suffix = query_params(fields, filter)
         return APIFetch('GET', `/rights/${username}${suffix}`)
     }
 
@@ -161,30 +165,21 @@ export class Rights {
     }
 
     // eslint-disable-next-line
-    static search({fields = []} = {}) {
-        var suffix = ''
-        if (fields.length > 0) {
-            suffix = '?fields=' + fields.join(',')
-        }
+    static search({fields = [], filter = []} = {}) {
+        var suffix = query_params(fields, filter)
         return APIFetch('GET', `/rights${suffix}`)
     }
 }
 
 export class Purchase {
-    static view({purchaseid = required(), fields = []} = {}) {
-        var suffix = ''
-        if (fields.length > 0) {
-            suffix = '?fields=' + fields.join(',')
-        }
+    static view({purchaseid = required(), fields = [], filter = []} = {}) {
+        var suffix = query_params(fields, filter)
         return APIFetch('GET', `/purchase/${purchaseid}${suffix}`)
     }
 
     // eslint-disable-next-line
-    static search({fields = []} = {}) {
-        var suffix = ''
-        if (fields.length > 0) {
-            suffix = '?fields=' + fields.join(',')
-        }
+    static search({fields = [], filter = []} = {}) {
+        var suffix = query_params(fields, filter)
         return APIFetch('GET', `/purchase${suffix}`)
     }
 }
@@ -205,30 +200,21 @@ export class Budget {
     }
 
     // eslint-disable-next-line
-    static search({fields = []} = {}) {
-        var suffix = ''
-        if (fields.length > 0) {
-            suffix = '?fields=' + fields.join(',')
-        }
+    static search({fields = [], filter = []} = {}) {
+        var suffix = query_params(fields, filter)
         return APIFetch('GET', `/budget${suffix}`)
     }
 }
 
 export class Income {
-    static view({incomeid = required(), fields = []} = {}) {
-        var suffix = ''
-        if (fields.length > 0) {
-            suffix = '?fields=' + fields.join(',')
-        }
+    static view({incomeid = required(), fields = [], filter = []} = {}) {
+        var suffix = query_params(fields, filter)
         return APIFetch('GET', `/income/${incomeid}${suffix}`)
     }
 
     // eslint-disable-next-line
-    static search({fields = []} = {}) {
-        var suffix = ''
-        if (fields.length > 0) {
-            suffix = '?fields=' + fields.join(',')
-        }
+    static search({fields = [], filter = []} = {}) {
+        var suffix = query_params(fields, filter)
         return APIFetch('GET', `/income${suffix}`)
     }
 }

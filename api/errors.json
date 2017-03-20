@@ -1,6 +1,8 @@
 {
     "0001": "none: unspecified error",
     "0002": "insufficient privileges to view aggregate data",
+    "0003": "query field not propertly formatted",
+    "0004": "query operator does not exist",
 
     "1001": "authenticate: user does not exist",
     "1002": "authenticate: incorrect password",
