@@ -9,12 +9,17 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
+import Popover from 'material-ui/Popover'
+import Subheader from 'material-ui/Subheader'
+import Snackbar from 'material-ui/Snackbar'
 
 export default class Incomes extends React.Component {
     state = {
         selectedItem: null,
         editable: false,
         category: 0,
+        confirmDelete: null,
+        userMsg: null,
         data: []
     }
 
@@ -36,7 +41,7 @@ export default class Incomes extends React.Component {
     }
 
     closeIndivDialog = () => {
-        this.setState({selectedItem: null, editable: false})
+        this.setState({selectedItem: null, editable: false, confirmDelete: null})
     }
 
     // Edit mode allows individual item changes; should be disabled when
@@ -45,7 +50,7 @@ export default class Incomes extends React.Component {
         this.setState({editable: true})
     }
     saveChanges = () => {
-        this.setState({editable: false});
+        this.setState({editable: false, userMsg: "Item saved."});
     }
 
     render() {
@@ -114,6 +119,15 @@ export default class Incomes extends React.Component {
                 <Dialog
                     title={`${document.title} / ` + (this.state.editable ? 'Edit' : 'View')}
                     actions={[
+                        <FlatButton
+                            label="Delete"
+                            primary={false}
+                            keyboardFocused={false}
+                            backgroundColor="#E53935"
+                            hoverColor="#B71C1C"
+                            labelStyle={{color: 'white'}}
+                            onTouchTap={(event) => this.setState({confirmDelete: event.currentTarget})} />,
+
                         !this.state.editable ?
                         <FlatButton
                             label="Edit"
@@ -139,6 +153,36 @@ export default class Incomes extends React.Component {
                     autoScrollBodyContent={true}>
                     <IncomeView income={this.state.selectedItem} editable={this.state.editable} />
                 </Dialog>
+                <Popover
+                  open={this.state.confirmDelete != null}
+                  anchorEl={this.state.confirmDelete}
+                  style={{overflowY: 'auto', backgroundColor: '#B71C1C'}}
+                  anchorOrigin={{horizontal: 'middle', vertical: 'center'}}
+                  targetOrigin={{horizontal: 'middle', vertical: 'center'}}
+                  onRequestClose={(event) => this.setState({confirmDelete: null})}>
+                    <center style={{padding: 16}}>
+                        <Subheader style={{margin: 0, padding: 0, color: 'white'}}>
+                            Are you sure you want to delete this item?
+                        </Subheader>
+                        <FlatButton
+                            label="Yes, I would like to delete this item."
+                            primary={true}
+                            keyboardFocused={true}
+                            fullWidth={true}
+                            backgroundColor="#B71C1C"
+                            hoverColor="#E53935"
+                            labelStyle={{color: 'white'}}
+                            onTouchTap={() => {
+                                this.closeIndivDialog()
+                                this.setState({userMsg: "Item deleted."})
+                            }} />
+                    </center>
+                </Popover>
+                <Snackbar
+                    open={this.state.userMsg != null}
+                    message={this.state.userMsg}
+                    autoHideDuration={3000}
+                    onRequestClose={() => this.setState({userMsg: null})} />
             </div>
         );
     }

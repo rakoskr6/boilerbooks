@@ -110,7 +110,7 @@ class Layout extends React.Component {
                     <Toolbar style={{ backgroundColor: lightBlue900, zIndex: 2147483647 }}>
                         <ToolbarGroup>
                             <ToolbarTitle text="BoilerBooks" style={{ color: fullWhite }} />
-                            <div style={{ width: 800 }}>
+                            <div style={{ width: 1000 }}>
                                 <Tabs tabItemContainerStyle={{height: 56}} onChange={this.tabChange} value={this.props.location.pathname}>
                                     <Tab label="Dashboard" value="/dashboard" />
                                     <Tab label="Purchases" value="/purchases" />
