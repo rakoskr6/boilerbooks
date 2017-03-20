@@ -11,9 +11,18 @@ class log {
     protected function __construct() {}
     protected function __clone() {}
 
+    public static function file($loc) {
+        if (!file_exists($loc)) {
+            $oldmask = umask(0); // helpful on linux
+            mkdir($loc, 0744);
+        }
+        return $loc;
+    }
+
     // The internal sys_log() function is for any non-database logs to be recorded
     // along with a timestamp of when it occurred. Should be used sparingly.
     public static function sys($log) {
+        if (!file_exists('./sys.log')) return;
         file_put_contents('./sys.log', "[{date(\"Y-m-d h:i:sa\")}] $log\n", FILE_APPEND);
     }
 
@@ -29,6 +38,7 @@ class log {
 
         $uuid = uniqid('sql_');
         error_log($exc . ' => ' . $log);
+        if (!file_exists('./errors.log')) return $uuid;
         file_put_contents('./errors.log', "[{date(\"Y-m-d h:i:sa\")}] [$uuid] $exc => $log\n", FILE_APPEND);
         return $uuid;
     }
@@ -36,6 +46,7 @@ class log {
     // The internal transact_log() function is for any database transactions to be recorded
     // along with a timestamp of when it occurred.
     public static function transact($log) {
+        if (!file_exists('./transactions.log')) return;
         file_put_contents('./transactions.log', "[{date(\"Y-m-d h:i:sa\")}] $log\n", FILE_APPEND);
     }
 }

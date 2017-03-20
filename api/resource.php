@@ -2,7 +2,8 @@
 
 class Resource {
 
-    public static function upload($filename) {
+    public static function upload() {
+        //Flight::check_token();
         if (!isset($_FILES['resource'])) {
             throw new HTTPException("no resource present", 400);
         }
@@ -30,7 +31,8 @@ class Resource {
         $file_tmp = $_FILES['resource']['tmp_name'];
         $file_type = $_FILES['resource']['type'];
         $file_name = $_FILES['resource']['name'];
-        $file_ext = strtolower(end(explode('.', $file_name)));
+        $_exploded = explode('.', $file_name);
+        $file_ext = strtolower(end($_exploded));
 
         // Prevent uploads larger than 5MB.
         $MAX_SIZE = 5 * 1024 * 1024;
@@ -50,52 +52,85 @@ class Resource {
             throw new HTTPException("resource is not PDF", 400);
         }
 
-        // Set the new file name and location and move the file over.
-        $new_filename = sprintf('%s/resource/%s-%s-%s.pdf',
-            UPLOAD_DIR,
-            preg_replace("/[^a-z0-9.]+/i", "", Flight::get('user')),
-            sha1_file($file_tmp),
-            date('Y-m-d-His')
-        );
-        if (!move_uploaded_file($file_tmp, $new_filename)) {
-            throw new HTTPException("error moving resource", 500);
-        }
+        // Execute the actual SQL query after confirming its formedness.
+        try {
+            $_user = Flight::get('user') ?: 'test';
+            Flight::db()->query("INSERT INTO Resources (username, mimetype, data) VALUES(
+                '$_user', '$fmime', ".Flight::db()->quote(file_get_contents($file_tmp))."
+            );");
+            log::transact(Flight::db()->last_query());
 
-        // Return the new resource name.
-        return Flight::json(['result' => str_replace(UPLOAD_DIR.'/resource/', '', $new_filename)]);
+            // Get the last entered row's ID and return that.
+            $id = Flight::db()->query("SELECT @@IDENTITY AS ID")->fetch();
+            $entity = ["id" => $id["ID"],
+                       "username" => $_user,
+                       "mimetype" => $fmime,
+                       "data" => null];
+            Realtime::record(__CLASS__, Realtime::create, $entity);
+            return $entity;
+        } catch(PDOException $e) {
+            throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
+        }
     }
 
-    public static function download($filename) {
-        $file = UPLOAD_DIR . '/resource/' . $filename;
+    public static function download($id) {
+        //Flight::check_token();
 
-        // Extract the MIME type of the file.
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $fmime = finfo_file($finfo, $file);
-        finfo_close($finfo);
+        // Execute the actual SQL query after confirming its formedness.
+        try {
+            $res = Flight::db()->select("Resources", ["mimetype", "data"], ["id" => $id]);
+            if (count($res) === 0) {
+                throw new HTTPException('no such resource', 400);
+            }
 
-        // Return the resource as a blob.
-        $file_contents = file_get_contents($file);
+            $mime = $res[0]['mimetype'];
+            $contents = $res[0]['data'];
+        } catch(PDOException $e) {
+            throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
+        }
         Flight::response()
             ->status(200)
-            ->header("Content-Type", $fmime)
-            ->write($file_contents)
+            ->header("Content-Type", $mime)
+            ->write($contents)
             ->send();
     }
 
-    public static function exists($filename) {
-        return file_exists(UPLOAD_DIR . '/resource/' . $filename);
+    public static function list() {
+        //Flight::check_token();
+
+        try {
+            $_user = Flight::get('user') ?: 'test';
+            $result = Flight::db()->select("Resources", ["id", "mimetype"], ["username" => $_user]);
+            return $result;
+        } catch(PDOException $e) {
+            throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
+        }
     }
 
-    public static function delete($filename) {
+    public static function delete($id) {
+        //Flight::check_token();
+
         try {
-            unlink(UPLOAD_DIR . '/resource/' . $filename);
-        } catch (Exception $e) {}
+            $res = Flight::db()->delete("Resources", ["id" => $id]);
+            if (count($res) === 0) {
+                throw new HTTPException('no such resource', 400);
+            }
+
+            return ["id" => $id];
+        } catch(PDOException $e) {
+            throw new HTTPException(log::err($e, Flight::db()->last_query()), 500);
+        }
     }
 }
 
-Flight::route('POST /resource', function() {
-    $res = Resource::upload();
-    return Flight::json(["result" => $res]);
+// TODO: Add a GET method that returns meta: mimetype, size, etc.
+Flight::route('GET /resource/@id', 'Resource::download');
+Flight::route('GET /resource', function() {
+    return Flight::json(["result" => Resource::list()]);
 });
-Flight::route('GET /resource/@filename', 'Resource::download');
-Flight::route('GET /resource', 'Resource::download');
+Flight::route('POST /resource', function() {
+    return Flight::json(["result" => Resource::upload()]);
+});
+Flight::route('DELETE /resource/@id', function($id) {
+    return Flight::json(["result" => Resource::delete($id)]);
+});
