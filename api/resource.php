@@ -35,7 +35,7 @@ class Resource {
         // Prevent uploads larger than 5MB.
         $MAX_SIZE = 5 * 1024 * 1024;
         if ($file_size > $MAX_SIZE) {
-            throw new HTTPException("exceeded max file size", 400);
+            throw new HTTPException("resource exceeded max file size", 400);
         }
 
         // Extract the MIME type of the file.
@@ -93,5 +93,9 @@ class Resource {
     }
 }
 
-Flight::dynamic_route('POST /resource/@username', 'Resource::upload');
-Flight::dynamic_route('GET /resource/@username', 'Resource::download');
+Flight::route('POST /resource', function() {
+    $res = Resource::upload();
+    return Flight::json(["result" => $res]);
+});
+Flight::route('GET /resource/@filename', 'Resource::download');
+Flight::route('GET /resource', 'Resource::download');

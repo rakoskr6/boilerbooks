@@ -1,8 +1,8 @@
 {
-    "0001": "none: unspecified error",
-    "0002": "insufficient privileges to view aggregate data",
-    "0003": "query field not propertly formatted",
-    "0004": "query operator does not exist",
+    "0001": "general: unspecified error",
+    "0002": "general: insufficient privileges to view aggregate data",
+    "0003": "general: query field not propertly formatted",
+    "0004": "general: query operator does not exist",
 
     "1001": "authenticate: user does not exist",
     "1002": "authenticate: incorrect password",
@@ -45,4 +45,13 @@
     "7005": "user: no updates to commit",
     "7006": "user: insufficient privileges to view other users",
     "7007": "user: insufficient privileges to view all users",
+
+    "8001": "resource: no resource present",
+    "8002": "resource: invalid parameters",
+    "8003": "resource: resource exceeded max file size",
+    "8004": "resource: unknown resource error occurred",
+    "8005": "resource: resource is not PDF",
+    "8006": "resource: error moving resource",
+
+    "9001": "realtime: error",
 }
