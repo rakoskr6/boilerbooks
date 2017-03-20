@@ -82,13 +82,9 @@ export default class Users extends React.Component {
                             adjustForCheckbox={false}>
                             <TableRow>
                                 <TableHeaderColumn tooltip="Username">Username</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="First Name">First Name</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Last Name">Last Name</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Name">Name</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Email">Email</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Address">Address</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="City">City</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="State">State</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Zip">Zip</TableHeaderColumn>
                             </TableRow>
                         </TableHeader>
                         <TableBody
@@ -98,13 +94,9 @@ export default class Users extends React.Component {
                             {this.state.data.map((row, index) => (
                                 <TableRow key={index}>
                                     <TableRowColumn>{row.username}</TableRowColumn>
-                                    <TableRowColumn>{row.first}</TableRowColumn>
-                                    <TableRowColumn>{row.last}</TableRowColumn>
+                                    <TableRowColumn>{row.name}</TableRowColumn>
                                     <TableRowColumn>{row.email}</TableRowColumn>
                                     <TableRowColumn>{row.address}</TableRowColumn>
-                                    <TableRowColumn>{row.city}</TableRowColumn>
-                                    <TableRowColumn>{row.state}</TableRowColumn>
-                                    <TableRowColumn>{row.zip}</TableRowColumn>
                                 </TableRow>
                             ))}
                         </TableBody>

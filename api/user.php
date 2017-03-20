@@ -7,15 +7,12 @@ class User {
     protected function __construct() {}
     protected function __clone() {}
 
-    public static function add($username, $password, $first, $last,
-                               $email, $address, $city, $state, $zip) {
+    public static function add($username, $password, $name, $email, $address) {
 
         $user = Dynamics::extract(__METHOD__, func_get_args());
         Validators::apply($user, [
             'username' => 'username', 'password' => 'not_empty',
-            'first' => 'alpha', 'last' => 'alpha', 'email' => 'not_empty',
-            'address' => 'not_empty', 'city' => 'alpha', 'state' => 'alpha',
-            'zip' => 'not_empty'
+            'name' => 'alpha', 'email' => 'not_empty', 'address' => 'not_empty'
         ]);
         $user["password"] = password_hash($password, PASSWORD_DEFAULT);
 
@@ -70,15 +67,12 @@ class User {
         }
     }
 
-    public static function update($username, $password = null, $first = null, $last = null,
-                                  $email = null, $address = null, $city = null, $state = null,
-                                  $zip = null, $cert = null) {
+    public static function update($username, $password = null, $name = null,
+                                  $email = null, $address = null, $cert = null) {
         $user = Dynamics::extract(__METHOD__, func_get_args());
         Validators::apply($user, [
             'username' => 'username', 'password' => 'not_empty',
-            'first' => 'alpha', 'last' => 'alpha', 'email' => 'not_empty',
-            'address' => 'not_empty', 'city' => 'alpha', 'state' => 'alpha',
-            'zip' => 'not_empty'
+            'name' => 'alpha', 'email' => 'not_empty', 'address' => 'not_empty'
         ]);
 
         // Make sure we have rights to update the user.
@@ -151,8 +145,7 @@ class User {
 
         // Execute the actual SQL query after confirming its formedness.
         try {
-            $queried = Flight::fields(["username", "first", "last", "email",
-                                        "address", "city", "state", "zip", "cert"]);
+            $queried = Flight::fields(["username", "name", "email", "address", "cert"]);
             $result = Flight::db()->select("Users", $queried['fields'], ["username" => $username]);
             if (count($result) == 0) {
                 throw new HTTPException("no such user '$username'", 404);
@@ -168,8 +161,7 @@ class User {
 
         // Execute the actual SQL query after confirming its formedness.
         try {
-            $columns = ["username", "first", "last", "email",
-                        "address", "city", "state", "zip"];
+            $columns = ["username", "name", "email", "address", "cert"];
             $queried = Flight::fields($columns);
             $selector = Flight::filters($columns);
 
