@@ -27,7 +27,7 @@
 
 
 <div class="container">
-	<div class="text-center">
+	<div id="head" class="text-center">
 		<h3>Currently viewing <?php echo $committeeDisplay ?> for fiscal year <?php echo $fiscalyear ?></h3>
 	</div>
 </div>
@@ -58,18 +58,13 @@
 
 <div class="container">
 	
-		<div id="live_data"></div>  
-
-
-	<table id="treasurertable" class="display">
-	</table>
+	<table id="treasurertable" class="display"> </table>
 
 
 <script>
 
     function fetch_data()  
     {  
-
 
 			var com = document.getElementById('committee').value;
 			if (com == '') {
@@ -96,38 +91,14 @@
             }
         });  
 
-    }  
+    } 
+
+
     fetch_data();  
 
-</script>
-
-	<script>
-		$(document).ready(function() {
-			$('#treasurertable').DataTable( {
-				"order": [[ 1, "desc" ]]
-			} );
-			stateSave: true
-
-		} );
-
 		function selectcommitteeyear() {
-
-			var com = document.getElementById('committee').value;
-			if (com == '') {
-				com = "<?php echo $committee ?>";
-			}
-			var title = "index.php?committee=";
-			var partial  = title.concat(com);
-			var com2 = document.getElementById('fiscalyear').value;
-
-			if (com2 == '') {
-				com2 = "<?php echo $fiscalyear ?>";
-			}
-			var fiscalyear = "&fiscalyear=";
-			var tempFinal = fiscalyear.concat(com2);
-			fullFinal = partial.concat(tempFinal);
-
-			//window.location = fullFinal;
+			document.getElementById("head").innerHTML = "<h3> Currently viewing " + document.getElementById('committee').value + " for fiscal year " + document.getElementById('fiscalyear').value + "</h3>";
+			fetch_data();
 		}
 
 	</script>

@@ -6,12 +6,8 @@
 	$committee = $_GET["committee"];
 	if ($committee == '' || $committee == "%") {
 		$committee = "%";
-		$committeeDisplay = "all committees";
+		
 	}
-	else {
-		$committeeDisplay = $committee;
-	}
-
 
 	$fiscalyear = $_GET["fiscalyear"];
 	if ($fiscalyear == '') {
@@ -113,6 +109,7 @@
 		}
 
 		echo $items;
+		error_log($items);
 
 		echo '</tbody>';
 
