@@ -5,7 +5,7 @@
 	include '../dbinfo.php';
 
 	$committee = test_input($_GET["committee"]);
-	if ($committee == '') {
+	if ($committee == '' || $committee == "%") {
 		$committee = "%";
 		$committeeDisplay = "all committees";
 	}
