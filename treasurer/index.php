@@ -66,7 +66,8 @@
     function fetch_data()  
     {  
 
-			var com = document.getElementById('committee').value;
+			$(document).ready(function() {
+    		var com = document.getElementById('committee').value;
 			if (com == '') {
 				com = "<?php echo $committee ?>";
 			}
@@ -80,24 +81,41 @@
 			var fiscalyear = "&fiscalyear=";
 			var tempFinal = fiscalyear.concat(com2);
 			fullFinal = partial.concat(tempFinal);
-			
-        $.ajax({  
-            url:fullFinal,  
-            method:"POST",
-            crossDomain: true,
-            async: false,
-            success:function(data){  
-				$('#treasurertable').html(data);  
-            }
-        });  
 
-    } 
+			$.ajax({
+    			method : 'POST',
+    			url  : fullFinal,
+    			dataType: 'json',
 
+    
+    			success :  function(result)
+       		 	{
+       		 		console.log(result); // just to see I'm getting the correct data.
+            		$('#treasurertable').DataTable({
+            			"destroy": true,
+                		"searching": true, //this is disabled because I have a custom search.
+                		"data": result,
+                		"order": [[ 1, "desc" ]],
+                		"columns": [
+                			{ "data" : "committee" },
+            				{ "data" : "item" },
+                		]
+            		});
+        		} 
+    });
+
+
+		} );
+
+    }  
+ 
+   
 
     fetch_data();  
 
 		function selectcommitteeyear() {
 			document.getElementById("head").innerHTML = "<h3> Currently viewing " + document.getElementById('committee').value + " for fiscal year " + document.getElementById('fiscalyear').value + "</h3>";
+		
 			fetch_data();
 		}
 

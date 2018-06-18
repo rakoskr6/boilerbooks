@@ -45,7 +45,7 @@
 		ORDER BY p.purchasedate DESC";
 
 
-		echo '<thead>
+	/*	echo '<thead>
 			<tr>
 				<th>Purchase ID</th>
 				<th>Purchase Date</th>
@@ -61,9 +61,10 @@
 				<th>Reimbursed</th>
 			</tr>
 		</thead>
-		<tbody>';
+		<tbody>';*/
 
 		foreach ($conn->query($sql) as $row) {
+			$rows[] = $row;
 			$items .= '<tr> <td><a href=/purchase.php?purchaseid=';
 			$items .= $row['purchaseID'];
 			$items .= '>';
@@ -107,11 +108,13 @@
 		$items .= '</td></tr>';
 
 		}
+		
+		echo json_encode($rows);
 
-		echo $items;
-		error_log($items);
+		//echo $items;
+		//error_log($items);
 
-		echo '</tbody>';
+//		echo '</tbody>';
 
 	}
 	catch(PDOException $e)
