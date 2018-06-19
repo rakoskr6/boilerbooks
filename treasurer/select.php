@@ -64,6 +64,14 @@
 		<tbody>';*/
 
 		foreach ($conn->query($sql) as $row) {
+			$row['html_purchase'] = "<a href='/purchase.php?purchaseid=$row[purchaseID]'>$row[purchaseID]</a>";
+			$row['html_receipt'] = "<a href='$row[receipt]'>$row[item]</a>";
+			$row['html_purchasedby'] = "<a href='user.php?usrlookup=$row[username]'>$row[purchasedby]</a>";
+			$row['html_processing'] = "<a href='update.php?reimbursed=-1&processing=$row[purchaseID]'>Mark Processing</a>";
+			$row['html_reimbursed'] = "<a href='update.php?processing=-1&reimbursed=$row[purchaseID]'>Mark Reimbursed</a>";
+
+
+
 			$rows[] = $row;
 			$items .= '<tr> <td><a href=/purchase.php?purchaseid=';
 			$items .= $row['purchaseID'];

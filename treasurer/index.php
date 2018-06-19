@@ -58,7 +58,24 @@
 
 <div class="container">
 	
-	<table id="treasurertable" class="display"> </table>
+	<table id="treasurertable" class="display"> 
+		<thead>
+    		<tr>
+      			<th>Purchase Id</th>
+      			<th>Purchase Date</th>
+      			<th>Item</th>
+      			<th>Fund Source</th>
+      			<th>Vendor</th>
+      			<th>Committee</th>
+      			<th>Purchaser</th>
+      			<th>Status</th>
+      			<th>Amount</th>
+      			<th>Comments</th>
+      			<th>Processing</th>
+      			<th>Reimbursed</th>
+    		</tr>
+  		</thead>
+	</table>
 
 
 <script>
@@ -87,25 +104,36 @@
     			url  : fullFinal,
     			dataType: 'json',
 
-    
+    	
     			success :  function(result)
        		 	{
        		 		console.log(result); // just to see I'm getting the correct data.
             		$('#treasurertable').DataTable({
             			"destroy": true,
-                		"searching": true, //this is disabled because I have a custom search.
+                		"searching": true, 
                 		"data": result,
                 		"order": [[ 1, "desc" ]],
                 		"columns": [
-                			{ "data" : "committee" },
-            				{ "data" : "item" },
+                			{ "data" : "html_purchase"},
+            				{ "data" : "date" },
+            				{ "data" : "html_receipt" },
+            				{ "data" : "fundsource" },
+            				{ "data" : "vendor" },
+            				{ "data" : "committee" },
+            				{ "data" : "html_purchasedby" },
+            				{ "data" : "status" },
+            				{ "data" : "cost" },
+            				{ "data" : "comments" },
+            				{ "data" : "html_processing" },
+            				{ "data" : "html_reimbursed" }
+
                 		]
+
             		});
         		} 
-    });
+    		});
 
-
-		} );
+		});
 
     }  
  
