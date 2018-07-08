@@ -40,7 +40,7 @@
             $sqlErr = "";
 
             $okayFileTypes = ['pdf', 'jpeg', 'jpg'];
-            $maxFileSize = 2 * 1024 * 1024; // MB * KB * B
+            $maxFileSize = 16 * 1024 * 1024; // MB * KB * B
 
             // Make sure it actually uploaded
             if ($_FILES["fileToUpload"]["size"] == 0) {
@@ -72,13 +72,26 @@
             if ($isUploadError === false)  {
 
                 // Attempts to move file to the server
-                if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+                /*if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
                     //echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.<br>";
                     $receipt = str_replace(' ', '%20', $target_file_save);
                 } else {
                     $uploadErrMessage = $uploadErrMessage . "Could not transfer file to destination on server<br>";
                     $isUploadError = true;
+                }*/
+
+                // Open submitted file for reading
+                $fp = fopen($_FILES["fileToUpload"]["tmp_name"],"r");
+                if ($fp) { // if successful read from teh file pointer
+                    $content = fread($fp, $_FILES['fileToUpload']['size']);
+                    fclose($fp);
+                    // Add slashes to the content so that it will escape special characters. Look at  mysql_real_escape_string later
+                    $content = addslashes($content);
+                    $receipt = strtolower($FileType);
+
                 }
+
+
             }
 
             if ($isUploadError === false)  {
@@ -91,7 +104,7 @@
                     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                     $sql = "UPDATE Purchases SET modifydate = NOW(), purchasedate='$purchasedate', cost='$cost', status='Purchased', comments='$comments',
-                        receipt='$receipt' WHERE Purchases.purchaseID = '$purchaseID'";
+                        receipt='$receipt', receipt_file='$content' WHERE Purchases.purchaseID = '$purchaseID'";
 
                     // use exec() because no results are returned
                     $conn->exec($sql);

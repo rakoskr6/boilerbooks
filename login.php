@@ -1,7 +1,6 @@
 <?php
 	// Performs the user login and verification
 
-	session_start();
 	include 'dbinfo.php';
 
 	// define variables and set to empty values
