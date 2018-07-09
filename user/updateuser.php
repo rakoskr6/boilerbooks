@@ -135,7 +135,7 @@ $conn = null;
 
 
 <div class="form-group">
-  <label class="col-md-4 control-label" for="cost"><a href="../reimburse.pdf">Reimbursement Certificate</a></label>
+  <label class="col-md-4 control-label" for="cost"><a href="reimburse.pdf">Reimbursement Certificate</a></label>
   <div class="col-md-4">
   <input id="fileToUpload" name="fileToUpload" type="file" class="btn btn-default">
 

@@ -54,12 +54,20 @@
 		//echo $interval->format('%i minutes');
 		$timediff = $interval->format('%i');
 
-		if (!(password_verify($apikey,$dbpsw) && ($timediff<=120)))
+		// verify password, ensure API key hasn't expired, and ensure database API key isn't null
+
+
+		// if either: the password doesn't match, 120 minutes have passed, or the database api key is empty then fail
+		if (! (password_verify($apikey,$dbpsw) && ($timediff<=120) && !empty($dbpsw)) )
 		{
 
+			echo "fail";
 			$headerinfo = "Location: /index.php?returnto=" . $_SERVER['REQUEST_URI'] . "?fail=yes";
 			header($headerinfo);
 			die();
+		}
+		else {
+			echo "good";
 		}
 		
 
