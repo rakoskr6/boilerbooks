@@ -87,7 +87,14 @@
                     fclose($fp);
                     // Add slashes to the content so that it will escape special characters. Look at  mysql_real_escape_string later
                     $content = addslashes($content);
+                    
+                    // Save image type
                     $receipt = strtolower($FileType);
+                    
+                    // Rename jpeg file endings to jpg for consistency
+                    if (!strcmp($receipt, "jpeg")) {
+                        $receipt = "jpg";
+                    }
 
                 }
 

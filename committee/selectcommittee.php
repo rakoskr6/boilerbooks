@@ -49,9 +49,9 @@ try {
 		$items .= $row['purchaseid'];
 		$items .= '</a>';
 
-		$items .= '</td> <td><a href=';
-		$items .= $row['receipt'];
-		$items .= '>';
+		$items .= '</td> <td><a href=/api/receipt_file?purchaseid=';
+		$items .= $row['purchaseid'];
+		$items .= '&user=' . $_SESSION['user'] . '&apikey=' . $_SESSION['apikey'] . '>';
 		$items .= $row['item'];
 		$items .= '</a></td> <td>';
 
