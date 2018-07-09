@@ -13,7 +13,7 @@
 	*/
 	
 
-	include '../../dbinfo.php';
+	include '../dbinfo.php';
 	
 	// define variables and set to empty values
 	$apikey = $user = $role1 = $role2 = "";
