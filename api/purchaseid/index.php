@@ -1,5 +1,5 @@
 <?php
-	/* This API provides info on a purchase for display. It also formats an ifram of the receipt
+	/* This API provides info on a purchase for display. It also formats an iframe of the receipt
 	/* Consider adding additional security to prevent certain people from seeing all receipts */
 
 	include '../verify.php';
@@ -23,7 +23,6 @@
 		 WHERE p.purchaseID = $purchaseid";
 		//$stmt->execute();
 
-
 		foreach ($conn->query($sql) as $row) {
 			$date = $row['date'];
 			$mdate = $row['mdate'];
@@ -43,13 +42,15 @@
 			$usrn = $row['username'];
 		}
 
+
 		$resultArray = array("date" => $date, "mdate" => $mdate, "receipt" => $receipt, "item" => $item, "purchasereason" => $purchasereason, "vendor" => $vendor, "purchasedby" => $purchasedby, "approvedby" => $approvedby, "category" => $category, "status" => $status, "cost" => $cost, "comments" => $comments, "fundsource" => $fundsource, "fiscalyear" => $fiscalyear, "committee" => $committee, "username" => $usrn);
 		$resultArray = json_encode($resultArray);
+		//echo json_last_error_msg() . "<br>";
 		echo $resultArray;
 		$decoded = json_decode($resultArray);
 
 		if ($decode == 1) {
-			echo "<br><br>";
+			echo "<br><br>Content:<br><br>";
 		    foreach($decoded as $key => $val)
 		    {
 		        //echo $row;
@@ -61,10 +62,9 @@
 
 
 	}
-	catch(PDOException $e)
-		{
+	catch(PDOException $e) {
 		echo $sql . "<br>" . $e->getMessage();
-		}
+	}
 
 	$conn = null;
 

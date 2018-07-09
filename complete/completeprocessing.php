@@ -40,7 +40,7 @@
             $sqlErr = "";
 
             $okayFileTypes = ['pdf', 'jpeg', 'jpg'];
-            $maxFileSize = 16 * 1024 * 1024; // MB * KB * B
+            $maxFileSize = 16 * 1024 * 1024 - 1; // MB * KB * B - 1 (size of medium blob)
 
             // Make sure it actually uploaded
             if ($_FILES["fileToUpload"]["size"] == 0) {

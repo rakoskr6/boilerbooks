@@ -28,7 +28,11 @@
 	$category = test_input($_POST["category"]);
 	$usr = $_SESSION['user']; // eventually make this a passed parameeter (maybe)
 
+	echo "item is " . $item . "<br>";
+	echo "committee is " . $committee . "<br>";
+	
 	try {
+		echo "in try <br>";
 		$cost = test_input(str_replace('$','',$cost));
 		$conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
 		// set the PDO error mode to exception
@@ -36,16 +40,17 @@
 		$sql = "INSERT INTO Purchases (username,item,purchasereason,vendor,committee,category,cost,status,comments)
 		VALUES ('$usr', '$item', '$reason', '$vendor', '$committee', '$category', '$cost', 'Requested', '$comments');
 		";
+		echo $sql . "<br>";
 
 		// use exec() because no results are returned
 		$conn->exec($sql);
 		$sql = "SELECT @@IDENTITY AS PID;";
 		foreach ($conn->query($sql) as $row) {
-
-
 			$currentitemid = $row['PID'];
 
 		}
+		echo "currentitemid is " . $currentitemid . "<br>";
+
 	}
 	catch(PDOException $e)
 	{

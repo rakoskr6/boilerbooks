@@ -13,7 +13,7 @@
 	*/
 	
 
-	include '../dbinfo.php';
+	include '../../dbinfo.php'; // need two ../ since this is always included in a lower level API call. 
 	
 	// define variables and set to empty values
 	$apikey = $user = $role1 = $role2 = "";
@@ -57,7 +57,7 @@
 		if (!(password_verify($apikey,$dbpsw) && ($timediff<=120)))
 		{
 
-			$headerinfo = "Location: /index.php?returnto=" . $_SERVER['REQUEST_URI'];
+			$headerinfo = "Location: /index.php?returnto=" . $_SERVER['REQUEST_URI'] . "?fail=yes";
 			header($headerinfo);
 			die();
 		}
@@ -73,7 +73,4 @@
 		}
 
 	$conn = null;
-
 ?>
-
-

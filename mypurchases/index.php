@@ -15,7 +15,7 @@ try {
 	$conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
 	// set the PDO error mode to exception
 	$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$sql = "SELECT DATE_FORMAT(p.purchasedate,'%Y-%m-%d') as date, p.purchaseid, p.item, p.purchasereason, p.vendor, p.committee, p.category, p.receipt, p.status,
+	$sql = "SELECT DATE_FORMAT(p.purchasedate,'%Y-%m-%d') as date, p.purchaseid, p.item, p.purchasereason, p.vendor, p.committee, p.category, p.receipt, p.receipt_file , p.status,
 	p.cost, p.comments, p.username purchasedby
 	, (SELECT CONCAT(U.first, ' ', U.last) FROM Users U WHERE U.username = p.approvedby) approvedby
 	FROM Purchases p
@@ -30,11 +30,10 @@ try {
 		$items .= '>';
 		$items .= $row['purchaseid'];
 		$items .= '</a> <td>';
-
 		$items .= $row['date'];
-		$items .= '</td> <td><a href=';
-		$items .= $row['receipt'];
-		$items .= '>';
+		$items .= '</td> <td><a href=/api/receipt_file?purchaseid=';
+		$items .= $row['purchaseid'];
+		$items .= '&user=' . $_SESSION['user'] . '&apikey=' . $_SESSION['apikey'] . '>';
 		$items .= $row['item'];
 		$items .= '</a></td> <td>';
 		$items .= $row['purchasereason'];

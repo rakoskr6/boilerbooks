@@ -108,8 +108,8 @@
 	<div class="col-sm-2">
 	</div>
 	<div class="col-sm-8">
-		<iframe src= "<?php echo 'https://' . $_SERVER[HTTP_HOST] . $values['receipt']?>" style="position: relative; width: 100%;" height="700">
-			<a href="<?php echo 'https://' . $_SERVER[HTTP_HOST] . $values['receipt']?>">Download receipt</a>
+		<iframe src= "<?php echo 'https://' . $_SERVER[HTTP_HOST] . '/api/receipt_file/?purchaseid=' . $purchaseid . '&user=' . $_SESSION['user'] . '&apikey=' . $_SESSION['apikey']?>" style="position: relative; width: 100%;" height="700">
+			<!-- TODO: add link to download if needed -->
 		</iframe>
 	</div>
 	<div class="col-sm-2">
