@@ -3,12 +3,28 @@ The ultimate IEEE record keeping system!
 
 This program is written using PHP. The website is displayed using the bootstrap framework. It is currently hosted at money.pieee.org.
 
-In order to properly develop code you will likely need access to the database. 
+In order to properly develop code you will likely need access to the database.
 
-It is also important to setup a mysqldump cron job for database backups (I suggest removing backups after 30 days to save space)
+It is also important to setup a mysqldump cron job for database backups (I suggest removing backups after 30 days to save space).
 
-Also use rsync (or a better solution) to make remote backups of the mysqldump's, certs, and the uploaded receipts
+Use rsync (or a better solution) to make remote backups of the mysqldump's, certs, and the uploaded receipts.
 
-Also auto renew the ssl cert
+Make sure to auto renew the SSL cert
 
-Also setup ssmtp (http://www.havetheknowhow.com/Configure-the-server/Install-ssmtp.html)
+[Setup ssmtp](http://www.havetheknowhow.com/Configure-the-server/Install-ssmtp.html) for sending emails.
+
+# TODO
+- dockerize
+- email helper function
+- better committee handling
+- remove bad API crap
+- convert everything to real PDO
+ - Use DB library / better handling of connection
+- record database schema
+- add master user role
+- add configurable settings to DB
+- try to separate the frontend/backend
+  - use vue for frontend templating
+- rewrite the table library?
+- handle files better
+- tests?
