@@ -1,6 +1,6 @@
 <?php
-    $title = 'Boiler Books';
-    include '../menu.php';
+$title = 'Boiler Books';
+include '../menu.php';
 ?>
 
 <div class="container">
@@ -10,7 +10,7 @@
 </div>
 
 <?php
-    $_SESSION['item'] = '';
-    $_SESSION['names'] = '';
-    include '../smallfooter.php';
+$_SESSION['item'] = '';
+$_SESSION['names'] = '';
+include '../smallfooter.php';
 ?>

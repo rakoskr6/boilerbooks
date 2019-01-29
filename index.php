@@ -1,11 +1,11 @@
 <?php
-    session_start();
-    $title = 'Boiler Books';
-    include 'header.php';
-    include 'dbinfo.php';
-    $returnto = test_input2($_GET['returnto']);
-    $verifylogin = "login.php?returnto=" . $returnto;
-    include 'assets/fakemenu.php'
+session_start();
+$title = 'Boiler Books';
+include 'header.php';
+include 'dbinfo.php';
+$returnto = test_input2($_GET['returnto']);
+$verifylogin = "login.php?returnto=" . $returnto;
+include 'assets/fakemenu.php'
 ?>
 
 <div class="container">
@@ -43,4 +43,4 @@
     <div class="col-sm-3"> </div>
 </div>
 
-<?php include 'smallfooter.php'; ?>
+<?php include 'smallfooter.php';?>

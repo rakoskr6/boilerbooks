@@ -1,7 +1,7 @@
 <?php
-    $title = 'Boiler Books';
-    $donationactive = "active";
-    include '../menu.php';
+$title = 'Boiler Books';
+$donationactive = "active";
+include '../menu.php';
 ?>
 
 <form class="form-horizontal" action="donationprocessing.php" method="post">
@@ -16,7 +16,7 @@
         <label class="col-md-4 control-label" for="committee">Committee</label>
         <div class="col-md-4">
             <select id="committee" name="committee" class="form-control">
-            <?php include '../committees.php'; ?>
+            <?php include '../committees.php';?>
             </select>
         </div>
     </div>
@@ -87,4 +87,4 @@
 </fieldset>
 </form>
 
-<?php include '../smallfooter.php'; ?>
+<?php include '../smallfooter.php';?>

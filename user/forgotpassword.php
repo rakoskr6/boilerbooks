@@ -1,23 +1,22 @@
 <?php
-    include '../header.php';
-    include '../assets/fakemenu.php';
-    include '../dbinfo.php';
+include '../header.php';
+include '../assets/fakemenu.php';
+include '../dbinfo.php';
 ?>
 
 <div class="container">
     <h3>Forgot password?</h3>
     <?php
-        $found = test_input($_GET[found]);
-        $email = test_input($_GET[email]);
-        $usrn = test_input($_GET[usrn]);
+$found = test_input($_GET[found]);
+$email = test_input($_GET[email]);
+$usrn = test_input($_GET[usrn]);
 
-        if ($found === '1') {
-            echo '<p> An email containing a link to reset your password has been sent to ' . $email . '</p>';
-        }
-        else if ($found === '0') {
-            echo '<p>No account was found for ' . $usrn . " with the email " . $email . '</p>';
-        }
-    ?>
+if ($found === '1') {
+    echo '<p> An email containing a link to reset your password has been sent to ' . $email . '</p>';
+} else if ($found === '0') {
+    echo '<p>No account was found for ' . $usrn . " with the email " . $email . '</p>';
+}
+?>
 
     <form class="form-horizontal" action="/api/user/password.php" method="post">
       <fieldset>
@@ -46,5 +45,5 @@
     </form>
 </div>
 
-<?php include '../smallfooter.php'; ?>
+<?php include '../smallfooter.php';?>
 

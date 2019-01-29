@@ -1,14 +1,13 @@
 <?php
-    $title = 'Boiler Books';
-    $mypurchasesactive = "active";
-    include '../menu.php';
+$title = 'Boiler Books';
+$mypurchasesactive = "active";
+include '../menu.php';
 ?>
 
 <?php
 include '../dbinfo.php';
 $items = '';
 $usr = $_SESSION['user'];
-
 
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
@@ -52,11 +51,10 @@ try {
         $items .= '</td> <td>';
         $items .= $row['comments'];
 
-
         $items .= '</td></tr>';
     }
 
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     echo $sql . "<br>" . $e->getMessage();
 }
 
@@ -93,4 +91,4 @@ $conn = null;
     </script>
 </div>
 
-<?php include '../smallfooter.php'; ?>
+<?php include '../smallfooter.php';?>

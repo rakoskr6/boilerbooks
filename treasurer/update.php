@@ -28,13 +28,13 @@ try {
     foreach ($conn->query($sql) as $row) {
         $validuser .= $row['validuser'];
     }
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     echo $sql . "<br>" . $e->getMessage();
 }
 
 $conn = null;
 
-echo "Valid User: ".$validuser."<br>";
+echo "Valid User: " . $validuser . "<br>";
 if ($validuser >= 1) {
     // define variables and set to empty values
     $item = $reason = $vendor = $committee = $cost = $comments = $category = "";
@@ -50,13 +50,11 @@ if ($validuser >= 1) {
     if ($processing != '-1') {
         $stat = 'Processing Reimbursement';
         $purchaseid = $processing;
-    }
-    else if ($reimbursed != '-1') {
+    } else if ($reimbursed != '-1') {
         $stat = 'Reimbursed';
         $purchaseid = $reimbursed;
 
-    }
-    else {
+    } else {
         $stat = '';
         echo 'None';
         header('Location: /treasurer/index.php');
@@ -65,7 +63,7 @@ if ($validuser >= 1) {
     echo $stat;
 
     try {
-        $cost = test_input(str_replace('$','',$cost));
+        $cost = test_input(str_replace('$', '', $cost));
         $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
         // set the PDO error mode to exception
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -74,12 +72,11 @@ if ($validuser >= 1) {
         // use exec() because no results are returned
         $conn->exec($sql);
         echo "Updated";
-    } catch(PDOException $e) {
+    } catch (PDOException $e) {
         echo $sql . "<br>" . $e->getMessage();
     }
 
     $conn = null;
-
 
     try {
         $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
@@ -94,17 +91,16 @@ if ($validuser >= 1) {
         foreach ($conn->query($sql) as $row) {
             $email = $row['email'];
             $item = $row['item'];
-            $committee =  $row['committee'];
-            $status =  $row['status'];
+            $committee = $row['committee'];
+            $status = $row['status'];
             error_log($email);
         }
 
-    } catch(PDOException $e) {
+    } catch (PDOException $e) {
         echo $sql . "<br>" . $e->getMessage();
     }
 
     $conn = null;
-
 
     $subject = "Your purchased item is now $stat";
 
@@ -118,7 +114,6 @@ if ($validuser >= 1) {
 
     send_email($email, $subject, $message);
 }
-
 
 header('Location: /treasurer/index.php');
 

@@ -1,6 +1,6 @@
 <?php
-    $title = 'Boiler Books';
-    include '../header.php';
+$title = 'Boiler Books';
+include '../header.php';
 ?>
 
 <body>

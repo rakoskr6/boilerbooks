@@ -1,12 +1,11 @@
 <?php
-    $title = 'Boiler Books';
-    include '../menu.php';
+$title = 'Boiler Books';
+include '../menu.php';
 ?>
 
 <?php
 include '../dbinfo.php';
 $usr = $_SESSION['user'];
-
 
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
@@ -27,7 +26,7 @@ try {
         $usr = $row['username'];
     }
 
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     echo $sql . "<br>" . $e->getMessage();
 }
 

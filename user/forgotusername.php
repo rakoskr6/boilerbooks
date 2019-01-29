@@ -1,23 +1,22 @@
 <?php
-    include '../header.php';
-    include '../assets/fakemenu.php';
-    include '../dbinfo.php';
+include '../header.php';
+include '../assets/fakemenu.php';
+include '../dbinfo.php';
 ?>
 
 <div class="container">
     <h3>Forgot username?</h3>
 
     <?php
-        $found = test_input($_GET[found]);
-        $email = test_input($_GET[email]);
-        if ($found === '1') {
-            echo '<p> An email containing your username has been sent to ' . $email . '</p>';
-        }
-        else if ($found === '0') {
-            echo '<p>No account was found for ' . $email . '</p>';
-            echo "<p>Would you like to <a href='/user/newuser.php'>create a new account?</a></p>";
-        }
-    ?>
+$found = test_input($_GET[found]);
+$email = test_input($_GET[email]);
+if ($found === '1') {
+    echo '<p> An email containing your username has been sent to ' . $email . '</p>';
+} else if ($found === '0') {
+    echo '<p>No account was found for ' . $email . '</p>';
+    echo "<p>Would you like to <a href='/user/newuser.php'>create a new account?</a></p>";
+}
+?>
 
     <form class="form-horizontal" action="/api/user/username.php" method="post">
       <fieldset>
@@ -39,4 +38,4 @@
     </form>
 </div>
 
-<?php include '../smallfooter.php'; ?>
+<?php include '../smallfooter.php';?>

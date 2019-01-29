@@ -1,9 +1,9 @@
 <?php
-    session_start();
-    if (!isset($_SESSION['user'])) {
-        header("Location: ../index.php");
-        die();
-    }
+session_start();
+if (!isset($_SESSION['user'])) {
+    header("Location: ../index.php");
+    die();
+}
 ?>
 <?php //header('Location: /request/newpurchasesubmitted.php '); ?>
 <?php
@@ -36,10 +36,9 @@ try {
     $conn->exec($sql);
     echo "Inserted";
 
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     echo $sql . "<br>" . $e->getMessage();
 }
 
 $conn = null;
 header('Location: index.php');
-?>

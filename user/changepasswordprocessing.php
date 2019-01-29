@@ -1,6 +1,6 @@
 <?php
-    $title = 'Boiler Books';
-    include '../menu.php';
+$title = 'Boiler Books';
+include '../menu.php';
 ?>
 
 <?php
@@ -29,10 +29,9 @@ if ($password1 != $password2) {
             $dbpsw = $pswd['password'];
         }
 
-
-        if (password_verify($oldpassword,$dbpsw)) {
-            $password1 = password_hash($password1,PASSWORD_DEFAULT);
-            $password2 = password_hash($password1,PASSWORD_DEFAULT);
+        if (password_verify($oldpassword, $dbpsw)) {
+            $password1 = password_hash($password1, PASSWORD_DEFAULT);
+            $password2 = password_hash($password1, PASSWORD_DEFAULT);
 
             $sql = "UPDATE Users SET modifydate = NOW(), password='$password1' WHERE username='$usr'";
 
@@ -45,7 +44,7 @@ if ($password1 != $password2) {
             header("Location: changepassword.php");
         }
 
-    } catch(PDOException $e) {
+    } catch (PDOException $e) {
         echo $sql . "<br>" . $e->getMessage();
     }
 }

@@ -1,6 +1,6 @@
 <?php
-    $title = 'Boiler Books';
-    include 'menu.php';
+$title = 'Boiler Books';
+include 'menu.php';
 ?>
 
 
@@ -79,4 +79,4 @@
 </div>
 
 
-<?php include 'smallfooter.php'; ?>
+<?php include 'smallfooter.php';?>

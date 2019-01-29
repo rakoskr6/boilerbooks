@@ -11,14 +11,13 @@
 
     <title>
         <?php
-            // Only displays title if set
-            if ($title == '') {
-                echo 'Boiler Books';
-            }
-            else {
-                echo $title;
-            }
-        ?>
+// Only displays title if set
+if ($title == '') {
+    echo 'Boiler Books';
+} else {
+    echo $title;
+}
+?>
     </title>
 
     <!-- Bootstrap Components -->

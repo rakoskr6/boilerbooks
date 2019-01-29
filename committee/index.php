@@ -1,7 +1,7 @@
 <?php
-    $title = 'Boiler Books';
-    $committeeactive = "active";
-    include '../menu.php';
+$title = 'Boiler Books';
+$committeeactive = "active";
+include '../menu.php';
 ?>
 
 <br>
@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-sm-6">
             <select id="committee" name="committee" class="form-control" onchange="selectcommittee()">
-              <?php include '../committees.php'; ?>
+              <?php include '../committees.php';?>
             </select>
         </div>
         <div class="col-sm-6">
@@ -32,45 +32,41 @@
         <div class="col-sm-3">
             <h4 class="text-left" title="Balance = Income - Total (for all years)">Balance:
             <?php
-                if ($_SESSION['left'] < 0) {
-                    echo "<span class='blink_text'>";
-                }
-                else if ($_SESSION['left'] < 100) {
-                    echo "<font color='red'>";
-                }
-                else if ($_SESSION['left'] < 200) {
-                    echo "<font color='orange'>";
-                }
-                echo "$";
-                echo number_format($_SESSION['left'],2);
-                if ($_SESSION['left'] < 0) {
-                    echo "</span>";
-                }
-                else if ($_SESSION['left'] < 100) {
-                    echo "</font>";
-                }
-                else if ($_SESSION['left'] < 200) {
-                    echo "</font>";
-                }
-            ?>
+if ($_SESSION['left'] < 0) {
+    echo "<span class='blink_text'>";
+} else if ($_SESSION['left'] < 100) {
+    echo "<font color='red'>";
+} else if ($_SESSION['left'] < 200) {
+    echo "<font color='orange'>";
+}
+echo "$";
+echo number_format($_SESSION['left'], 2);
+if ($_SESSION['left'] < 0) {
+    echo "</span>";
+} else if ($_SESSION['left'] < 100) {
+    echo "</font>";
+} else if ($_SESSION['left'] < 200) {
+    echo "</font>";
+}
+?>
 
             </h4>
         </div>
         <div class="col-sm-3">
-            <h4 class="text-center" title='Income = Sum of  BOSO, SOGA, & Cash income (for current fiscal year)'>Income: $<?php echo number_format($_SESSION['incometotal'],2);?></h4>
+            <h4 class="text-center" title='Income = Sum of  BOSO, SOGA, & Cash income (for current fiscal year)'>Income: $<?php echo number_format($_SESSION['incometotal'], 2); ?></h4>
         </div>
         <div class="col-sm-3">
-            <h4 class="text-center" title='Spent = Sum of reimbursed, processing, purchased, & approved purchases (for current fiscal year)'>Spent: $<?php echo number_format($_SESSION['spent'],2);?></h4>
+            <h4 class="text-center" title='Spent = Sum of reimbursed, processing, purchased, & approved purchases (for current fiscal year)'>Spent: $<?php echo number_format($_SESSION['spent'], 2); ?></h4>
         </div>
         <div class="col-sm-3">
-            <h4 class="text-right" title='Budget = Sum of budget items (for current fiscal year)'>Budget: $<?php echo number_format($_SESSION['totalbudget'],2);?></h4>
+            <h4 class="text-right" title='Budget = Sum of budget items (for current fiscal year)'>Budget: $<?php echo number_format($_SESSION['totalbudget'], 2); ?></h4>
         </div>
     </div>
 </div>
 
 <div class="container">
     <h3 class="text-center">
-    <?php echo $_SESSION['fiscalyear'] . ' ' . $_SESSION['committee'];?> Expenses Summary</h3>
+    <?php echo $_SESSION['fiscalyear'] . ' ' . $_SESSION['committee']; ?> Expenses Summary</h3>
     <table id="expensestablesummary" class="display">
         <thead>
             <tr>
@@ -98,7 +94,7 @@
 
 <div class="container">
     <h3 class="text-center">
-    <?php echo $_SESSION['fiscalyear'] . ' ' . $_SESSION['committee'];?> Expenses</h3>
+    <?php echo $_SESSION['fiscalyear'] . ' ' . $_SESSION['committee']; ?> Expenses</h3>
     <table id="expensestable" class="display">
         <thead>
             <tr>
@@ -175,7 +171,7 @@
     }
 </script>
 
-<?php include '../smallfooter.php'; ?>
+<?php include '../smallfooter.php';?>
 
 <style>
     .blink_text {

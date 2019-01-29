@@ -1,6 +1,6 @@
 <?php
-    $title = 'Boiler Books';
-    include '../header.php';
+$title = 'Boiler Books';
+include '../header.php';
 ?>
 
 <?php
@@ -15,8 +15,6 @@ $usr = test_input($_POST['usrnid']);
 $rstlink = test_input($_POST['rstlinkid']);
 echo $usr . "<br>";
 echo $rstlink . "<br>";
-
-
 
 if (!($password1 === $password2)) {
     $head = "Location: newpasswordreset.php?match=0&usrn=" . $usr . "&rstlink=" . $rstlink;
@@ -43,15 +41,14 @@ if (!($password1 === $password2)) {
         echo $interval->format('%i minutes');
         $timediff = $interval->format('%i');
 
-
         echo "<br>Time from db: " . $dbtime . "<br>";
         echo "Time from PHP: " . $now . "<br>";
         echo $timediff;
         //$dbtime = $dbtime + 5;
         //echo "Time added to db: " . $dbtime . "<br>";
 
-        if (password_verify($rstlink,$dbpsw) && ($timediff<=120)) {
-            $password1 = password_hash($password1,PASSWORD_DEFAULT);
+        if (password_verify($rstlink, $dbpsw) && ($timediff <= 120)) {
+            $password1 = password_hash($password1, PASSWORD_DEFAULT);
 
             $sql = "UPDATE Users SET modifydate = NOW(), password='$password1', passwordreset='' WHERE username='$usr'";
 
@@ -65,7 +62,7 @@ if (!($password1 === $password2)) {
             header("Location: ../user/forgotpassword.php");
         }
 
-    } catch(PDOException $e) {
+    } catch (PDOException $e) {
         echo $sql . "<br>" . $e->getMessage();
     }
 }

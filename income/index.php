@@ -1,29 +1,29 @@
 <?php
-    $title = 'Boiler Books';
-    $incomeeactive = "active";
-    include '../menu.php';
-    include '../dbinfo.php';
+$title = 'Boiler Books';
+$incomeeactive = "active";
+include '../menu.php';
+include '../dbinfo.php';
 
-    $committee = test_input($_GET["committee"]);
-    if ($committee == '') {
-        $committee = "%";
-        $committeeDisplay = "all committees";
-    } else {
-        $committeeDisplay = $committee;
-    }
+$committee = test_input($_GET["committee"]);
+if ($committee == '') {
+    $committee = "%";
+    $committeeDisplay = "all committees";
+} else {
+    $committeeDisplay = $committee;
+}
 
-    $fiscalyear = test_input($_GET["fiscalyear"]);
-    if ($fiscalyear == '') {
-        $fiscalyear = '2018-2019';
-    }
+$fiscalyear = test_input($_GET["fiscalyear"]);
+if ($fiscalyear == '') {
+    $fiscalyear = '2018-2019';
+}
 
-    $items = '';
-    $usr = $_SESSION['user'];
+$items = '';
+$usr = $_SESSION['user'];
 
-    try {
-        $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "SELECT DATE_FORMAT(i.updated,'%Y-%m-%d') as date,
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $sql = "SELECT DATE_FORMAT(i.updated,'%Y-%m-%d') as date,
         i.source,
         i.type,
         i.committee,
@@ -35,43 +35,43 @@
         FROM Income i
         ORDER BY i.updated DESC";
 
-        foreach ($conn->query($sql) as $row) {
-            $items .= '<tr> <td>';
-            $items .= $row['source'];
-            $items .= '</td> <td>';
-            $items .= $row['date'];
-            $items .= '</td> <td>';
-            $items .= $row['type'];
-            $items .= '</td> <td>';
-            $items .= $row['committee'];
-            $items .= '</td> <td>';
-            $items .= $row['amount'];
-            $items .= '</td> <td>';
-            $items .= $row['item'];
-            $items .= '</td> <td>';
-            $items .= $row['status'];
-            $items .= '</td> <td>';
-            $items .= "<a href='update.php?incomeid=";
-            $items .= $row['incomeid'];
-            $items .= "&status=";
+    foreach ($conn->query($sql) as $row) {
+        $items .= '<tr> <td>';
+        $items .= $row['source'];
+        $items .= '</td> <td>';
+        $items .= $row['date'];
+        $items .= '</td> <td>';
+        $items .= $row['type'];
+        $items .= '</td> <td>';
+        $items .= $row['committee'];
+        $items .= '</td> <td>';
+        $items .= $row['amount'];
+        $items .= '</td> <td>';
+        $items .= $row['item'];
+        $items .= '</td> <td>';
+        $items .= $row['status'];
+        $items .= '</td> <td>';
+        $items .= "<a href='update.php?incomeid=";
+        $items .= $row['incomeid'];
+        $items .= "&status=";
 
-            if(strcmp($row['status'],'Expected') == 0) {
-                $items .= "Received'>";
-                $items .= 'Mark Received';
-            } else {
-                $items .= "Expected'>";
-                $items .= 'Mark Expected';
-            }
-            $items .= '</a></td>';
-            $items .= '</tr>';
-
+        if (strcmp($row['status'], 'Expected') == 0) {
+            $items .= "Received'>";
+            $items .= 'Mark Received';
+        } else {
+            $items .= "Expected'>";
+            $items .= 'Mark Expected';
         }
+        $items .= '</a></td>';
+        $items .= '</tr>';
 
-    } catch(PDOException $e) {
-        echo $sql . "<br>" . $e->getMessage();
     }
 
-    $conn = null;
+} catch (PDOException $e) {
+    echo $sql . "<br>" . $e->getMessage();
+}
+
+$conn = null;
 ?>
 
 
@@ -116,5 +116,4 @@
 </div>
 
 
-<?php include '../smallfooter.php'; ?>
-
+<?php include '../smallfooter.php';?>

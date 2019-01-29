@@ -1,6 +1,6 @@
 <?php
-    $title = 'Boiler Books';
-    $mypurchasesactive = "active";
+$title = 'Boiler Books';
+$mypurchasesactive = "active";
 ?>
 
 <?php
@@ -8,14 +8,12 @@ include '../dbinfo.php';
 $items = '';
 $items2 = '';
 $usr = $_SESSION['user'];
-$fiscalyear = $_SESSION['fiscalyear'] ;
-
+$fiscalyear = $_SESSION['fiscalyear'];
 
 // Expenses
 if ($committee == '') {
     $committee = test_input($_GET["committee"]);
 }
-
 
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
@@ -35,7 +33,7 @@ try {
     echo "<br><br>" . $sql . "<br><br>";
 
     foreach ($conn->query($sql) as $row) {
-        $items.= '<tr> <td>';
+        $items .= '<tr> <td>';
         $items .= $row['date'];
 
         $items .= '</td> <td><a href=/purchase.php?purchaseid=';
@@ -66,7 +64,6 @@ try {
         $items .= '</td> <td>';
         $items .= $row['comments'];
 
-
         $items .= '</td></tr>';
     }
 
@@ -74,12 +71,11 @@ try {
     $_SESSION['committee'] = $committee;
     //echo $items;
 
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     echo $sql . "<br>" . $e->getMessage();
 }
 
 $conn = null;
-
 
 // Income
 try {
@@ -98,7 +94,7 @@ try {
     //$stmt->execute();
 
     foreach ($conn->query($sql) as $row) {
-        $items2.= '<tr> <td>';
+        $items2 .= '<tr> <td>';
         $items2 .= $row['date'];
         $items2 .= '</td> <td>';
         $items2 .= $row['source'];
@@ -113,18 +109,16 @@ try {
         $items2 .= '</td> <td>';
         $items2 .= $row['comments'];
 
-
         $items2 .= '</td></tr>';
     }
 
     $_SESSION['commiteeincome'] = $items2;
 
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     echo $sql . "<br>" . $e->getMessage();
 }
 
 $conn = null;
-
 
 // Expenses Summary
 $items = "";
@@ -157,12 +151,11 @@ try {
     $_SESSION['commiteepurchasessummary'] = $items;
     $_SESSION['committee'] = $committee;
 
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     echo $sql . "<br>" . $e->getMessage();
 }
 
 $conn = null;
-
 
 // Total Budget
 $items = "";
@@ -185,12 +178,11 @@ try {
     $_SESSION['totalbudget'] = $items;
     $_SESSION['committee'] = $committee;
 
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     echo $sql . "<br>" . $e->getMessage();
 }
 
 $conn = null;
-
 
 // Total expenses
 $items = "";
@@ -203,7 +195,6 @@ try {
     WHERE Purchases.committee = '$committee' AND Purchases.status in ('Purchased','Processing Reimbursement','Reimbursed', 'Approved', NULL)
     AND Purchases.fiscalyear = '$fiscalyear'";
 
-
     foreach ($conn->query($sql) as $row) {
         $items .= $row['Spent'];
     }
@@ -211,7 +202,7 @@ try {
     $_SESSION['spent'] = $items;
     $_SESSION['committee'] = $committee;
 
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     echo $sql . "<br>" . $e->getMessage();
 }
 
@@ -236,12 +227,11 @@ try {
     $_SESSION['incometotal'] = $items;
     $_SESSION['committee'] = $committee;
 
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     echo $sql . "<br>" . $e->getMessage();
 }
 
 $conn = null;
-
 
 // Total expenses
 $items = "";
@@ -260,12 +250,11 @@ try {
 
     $_SESSION['spentall'] = $items;
 
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     echo $sql . "<br>" . $e->getMessage();
 }
 
 $conn = null;
-
 
 // Total income
 $items = "";
@@ -285,7 +274,7 @@ try {
 
     $_SESSION['incometotalall'] = $items;
 
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     echo $sql . "<br>" . $e->getMessage();
 }
 

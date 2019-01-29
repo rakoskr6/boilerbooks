@@ -11,43 +11,30 @@ if (isset($_GET['committee'])) {
     $committee = test_input($_GET['committee']);
     if ($committee == "General IEEE") {
         $general = "selected";
-    }
-    else if ($committee == "Aerial Robotics") {
+    } else if ($committee == "Aerial Robotics") {
         $aerial = "selected";
-    }
-    else if ($committee == "Computer Society") {
+    } else if ($committee == "Computer Society") {
         $computer = "selected";
-    }
-    else if ($committee == "EMBS") {
+    } else if ($committee == "EMBS") {
         $embs = "selected";
-    }
-    else if ($committee == "GE") {
+    } else if ($committee == "GE") {
         $ge = "selected";
-    }
-    else if ($committee == "MTT-S") {
+    } else if ($committee == "MTT-S") {
         $mtts = "selected";
-    }
-    else if ($committee == "Professional") {
+    } else if ($committee == "Professional") {
         $professional = "selected";
-    }
-    else if ($committee == "Learning") {
+    } else if ($committee == "Learning") {
         $learning = "selected";
-    }
-    else if ($committee == "Racing") {
+    } else if ($committee == "Racing") {
         $racing = "selected";
-    }
-    else if ($committee == "ROV") {
+    } else if ($committee == "ROV") {
         $rov = "selected";
-    }
-    else if ($committee == "Social") {
+    } else if ($committee == "Social") {
         $social = "selected";
-    }
-    else if ($committee == "SOGA") {
+    } else if ($committee == "SOGA") {
         $soga = "selected";
     }
 }
-
-
 
 $categorylist = '';
 
@@ -61,7 +48,6 @@ if ($committee != "") {
         WHERE committee='$committee' AND year='2018-2019'";
         //$stmt->execute();
 
-
         foreach ($conn->query($sql) as $row) {
             $categorylist .= '<option value="';
             $categorylist .= $row['category'];
@@ -71,8 +57,7 @@ if ($committee != "") {
         }
         //echo $categorylist;
 
-
-    } catch(PDOException $e) {
+    } catch (PDOException $e) {
         echo $sql . "<br>" . $e->getMessage();
     }
 }
@@ -88,7 +73,7 @@ $conn = null;
             <label class="col-md-4 control-label" for="Committee">Committee</label>
             <div class="col-md-4">
                 <select id="committee" name="committee" class="form-control" required="" onchange="categories()">
-                    <?php include '../committees.php'; ?>
+                    <?php include '../committees.php';?>
                 </select>
             </div>
         </div>

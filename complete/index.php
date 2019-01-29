@@ -11,7 +11,6 @@ include '../dbinfo.php';
 $items = '';
 $usr = $_SESSION['user'];
 
-
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     // set the PDO error mode to exception
@@ -31,7 +30,7 @@ try {
         $items .= '</option>\n';
     }
 
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     echo $sql . "<br>" . $e->getMessage();
 }
 
@@ -166,4 +165,4 @@ $conn = null;
     }
 </script>
 
-<?php include '../smallfooter.php'; ?>
+<?php include '../smallfooter.php';?>

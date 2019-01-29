@@ -1,23 +1,22 @@
 <?php
-    // approval form
-    $title = 'Boiler Books';
-    $approveactive = "active";
-    include '../menu.php';
+// approval form
+$title = 'Boiler Books';
+$approveactive = "active";
+include '../menu.php';
 ?>
 
 
 <?php
-    include '../dbinfo.php';
-    $items = '';
-    $usr = $_SESSION['user'];
+include '../dbinfo.php';
+$items = '';
+$usr = $_SESSION['user'];
 
-
-    try {
-        $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-        // set the PDO error mode to exception
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        //$sql = "SELECT purchaseID, item FROM Purchases WHERE Purchases.status = 'Requested'";
-        $sql = "SELECT DISTINCT p.purchaseID, p.item FROM Purchases p
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    // set the PDO error mode to exception
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    //$sql = "SELECT purchaseID, item FROM Purchases WHERE Purchases.status = 'Requested'";
+    $sql = "SELECT DISTINCT p.purchaseID, p.item FROM Purchases p
         INNER JOIN approval a on p.committee = a.committee
         WHERE p.status = 'Requested'
         AND a.username = '$usr'
@@ -26,23 +25,23 @@
         WHERE ap.username = '$usr'
         AND ap.committee = p.committee)";
 
-        //$stmt->execute();
+    //$stmt->execute();
 
-        foreach ($conn->query($sql) as $row) {
-            $items .= '<option value="';
-            $items .= $row['purchaseID'];
-            $items .= '">';
-            $items .= $row['item'];
-            $items .= '</option>\n';
-        }
-
-        //echo $items;
-
-    } catch(PDOException $e) {
-        echo $sql . "<br>" . $e->getMessage();
+    foreach ($conn->query($sql) as $row) {
+        $items .= '<option value="';
+        $items .= $row['purchaseID'];
+        $items .= '">';
+        $items .= $row['item'];
+        $items .= '</option>\n';
     }
 
-    $conn = null;
+    //echo $items;
+
+} catch (PDOException $e) {
+    echo $sql . "<br>" . $e->getMessage();
+}
+
+$conn = null;
 ?>
 
 <!-- Page Content -->
@@ -57,14 +56,13 @@
 <div class="container">
     <h4>
     <?php
-        if ($_SESSION['balance'] < $_SESSION['cost']) {
-            echo "<font color='red'>Warning! You only have $" . $_SESSION['balance'] . " left in your account. </font>";
-            echo "<font color='red'>Please talk to the IEEE treasurer before approving this purchase!</font>";
-        }
-        else if (($_SESSION['balance'] < 200) && ($_SESSION['balance'] != 0)) { // also != 0 to prevent showing before variable is set. Slight issue if actually 0 balance but presumably the cost would be greater than 0, thus still showing a warning
-            echo "<font color='orange'>Warning! You only have $" . $_SESSION['balance'] . " left in your account!</font>";
-        }
-    ?>
+if ($_SESSION['balance'] < $_SESSION['cost']) {
+    echo "<font color='red'>Warning! You only have $" . $_SESSION['balance'] . " left in your account. </font>";
+    echo "<font color='red'>Please talk to the IEEE treasurer before approving this purchase!</font>";
+} else if (($_SESSION['balance'] < 200) && ($_SESSION['balance'] != 0)) { // also != 0 to prevent showing before variable is set. Slight issue if actually 0 balance but presumably the cost would be greater than 0, thus still showing a warning
+    echo "<font color='orange'>Warning! You only have $" . $_SESSION['balance'] . " left in your account!</font>";
+}
+?>
     </h4>
 </div>
 
@@ -194,4 +192,4 @@
 </script>
 
 
-<?php include '../smallfooter.php'; ?>
+<?php include '../smallfooter.php';?>

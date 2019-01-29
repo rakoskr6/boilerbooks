@@ -1,9 +1,9 @@
 <?php
-    $title = 'Boiler Books';
-    include '../header.php';
-    include '../dbinfo.php';
-    $usrn = test_input($_GET['usrn']);
-    $rstlink = test_input($_GET['rstlink']);
+$title = 'Boiler Books';
+include '../header.php';
+include '../dbinfo.php';
+$usrn = test_input($_GET['usrn']);
+$rstlink = test_input($_GET['rstlink']);
 ?>
 
 <!-- Page Content -->
@@ -12,10 +12,10 @@
         <h3 class="form-horizontal-heading">Please Select a new password</h3>
 
         <?php
-            if (test_input($_GET["match"]) === '0') {
-                echo "<font color='blue'><em>Passwords must match</em></font>";
-            }
-        ?>
+if (test_input($_GET["match"]) === '0') {
+    echo "<font color='blue'><em>Passwords must match</em></font>";
+}
+?>
 
         <fieldset>
 
@@ -35,8 +35,8 @@
                 </div>
             </div>
 
-            <input id="usrnid" name="usrnid" type="hidden" class="form-control input-md" value='<?php echo $usrn?>'>
-            <input id="rstlinkid" name="rstlinkid" type="hidden" class="form-control input-md" value='<?php echo $rstlink?>'>
+            <input id="usrnid" name="usrnid" type="hidden" class="form-control input-md" value='<?php echo $usrn ?>'>
+            <input id="rstlinkid" name="rstlinkid" type="hidden" class="form-control input-md" value='<?php echo $rstlink ?>'>
 
             <!-- Button -->
             <div class="form-group">
