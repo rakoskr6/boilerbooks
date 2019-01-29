@@ -1,6 +1,5 @@
 <?php
-function send_email($email_address, $subject, $message)
-{
+function send_email($email_address, $subject, $message) {
     error_log("sending email to "+$email_address);
 
     $header = "From:ieeeboilerbooks@gmail.com \r\n";

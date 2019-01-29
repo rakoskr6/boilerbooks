@@ -103,15 +103,12 @@ $conn = null;
         </tbody>
     </table>
     <script>
-            $(document).ready(function() {
+        $(document).ready(function() {
             $('#incometable').DataTable({
                 "order": [[ 1, "desc" ]]
             });
             stateSave: true
-
-        } );
-
-
+        });
     </script>
 </div>
 
