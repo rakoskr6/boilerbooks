@@ -1,6 +1,5 @@
 <?php
-	$title = 'Boiler Books';
-
+    $title = 'Boiler Books';
 ?>
 
 <?php
@@ -12,5 +11,4 @@ $committee = $_SESSION["committee"];
 
 
 header("Location: selectcommittee.php?committee=" . $committee);
-
 ?>

@@ -76,21 +76,21 @@
                     //echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.<br>";
                     $receipt = str_replace(' ', '%20', $target_file_save);
 
-            	    // Convert png to jpg
-            	    if (strtolower($FileType) == 'png') {
-			$im = new Imagick($target_file);	
-			$im->setImageFormat('jpg');
-			
-			$delete_file = $target_file;
-			$target_file = str_replace('png', 'jpg', $target_file);		
-			$target_file = str_replace('PNG', 'jpg', $target_file);		
+                    // Convert png to jpg
+                    if (strtolower($FileType) == 'png') {
+                        $im = new Imagick($target_file);
+                        $im->setImageFormat('jpg');
 
-			$im->writeImage($target_file);
-			
-			$receipt = str_replace('png', 'jpg', $receipt);		
-			$receipt = str_replace('PNG', 'jpg', $receipt);		
-			unlink($delete_file);
-            	    }
+                        $delete_file = $target_file;
+                        $target_file = str_replace('png', 'jpg', $target_file);
+                        $target_file = str_replace('PNG', 'jpg', $target_file);
+
+                        $im->writeImage($target_file);
+
+                        $receipt = str_replace('png', 'jpg', $receipt);
+                        $receipt = str_replace('PNG', 'jpg', $receipt);
+                        unlink($delete_file);
+                    }
                 } else {
                     $uploadErrMessage = $uploadErrMessage . "Could not transfer file to destination on server<br>";
                     $isUploadError = true;

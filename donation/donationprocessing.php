@@ -1,10 +1,9 @@
 <?php
-	session_start();
-	if (!isset($_SESSION['user']))
-	{
-		header("Location: ../index.php");
-		die();
-	}
+    session_start();
+    if (!isset($_SESSION['user'])) {
+        header("Location: ../index.php");
+        die();
+    }
 ?>
 <?php //header('Location: /request/newpurchasesubmitted.php '); ?>
 <?php
@@ -23,28 +22,24 @@ $comments = test_input($_POST["comments"]);
 
 $usr = $_SESSION['user'];
 
-
-
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     // set the PDO error mode to exception
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $sql = "INSERT INTO Income (updated, committee, source, amount, item, type, status, comments, addedby)
-			VALUES (NOW(), '$committee', '$source', '$amount', '$item', '$category', '$status', '$comments', '$usr')";
+            VALUES (NOW(), '$committee', '$source', '$amount', '$item', '$category', '$status', '$comments', '$usr')";
 
     //$sql = "INSERT INTO Purchases (item)
-	//VALUES ('$item')";
+    //VALUES ('$item')";
 
-	// use exec() because no results are returned
+    // use exec() because no results are returned
     $conn->exec($sql);
     echo "Inserted";
-    }
-catch(PDOException $e)
-    {
+
+} catch(PDOException $e) {
     echo $sql . "<br>" . $e->getMessage();
-    }
+}
 
 $conn = null;
-header('Location: index.php'); 
-
+header('Location: index.php');
 ?>

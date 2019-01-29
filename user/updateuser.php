@@ -1,6 +1,6 @@
 <?php
-	$title = 'Boiler Books';
-	include '../menu.php';
+    $title = 'Boiler Books';
+    include '../menu.php';
 ?>
 
 <?php
@@ -9,32 +9,27 @@ $usr = $_SESSION['user'];
 
 
 try {
-	$conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-	// set the PDO error mode to exception
-	$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$sql = "SELECT * FROM Users U
-		WHERE U.username = '$usr'";
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    // set the PDO error mode to exception
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $sql = "SELECT * FROM Users U
+        WHERE U.username = '$usr'";
 
-	foreach ($conn->query($sql) as $row) {
-		$first = $row['first'];
-		$last = $row['last'];
-		$email = $row['email'];
-		$address = $row['address'];
-		$city = $row['city'];
-		$state = $row['state'];
-		$zip = $row['zip'];
-		$cert = $row['cert'];
-		$usr = $row['username'];
+    foreach ($conn->query($sql) as $row) {
+        $first = $row['first'];
+        $last = $row['last'];
+        $email = $row['email'];
+        $address = $row['address'];
+        $city = $row['city'];
+        $state = $row['state'];
+        $zip = $row['zip'];
+        $cert = $row['cert'];
+        $usr = $row['username'];
+    }
 
-	}
-		//echo $items;
-
-
-	}
-catch(PDOException $e)
-	{
-	echo $sql . "<br>" . $e->getMessage();
-	}
+} catch(PDOException $e) {
+    echo $sql . "<br>" . $e->getMessage();
+}
 
 $conn = null;
 ?>
@@ -42,24 +37,24 @@ $conn = null;
 <body>
 <br>
 <div class="container">
-	<div class = "row">
-		<div class="col-md-5">
-		</div>
-		<div class="col-md-2">
+    <div class = "row">
+        <div class="col-md-5">
+        </div>
+        <div class="col-md-2">
       <a class="btn btn-info" href = "/user/changepassword.php" roll = "button">Change Password</a>
-			<p> </p>
-		</div>
-		<div class="col-md-5">
-		</div>
-	</div>
+            <p> </p>
+        </div>
+        <div class="col-md-5">
+        </div>
+    </div>
 </div>
 
 <div class="container">
-	<p><?php echo $uploaderr ?></p>
+    <p><?php echo $uploaderr ?></p>
 </div>
    <!-- Page Content -->
 
-	<form class="form-horizontal" action="updateuserprocessing.php" method="post" enctype="multipart/form-data">
+    <form class="form-horizontal" action="updateuserprocessing.php" method="post" enctype="multipart/form-data">
 <fieldset>
 
 
@@ -70,7 +65,7 @@ $conn = null;
 
   <label class="col-md-4 control-label" for="item">Current First Name</label>
   <div class="col-md-4">
-  <input id="first" name="first" type="text" placeholder="Mitch" class="form-control input-md" required="" value = '<?php echo $first ?>'>
+  <input id="first" name="first" type="text" placeholder="Mitch" class="form-control input-md" required="" value='<?php echo $first ?>'>
 
   </div>
 </div>
@@ -79,7 +74,7 @@ $conn = null;
 <div class="form-group">
   <label class="col-md-4 control-label" for="reason">Current Last Name</label>
   <div class="col-md-4">
-  <input id="last" name="last" type="text" placeholder="Daniels" class="form-control input-md" required="" value = '<?php echo $last ?>'>
+  <input id="last" name="last" type="text" placeholder="Daniels" class="form-control input-md" required="" value='<?php echo $last ?>'>
 
   </div>
 </div>
@@ -88,7 +83,7 @@ $conn = null;
 <div class="form-group">
   <label class="col-md-4 control-label" for="vendor">Current Email</label>
   <div class="col-md-4">
-  <input id="email" name="email" type="text" placeholder="president@purdue.edu " class="form-control input-md" required=""  value = '<?php echo $email ?>'>
+  <input id="email" name="email" type="text" placeholder="president@purdue.edu " class="form-control input-md" required=""  value='<?php echo $email ?>'>
 
   </div>
 </div>
@@ -98,7 +93,7 @@ $conn = null;
 <div class="form-group">
   <label class="col-md-4 control-label" for="cost">Current Address</label>
   <div class="col-md-4">
-  <input id="address" name="address" type="text" placeholder="610 Purdue Mall" class="form-control input-md" required=""  value = '<?php echo $address ?>'>
+  <input id="address" name="address" type="text" placeholder="610 Purdue Mall" class="form-control input-md" required=""  value='<?php echo $address ?>'>
 
   </div>
 </div>
@@ -107,8 +102,7 @@ $conn = null;
 <div class="form-group">
   <label class="col-md-4 control-label" for="cost">Current City</label>
   <div class="col-md-4">
-  <input id="city" name="city" type="text" placeholder="West Lafayette"" class="form-control input-md" required=""  value = '<?php echo $city ?>'>
-
+    <input id="city" name="city" type="text" placeholder="West Lafayette" class="form-control input-md" required="" value='<?php echo $city ?>'>
   </div>
 </div>
 
@@ -117,7 +111,7 @@ $conn = null;
 <div class="form-group">
   <label class="col-md-4 control-label" for="cost">Current State</label>
   <div class="col-md-4">
-  <input id="state" name="state" type="text" placeholder="IN" class="form-control input-md" required=""  value = '<?php echo $state ?>'>
+  <input id="state" name="state" type="text" placeholder="IN" class="form-control input-md" required=""  value ='<?php echo $state ?>'>
 
   </div>
 </div>
@@ -127,7 +121,7 @@ $conn = null;
 <div class="form-group">
   <label class="col-md-4 control-label" for="cost">Current ZIP</label>
   <div class="col-md-4">
-  <input id="zip" name="zip" type="text" placeholder="47907" class="form-control input-md" required=""  value = '<?php echo $zip ?>'>
+  <input id="zip" name="zip" type="text" placeholder="47907" class="form-control input-md" required=""  value ='<?php echo $zip ?>'>
 
   </div>
 </div>
@@ -162,10 +156,6 @@ $conn = null;
 
 </fieldset>
 </form>
-
-
-
-
 
 
 <?php include '../smallfooter.php';?>
