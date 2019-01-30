@@ -38,28 +38,4 @@ try {
 }
 
 $conn = null;
-
-$_SESSION['aerialactive'] = '';
-$_SESSION['computersocietyactive'] = '';
-$_SESSION['embsactive'] = '';
-$_SESSION['learningactive'] = '';
-$_SESSION['racingactive'] = '';
-$_SESSION['rovactive'] = '';
-$_SESSION['rocketactive'] = '';
-
-if ($_SESSION['committee'] == 'Aerial Robotics') {
-    $_SESSION['aerialactive'] = 'selected';
-} elseif ($_SESSION['committee'] == 'Computer Society') {
-    $_SESSION['computersocietyactive'] = 'selected';
-} elseif ($_SESSION['committee'] == 'EMBS') {
-    $_SESSION['embsactive'] = 'selected';
-} elseif ($_SESSION['committee'] == 'Learning') {
-    $_SESSION['learningactive'] = 'selected';
-} elseif ($_SESSION['committee'] == 'Racing') {
-    $_SESSION['racingactive'] = 'selected';
-} elseif ($_SESSION['committee'] == 'ROV') {
-    $_SESSION['rovactive'] = 'selected';
-} elseif ($_SESSION['committee'] == 'Rocket') {
-    $_SESSION['rocketactive'] = 'selected';
-}
 ?>

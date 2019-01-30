@@ -9,31 +9,6 @@ include '../dbinfo.php';
 <?php
 if (isset($_GET['committee'])) {
     $committee = test_input($_GET['committee']);
-    if ($committee == "General IEEE") {
-        $general = "selected";
-    } else if ($committee == "Aerial Robotics") {
-        $aerial = "selected";
-    } else if ($committee == "Computer Society") {
-        $computer = "selected";
-    } else if ($committee == "EMBS") {
-        $embs = "selected";
-    } else if ($committee == "GE") {
-        $ge = "selected";
-    } else if ($committee == "MTT-S") {
-        $mtts = "selected";
-    } else if ($committee == "Professional") {
-        $professional = "selected";
-    } else if ($committee == "Learning") {
-        $learning = "selected";
-    } else if ($committee == "Racing") {
-        $racing = "selected";
-    } else if ($committee == "ROV") {
-        $rov = "selected";
-    } else if ($committee == "Social") {
-        $social = "selected";
-    } else if ($committee == "SOGA") {
-        $soga = "selected";
-    }
 }
 
 $categorylist = '';

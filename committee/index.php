@@ -32,24 +32,23 @@ include '../menu.php';
         <div class="col-sm-3">
             <h4 class="text-left" title="Balance = Income - Total (for all years)">Balance:
             <?php
-if ($_SESSION['left'] < 0) {
-    echo "<span class='blink_text'>";
-} else if ($_SESSION['left'] < 100) {
-    echo "<font color='red'>";
-} else if ($_SESSION['left'] < 200) {
-    echo "<font color='orange'>";
-}
-echo "$";
-echo number_format($_SESSION['left'], 2);
-if ($_SESSION['left'] < 0) {
-    echo "</span>";
-} else if ($_SESSION['left'] < 100) {
-    echo "</font>";
-} else if ($_SESSION['left'] < 200) {
-    echo "</font>";
-}
-?>
-
+            if ($_SESSION['left'] < 0) {
+                echo "<span class='blink_text'>";
+            } else if ($_SESSION['left'] < 100) {
+                echo "<font color='red'>";
+            } else if ($_SESSION['left'] < 200) {
+                echo "<font color='orange'>";
+            }
+            echo "$";
+            echo number_format($_SESSION['left'], 2);
+            if ($_SESSION['left'] < 0) {
+                echo "</span>";
+            } else if ($_SESSION['left'] < 100) {
+                echo "</font>";
+            } else if ($_SESSION['left'] < 200) {
+                echo "</font>";
+            }
+            ?>
             </h4>
         </div>
         <div class="col-sm-3">
@@ -81,12 +80,10 @@ if ($_SESSION['left'] < 0) {
     </table>
     <script>
     $(document).ready(function() {
-        $('#expensestablesummary').DataTable( {
-
+        $('#expensestablesummary').DataTable({
             "order": [[ 0, "asc" ]]
-
-        } );
-    } );
+        });
+    });
     </script>
 </div>
 

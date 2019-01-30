@@ -20,11 +20,16 @@ Make sure to auto renew the SSL cert
 - remove bad API crap
 - convert everything to real PDO
  - Use DB library / better handling of connection
-- record database schema
-- add master user role
-- add configurable settings to DB
 - try to separate the frontend/backend
   - use vue for frontend templating
+- record database schema
+- add master user role
+- get rid of first/last name
+- add configurable settings to DB
+  - make committees a table
+  - make years a table
+  - funding source table?
+  - soft delete purchases or users?
 - rewrite the table library?
 - handle files better
 - tests?
