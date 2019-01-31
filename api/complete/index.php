@@ -89,24 +89,12 @@ if ($purchaseID == '') {
 
         $conn = null;
 
-        $to = "purdue.ieee.treasurer@gmail.com";
-        $subject = "New purchase by $committee";
+        send_email(
+            "purdue.ieee.treasurer@gmail.com",
+            "New purchase by $committee",
+            "Please visit money.pieee.org at your earliest convenience to begin the reimbursement process for $item."
+        );
 
-        $message = "<p>Please visit money.pieee.org at your earliest convenience to begin the reimbursement process for $item.</p>";
-
-        $header = "From:ieeeboilerbooks@gmail.com \r\n";
-        $header .= "MIME-Version: 1.0\r\n";
-        $header .= "Content-type: text/html\r\n";
-
-        if ($sendemail == 1) {
-            $retval = mail($to, $subject, $message, $header);
-
-            if ($retval == true) {
-                //echo "Message sent successfully...";
-            } else {
-                //echo "Message could not be sent...";
-            }
-        }
 
         $_SESSION['usernamec'] = '';
         $_SESSION['itemc'] = '';

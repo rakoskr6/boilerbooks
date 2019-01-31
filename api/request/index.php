@@ -89,35 +89,17 @@ try {
 $conn = null;
 
 /*** Send emails to people who need to approve purchase ***/
-$to = $emails;
-$subject = "New Purchase from $committee";
-
-$user = $_SESSION['user'];
-$message = "<p>A request to buy $item has been made by $user.
-    Please visit <a href='https://money.purdueieee.org/approve/'>money.pieee.org</a> at your earliest convenience to approve or deny the request.</p>
-    <p>You always view the most up-to-date stauts of the purchase <a href=https://money.purdueieee.org/purchase.php?purchaseid=" . $currentitemid . "> here</a>.</p>";
-
-$header = "From:ieeeboilerbooks@gmail.com \r\n";
-$header .= "MIME-Version: 1.0\r\n";
-$header .= "Content-type: text/html\r\n";
-
-if ($sendemail == 1) {
-    $retval = mail($to, $subject, $message, $header);
-
-    if ($retval == true) {
-        //echo "Message sent successfully...";
-    } else {
-        //echo "Message could not be sent...";
-    }
-}
+send_email(
+    $emails,
+    "New Purchase from $committee",
+    "A request to buy $item has been made by $user.
+    Please visit <a href='https://money.purdueieee.org/approve/'>money.pieee.org</a> at your earliest convenience to approve or deny the request.
+    You always view the most up-to-date stauts of the purchase <a href=\"https://money.purdueieee.org/purchase.php?purchaseid=$currentitemid\">here</a>."
+);
 
 $_SESSION['item'] = $item;
 $_SESSION['names'] = $names;
 
 // Clear unused variables
 $item = $reason = $vendor = $committee = $cost = $comments = $category = "";
-
-// eventually consider the API to pass back info using JSON
-//$jsonArray = compact("item", "names","returnStat");
-//echo json_encode($jsonArray);
 ?>

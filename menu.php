@@ -7,6 +7,7 @@ if (!isset($_SESSION['user'])) {
     die();
 }
 
+include '../dbinfo.php';
 include 'header.php';
 ?>
 

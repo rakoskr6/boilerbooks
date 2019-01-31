@@ -10,7 +10,6 @@ if (!isset($_SESSION['user'])) {
 
 <?php
 include '../dbinfo.php';
-include '../helper/email.php';
 
 $validuser = '';
 $usr = $_SESSION['user'];
@@ -102,17 +101,18 @@ if ($validuser >= 1) {
 
     $conn = null;
 
-    $subject = "Your purchased item is now $stat";
 
     if ($reimbursed != '-1') {
-        $message = "<p>$item for $committee is now $stat.</p>
-        <p>Please stop by EE 14 to pick up your check.</p>";
+        $message = "$item for $committee is now $stat. Please stop by EE 14 to pick up your check.";
     } else {
-        $message = "<p>$item for $committee is now $stat.</p>
-        <p>Check money.pieee.org or contact the treasurer.</p>";
+        $message = "$item for $committee is now $stat. Check money.pieee.org or contact the treasurer.";
     }
 
-    send_email($email, $subject, $message);
+    send_email(
+        $email,
+        "Your purchased item is now $stat",
+        $message
+    );
 }
 
 header('Location: /treasurer/index.php');

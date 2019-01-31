@@ -1,9 +1,7 @@
 <?php
 $title = 'Boiler Books';
 $mypurchasesactive = "active";
-?>
 
-<?php
 include '../dbinfo.php';
 $items = '';
 $items2 = '';

@@ -50,24 +50,12 @@ if ($items != '') {
 
     $conn = null;
 
-    /*** Send email ***/
-    $to = $email;
-    $subject = "Boiler Books Password Reset";
-
-    $user = $_SESSION['user'];
-    $message = "<p>Hello! A password reset was requested for " . $usrn . ". Please go to the following URL to reset your password:<br>" . $_SERVER[HTTP_HOST] . "/user/newpasswordreset.php?usrn=" . $usrn . "&rstlink=" . $randNum;
-
-    $header = "From:ieeeboilerbooks@gmail.com \r\n";
-    $header .= "MIME-Version: 1.0\r\n";
-    $header .= "Content-type: text/html\r\n";
-
-    $retval = mail($to, $subject, $message, $header);
-
-    if ($retval == true) {
-        //echo "Message sent successfully...";
-    } else {
-        //echo "Message could not be sent...";
-    }
+    send_email(
+        $email,
+        "Boiler Books Password Reset",
+        "Hello! A password reset was requested for $usrn. Please go to the following URL to reset your password:<br>
+        $_SERVER[HTTP_HOST]/user/newpasswordreset.php?usrn=$usrn&rstlink=$randNum"
+    );
 
     $header = 'Location: /user/forgotpassword.php?found=1&email=' . $email . '&usrn=' . $usrn;
     header($header);

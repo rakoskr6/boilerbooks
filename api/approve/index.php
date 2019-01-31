@@ -48,25 +48,12 @@ try {
 
 $conn = null;
 
-$to = $_SESSION['email'];
-$subject = "Your request has been $stat";
-
-$message = "<p>Please visit money.pieee.org at your earliest convenience to finish the purchase for $item.</p>" .
-    "<p>You always view the most up-to-date stauts of the purchase <a href=https://money.purdueieee.org/purchase.php?purchaseid=" . $purchaseid . "> here</a>.</p>";
-
-$header = "From:ieeeboilerbooks@gmail.com \r\n";
-$header .= "MIME-Version: 1.0\r\n";
-$header .= "Content-type: text/html\r\n";
-
-if ($sendemail == 1) {
-    $retval = mail($to, $subject, $message, $header);
-
-    if ($retval == true) {
-        //echo "<br>Message sent successfully...";
-    } else {
-        //echo "<br>Message could not be sent...";
-    }
-}
+send_email(
+    $_SESSION['email'],
+    "Your request has been $stat",
+    "Please visit money.pieee.org at your earliest convenience to finish the purchase for $item
+    You always view the most up-to-date stauts of the purchase <a href=https://money.purdueieee.org/purchase.php?purchaseid=\"$purchaseid\">here</a>."
+);
 
 // Reset all session values that are no longer needed on the approval page (prevents reediting purchase)
 $_SESSION['currentitem'] = '';

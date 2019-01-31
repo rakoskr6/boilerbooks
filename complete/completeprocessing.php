@@ -121,26 +121,11 @@ if (!empty($purchaseID)) {
     }
 
     if ($isUploadError === false) {
-
-        if ($sendemail == 1) {
-            $to = "purdue.ieee.treasurer@gmail.com";
-            $subject = "New purchase by $committee";
-            $message = "<p>Please visit money.pieee.org at your earliest convenience to begin the reimbursement process for $item.</p>";
-            $header = "From:ieeeboilerbooks@gmail.com \r\n";
-            $header .= "MIME-Version: 1.0\r\n";
-            $header .= "Content-type: text/html\r\n";
-
-            $retval = mail($to, $subject, $message, $header);
-
-            if ($retval == true) {
-                //echo "Message sent successfully...";
-            } else {
-                //echo "Message could not be sent...";
-
-                // TODO: Should we break here to not clear the session variables at the bottom?? idk
-                // break?
-            }
-        }
+        send_email(
+            "purdue.ieee.treasurer@gmail.com",
+            "New purchase by $committee",
+            "Please visit money.pieee.org at your earliest convenience to begin the reimbursement process for $item"
+        );
     }
 
     // TODO: What is this doing, also why is it here?

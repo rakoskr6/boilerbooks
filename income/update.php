@@ -66,25 +66,13 @@ if ($validuser >= 1) {
 
     $conn = null;
 
-    $to = $email;
-    $subject = "Your purchased item is now $stat";
+    send_email(
+        $emal,
+        "Your purchased item is now $stat",
 
-    $message = "<p>$item for $committee is now $stat.
-    Feel free to visit money.pieee.org or contact the IEEE treasurer for more information.</p>";
-
-    $header = "From:ieeeboilerbooks@gmail.com \r\n";
-    $header .= "MIME-Version: 1.0\r\n";
-    $header .= "Content-type: text/html\r\n";
-
-    if ($sendmail == 1) {
-        $retval = mail($to, $subject, $message, $header);
-
-        if ($retval == true) {
-            //echo "Message sent successfully...";
-        } else {
-            //echo "Message could not be sent...";
-        }
-    }
+        "$item for $committee is now $stat.
+        Feel free to visit money.pieee.org or contact the IEEE treasurer for more information."
+    );
 }
 
 header('Location: /income/index.php');
