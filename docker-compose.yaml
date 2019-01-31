@@ -6,7 +6,7 @@ services:
         depends_on:
           - mysql
         ports:
-          - "9000:80"
+          - "5000:80"
         volumes:
           - .:/var/www/html/
     mysql:

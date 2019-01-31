@@ -2,6 +2,21 @@
 $title = 'Boiler Books';
 $committeeactive = "active";
 include '../menu.php';
+
+$committee = sanatize($_GET['committee']);
+$fiscalyear = sanatize($_GET['fiscalyear']);
+
+
+$income = db_committee_income($committee, ["fiscalyear" => $fiscalyear, "user" => $_SESSION['user']]);
+$expenses = db_committee_expenses($committee, ["fiscalyear" => $fiscalyear, "user" => $_SESSION['user']]);
+$expenses_summary = db_committee_expenses_summary($committee, $fiscalyear, $_SESSION['user']);
+
+$total_expenses = db_committee_total_expenses($committee, $fiscalyear);
+$total_expenses_year = db_committee_total_expenses_year($committee, $fiscalyear);
+$total_budget = db_committee_total_budget($committee, $fiscalyear);
+$total_budget_year = db_committee_total_budget_year($committee, $fiscalyear);
+$total_income = db_committee_total_income($committee, $fiscalyear);
+$total_income_year = db_committee_total_income_year($committee, $fiscalyear);
 ?>
 
 <br>
@@ -9,13 +24,12 @@ include '../menu.php';
 <div class="container">
     <div class="row">
         <div class="col-sm-6">
-            <select id="committee" name="committee" class="form-control" onchange="selectcommittee()">
+            <select id="committee" name="committee" class="form-control" onchange="updateQuery()">
               <?php include '../committees.php';?>
             </select>
         </div>
         <div class="col-sm-6">
-            <select id="fiscalyear" name="fiscalyear" class="form-control" onchange="selectyear()">
-                <option value="2018-2019">Select Year</option>
+            <select id="fiscalyear" name="fiscalyear" class="form-control" onchange="updateQuery()">
                 <option value="2018-2019">2018 - 2019</option>
                 <option value="2017-2018">2017 - 2018</option>
                 <option value="2016-2017">2016 - 2017</option>
@@ -30,42 +44,26 @@ include '../menu.php';
 <div class="container">
     <div class = "row">
         <div class="col-sm-3">
-            <h4 class="text-left" title="Balance = Income - Total (for all years)">Balance:
-            <?php
-            if ($_SESSION['left'] < 0) {
-                echo "<span class='blink_text'>";
-            } else if ($_SESSION['left'] < 100) {
-                echo "<font color='red'>";
-            } else if ($_SESSION['left'] < 200) {
-                echo "<font color='orange'>";
-            }
-            echo "$";
-            echo number_format($_SESSION['left'], 2);
-            if ($_SESSION['left'] < 0) {
-                echo "</span>";
-            } else if ($_SESSION['left'] < 100) {
-                echo "</font>";
-            } else if ($_SESSION['left'] < 200) {
-                echo "</font>";
-            }
-            ?>
+            <h4 class="text-left" title="Balance = Income - Total (for all years)">
+                Balance: <?= $total_income - $total_expenses; ?>
             </h4>
         </div>
         <div class="col-sm-3">
-            <h4 class="text-center" title='Income = Sum of  BOSO, SOGA, & Cash income (for current fiscal year)'>Income: $<?php echo number_format($_SESSION['incometotal'], 2); ?></h4>
+            <h4 class="text-center" title='Income = Sum of  BOSO, SOGA, & Cash income (for current fiscal year)'>Income: $<?= $total_income_year ?></h4>
         </div>
         <div class="col-sm-3">
-            <h4 class="text-center" title='Spent = Sum of reimbursed, processing, purchased, & approved purchases (for current fiscal year)'>Spent: $<?php echo number_format($_SESSION['spent'], 2); ?></h4>
+            <h4 class="text-center" title='Spent = Sum of reimbursed, processing, purchased, & approved purchases (for current fiscal year)'>Spent: $<?= $total_expenses_year ?></h4>
         </div>
         <div class="col-sm-3">
-            <h4 class="text-right" title='Budget = Sum of budget items (for current fiscal year)'>Budget: $<?php echo number_format($_SESSION['totalbudget'], 2); ?></h4>
+            <h4 class="text-right" title='Budget = Sum of budget items (for current fiscal year)'>Budget: $<?= $total_budget_year ?></h4>
         </div>
     </div>
 </div>
 
 <div class="container">
     <h3 class="text-center">
-    <?php echo $_SESSION['fiscalyear'] . ' ' . $_SESSION['committee']; ?> Expenses Summary</h3>
+        <?=  $fiscalyear . ' ' . $committee; ?> Expenses Summary
+    </h3>
     <table id="expensestablesummary" class="display">
         <thead>
             <tr>
@@ -75,28 +73,28 @@ include '../menu.php';
             </tr>
         </thead>
         <tbody>
-            <?php echo $_SESSION['commiteepurchasessummary'] ?>
+            <?php foreach ($expenses_summary as $row): ?>
+            <tr>
+                <td><?= $row['category']; ?></td>
+                <td><?= $row['spent']; ?></td>
+                <td><?= $row['budget']; ?></td>
+            </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
-    <script>
-    $(document).ready(function() {
-        $('#expensestablesummary').DataTable({
-            "order": [[ 0, "asc" ]]
-        });
-    });
-    </script>
 </div>
 
 <br> <br> <br>
 
 <div class="container">
     <h3 class="text-center">
-    <?php echo $_SESSION['fiscalyear'] . ' ' . $_SESSION['committee']; ?> Expenses</h3>
+        <?= $fiscalyear . ' ' . $committee; ?> Expenses
+    </h3>
     <table id="expensestable" class="display">
         <thead>
             <tr>
+                <th>Purchase ID</th>
                 <th>Purchase Date</th>
-                <th>Purchase Number</th>
                 <th>Item</th>
                 <th>Reason</th>
                 <th>Vendor</th>
@@ -109,22 +107,30 @@ include '../menu.php';
             </tr>
         </thead>
         <tbody>
-            <?php echo $_SESSION['commiteepurchases'] ?>
-        </tbody>
+            <?php foreach ($expenses as $row): ?>
+            <tr>
+                <td><a href=/purchase.php?purchaseid=<?= $row['purchaseid']; ?>><?= $row['purchaseid'] ?></a></td>
+                <td><?= $row['date']; ?></td>
+                <td><a href='<?= $row['receipt']; ?>'><?= $row['item']; ?></a></td>
+                <td><?= $row['purchasereason']; ?></td>
+                <td><?= $row['vendor']; ?></td>
+                <td><?= $row['committee']; ?></td>
+                <td><?= $row['approvedby']; ?></td>
+                <td><?= $row['category']; ?></td>
+                <td><?= $row['status']; ?></td>
+                <td><?= $row['cost']; ?></td>
+                <td><?= $row['comments']; ?></td>
+            </tr>
+            <?php endforeach; ?>
     </table>
-    <script>
-    $(document).ready(function() {
-        $('#expensestable').DataTable( {
-            "order": [[ 1, "desc" ]]
-        } );
-    } );
-    </script>
 </div>
 
 <br> <br> <br>
 
 <div class="container">
-    <h3 class="text-center"><?php echo $_SESSION['fiscalyear'] . ' ' . $_SESSION['committee'] ?> Income</h3>
+    <h3 class="text-center">
+        <?= $fiscalyear . ' ' . $committee ?> Income
+    </h3>
     <table id="incometable" class="display">
         <thead>
             <tr>
@@ -138,33 +144,53 @@ include '../menu.php';
             </tr>
         </thead>
         <tbody>
-            <?php echo $_SESSION['commiteeincome'] ?>
+            <?php foreach ($income as $row): ?>
+            <tr>
+                <td><?= $row['date']; ?></td>
+                <td> <?= $row['source']; ?> </td>
+                <td> <?= $row['type']; ?> </td>
+                <td> <?= $row['amount']; ?> </td>
+                <td> <?= $row['item']; ?> </td>
+                <td> <?= $row['status']; ?> </td>
+                <td> <?= $row['comments']; ?> </td>
+            </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
     <script>
-    $(document).ready(function() {
-        $('#incometable').DataTable( {
-           "order": [[ 0, "desc" ]]
-        } );
-    } );
+        function parseQuery(queryString) {
+            var query = {};
+            var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+            for (var i = 0; i < pairs.length; i++) {
+                var pair = pairs[i].split('=');
+                query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+            }
+            return query;
+        }
+
+        $(document).ready(function() {
+            $('#expensestablesummary').DataTable({
+                "order": [[ 0, "asc" ]]
+            });
+            $('#expensestable').DataTable({
+                "order": [[ 1, "desc" ]]
+            });
+            $('#incometable').DataTable({
+               "order": [[0, "desc"]]
+            });
+            window.queryString = parseQuery(window.location.search);
+
+            document.getElementById('committee').value = queryString.committee;
+            document.getElementById('fiscalyear').value = queryString.fiscalyear;
+        });
     </script>
 </div>
 
 <script>
-    function selectcommittee() {
-        var com = document.getElementById('committee').value;
-        var title = "selectcommittee.php?committee=";
-        var full = title.concat(com);
-        window.location = full;
-    }
-</script>
-
-<script>
-    function selectyear() {
-        var com = document.getElementById('fiscalyear').value;
-        var title = "selectyear.php?fiscalyear=";
-        var full = title.concat(com);
-        window.location = full;
+    function updateQuery() {
+        var committee = document.getElementById('committee').value;
+        var fiscalyear = document.getElementById('fiscalyear').value;
+        window.location.search = "?committee="+committee+"&fiscalyear="+fiscalyear;
     }
 </script>
 

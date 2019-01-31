@@ -2,11 +2,6 @@
 $title = 'Boiler Books';
 $mypurchasesactive = "active";
 include '../menu.php';
-?>
-
-<?php
-include '../dbinfo.php';
-$usr = $_SESSION['user'];
 
 $purchases = db_purchases($_SESSION['user']);
 ?>
@@ -35,14 +30,14 @@ $purchases = db_purchases($_SESSION['user']);
                 <td><a href=/purchase.php?purchaseid=<?= $row['purchaseid']; ?>><?= $row['purchaseid'] ?></a></td>
                 <td><?= $row['date']; ?></td>
                 <td><a href='<?= $row['receipt']; ?>'><?= $row['item']; ?></a></td>
-                <td> <?= $row['purchasereason']; ?> </td>
-                <td> <?= $row['vendor']; ?> </td>
-                <td> <?= $row['committee']; ?> </td>
-                <td> <?= $row['approvedby']; ?> </td>
-                <td> <?= $row['category']; ?> </td>
-                <td> <?= $row['status']; ?> </td>
-                <td> <?= $row['cost']; ?> </td>
-                <td>' <?= $row['comments']; ?> </td>
+                <td><?= $row['purchasereason']; ?></td>
+                <td><?= $row['vendor']; ?></td>
+                <td><?= $row['committee']; ?></td>
+                <td><?= $row['approvedby']; ?></td>
+                <td><?= $row['category']; ?></td>
+                <td><?= $row['status']; ?></td>
+                <td><?= $row['cost']; ?></td>
+                <td><?= $row['comments']; ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
