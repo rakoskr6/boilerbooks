@@ -220,4 +220,16 @@ function db_treasurer($committee, $fiscalyear, $user) {
 
     return db_fetchAll($sql);
 }
+
+function db_user($user_lookup, $user) {
+    $sql = "SELECT * FROM Users
+            WHERE Users.username = '$user_lookup'
+            AND '$user' in (
+                SELECT Users.username FROM Users
+                INNER JOIN approval A ON Users.username = A.username
+                WHERE (A.role = 'treasurer' OR A.role = 'president')
+            )";
+
+    return db_fetchOne($sql);
+}
 ?>

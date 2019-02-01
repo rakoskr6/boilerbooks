@@ -59,14 +59,13 @@ $items = db_treasurer($committee, $fiscalyear, $_SESSION['user']);
         <tbody>
             <?php foreach ($items as $row): ?>
             <tr>
-                <td><a href=/purchase.php?purchaseid=<?= $row['purchaseid']; ?>><?= $row['purchaseid'] ?></a></td>
+                <td><a href=/purchase.php?purchaseid=<?= $row['purchaseID']; ?>><?= $row['purchaseID'] ?></a></td>
                 <td><?= $row['date']; ?></td>
                 <td><a href='<?= $row['receipt']; ?>'><?= $row['item']; ?></a></td>
                 <td><?= $row['fundsource']; ?></td>
                 <td><?= $row['vendor']; ?></td>
                 <td><?= $row['committee']; ?></td>
-                <td><?= $row['username']; ?></td>
-                <td><?= $row['purchaedby']; ?></td>
+                <td><?= $row['purchasedby']; ?></td>
                 <td><?= $row['status']; ?></td>
                 <td><?= $row['cost']; ?></td>
                 <td><?= $row['comments']; ?></td>
