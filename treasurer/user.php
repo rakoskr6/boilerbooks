@@ -59,7 +59,7 @@ $user = db_user(get_param("user_lookup"), $_SESSION['user']);
 
     <div class='container'>
         <label class="col-md-4">
-            <a href='../user/<?= $cert; ?>'>Reimbursement Certificate</a>
+            <a href='../user/<?= $user['cert']; ?>'>Reimbursement Certificate</a>
         </label>
     </div>
 </div>

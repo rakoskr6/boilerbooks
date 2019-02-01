@@ -232,4 +232,14 @@ function db_user($user_lookup, $user) {
 
     return db_fetchOne($sql);
 }
+function db_income() {
+    $sql = "SELECT DATE_FORMAT(i.updated,'%Y-%m-%d') as date,
+            i.source, i.type, i.committee, i.amount,
+            i.item, i.incomeid, i.status
+
+            FROM Income i
+            ORDER BY i.updated DESC";
+
+    return db_fetchAll($sql);
+}
 ?>
