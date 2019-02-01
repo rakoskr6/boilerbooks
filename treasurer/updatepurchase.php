@@ -1,16 +1,13 @@
 <?php
 $title = 'Boiler Books';
 $mypurchasesactive = "active";
-include '../menu.php';
-include '../dbinfo.php';
-$decode = 1;
 
-$purchaseid = test_input($_GET["purchaseid"]);
-$url = "https://" . $_SERVER[HTTP_HOST] . "/api/purchaseid/?purchaseid=" . $purchaseid . "&user=" . $_SESSION['user'] . "&apikey=" . $_SESSION['apikey'] . "&role1=treasurer&role2=president";
-//echo $url;
-$jsonObj = file_get_contents($url);
-$values = json_decode($jsonObj, true);
-$editable = "contenteditable='true'";
+include '../menu.php';
+
+$purchaseID = sanatize($_GET["purchaseid"]);
+$values = db_purchase($_SESSION['user'], $purchaseID);
+
+//TODO: THIS PAGE DOESN'T EVEN WORK...
 ?>
 
 
@@ -19,13 +16,13 @@ $editable = "contenteditable='true'";
         <h3 class="text-center">Edit Purchase Mode</h3>
         <h4 class="text-center">President and treasurer only</h4>
         <div class="col-sm-6">
-            <h3 class="text-right">Purchase #<?php echo $purchaseid ?>:</h3>
+            <h3 class="text-right">Purchase #<?php echo $purchaseID ?>:</h3>
         </div>
         <div class="col-sm-6">
             <h3 class="text-left" style="color:blue" contenteditable="true"><?php echo $values['item'] ?></h3>
         </div>
         <p class="text-center"><em>Last updated <?php echo $values['mdate'] ?> EST</em></p>
-        <p class="text-center"><a class="btn btn-info" href = <?php echo "../purchase.php?purchaseid=" . $purchaseid ?> roll = "button">Exit Edit Purchase Mode</a></p>
+        <p class="text-center"><a class="btn btn-info" href = <?php echo "../purchase.php?purchaseid=" . $purchaseID ?> roll = "button">Exit Edit Purchase Mode</a></p>
         <p class="text-left"><em>Note: The president and treasurer should only use this mode when there was a mistake or unexpected change of a purchase. In general, purchases should be updated through the Request, Approve, and Complete steps (and reimbursed through the treasurer tab). When using this form, you only have the option to change items in blue. Titles that are in red have special care that needs to be taken when editing (highlight the mouse of the relevant section for more details). Always ensure proper data entry, or this form may not properly update the database.</em>
 
     </div>
@@ -161,11 +158,8 @@ $editable = "contenteditable='true'";
     </div>
     </div>
     <br>
-
 </div>
 
 
 
-<?php
-include 'smallfooter.php';
-?>
+<?php include '../smallfooter.php'; ?>

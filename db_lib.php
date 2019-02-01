@@ -44,6 +44,14 @@ function sanatize($data, $strip_slashes = true) {
     return $data;
 }
 
+function get_param($param, $default="") {
+    if (isset($_GET[$param])) {
+        return sanatize($_GET[$param]);
+    }
+
+    return $default;
+}
+
 function db_fetchOne($sql) {
     try {
         return $GLOBALS['db']->query($sql)->fetch();
@@ -179,5 +187,37 @@ function db_committee_total_income_year($committee, $year) {
             AND fiscalyear='$year'";
 
     return db_fetchOne($sql)[0];
+}
+
+function db_purchase($user, $purchaseID) {
+    $sql = "SELECT DATE_FORMAT(p.purchasedate,'%Y-%m-%d') as date, p.modifydate, p.item,
+            p.purchasereason, p.vendor, p.committee, p.category, p.receipt, p.status,
+            p.cost, p.comments, p.fundsource, p.fiscalyear, p.username,
+            (SELECT CONCAT(U.first, ' ', U.last) FROM Users U WHERE U.username = p.username) purchasedby,
+            (SELECT CONCAT(U.first, ' ', U.last) FROM Users U WHERE U.username = p.approvedby) approvedby
+            FROM Purchases p
+            WHERE p.purchaseID = $purchaseID";
+
+    return db_fetchOne($sql);
+}
+
+function db_treasurer($committee, $fiscalyear, $user) {
+    $sql = "SELECT DATE_FORMAT(p.purchasedate,'%Y-%m-%d') as date,
+            p.item, p.purchaseID, p.purchasereason,
+            p.vendor, p.committee, p.category,
+            p.receipt, p.status, p.cost, p.comments,
+            p.username, p.fundsource,
+            (SELECT CONCAT(Users.first, ' ', Users.last) FROM Users WHERE Users.username = p.username) purchasedby,
+            (SELECT CONCAT(Users.first, ' ', Users.last) FROM Users WHERE Users.username = p.approvedby) approvedby
+            FROM Purchases p
+            WHERE p.status in ('Purchased','Processing Reimbursement', 'Reimbursed')
+            AND '$user' in (
+            SELECT Users.username FROM Users
+            INNER JOIN approval A ON Users.username = A.username
+            WHERE (A.role = 'treasurer' OR A.role = 'president'))
+            AND p.committee LIKE '$committee' AND p.fiscalyear LIKE '$fiscalyear'
+            ORDER BY p.purchasedate DESC";
+
+    return db_fetchAll($sql);
 }
 ?>

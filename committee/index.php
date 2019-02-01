@@ -169,6 +169,15 @@ $total_income_year = db_committee_total_income_year($committee, $fiscalyear);
         }
 
         $(document).ready(function() {
+            window.queryString = parseQuery(window.location.search);
+
+            if (queryString.committee) {
+                document.getElementById('committee').value = queryString.committee;
+            }
+            if (queryString.fiscalyear) {
+                document.getElementById('fiscalyear').value = queryString.fiscalyear;
+            }
+
             $('#expensestablesummary').DataTable({
                 "order": [[ 0, "asc" ]]
             });
@@ -178,10 +187,6 @@ $total_income_year = db_committee_total_income_year($committee, $fiscalyear);
             $('#incometable').DataTable({
                "order": [[0, "desc"]]
             });
-            window.queryString = parseQuery(window.location.search);
-
-            document.getElementById('committee').value = queryString.committee;
-            document.getElementById('fiscalyear').value = queryString.fiscalyear;
         });
     </script>
 </div>

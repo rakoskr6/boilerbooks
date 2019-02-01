@@ -44,11 +44,11 @@ $purchases = db_purchases($_SESSION['user']);
     </table>
 
     <script>
-    $(document).ready(function() {
-        $('#mypurchasestable').DataTable({
-            "order": [[0, "desc"]]
+        $(document).ready(function() {
+            $('#mypurchasestable').DataTable({
+                "order": [[0, "desc"]]
+            });
         });
-    });
     </script>
 </div>
 
