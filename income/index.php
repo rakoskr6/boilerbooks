@@ -42,9 +42,9 @@ $items = db_income($committee, $fiscalyear, $_SESSION['user']);
                 <td><?= $row['item']; ?></td>
                 <td><?= $row['status']; ?></td>
                 <?php if (strcmp($row['status'], 'Expected')) { ?>
-                    <td><a href='update.php?incomeid=<?= $row['incomeid']; ?>&status=Expected'>Mark Expected</a></td>
+                    <td><a href='update.php?incomeID=<?= $row['incomeid']; ?>&status=Expected'>Mark Expected</a></td>
                 <?php } else { ?>
-                    <td><a href='update.php?incomeid=<?= $row['incomeid']; ?>&status=Received'>Mark Received</a></td>
+                    <td><a href='update.php?incomeID=<?= $row['incomeid']; ?>&status=Received'>Mark Received</a></td>
                 <?php } ?>
             <?php endforeach; ?>
         </tbody>

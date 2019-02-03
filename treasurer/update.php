@@ -1,120 +1,37 @@
 <?php
-session_start();
-if (!isset($_SESSION['user'])) {
-    header("Location: ../index.php");
-    die();
-}
-?>
-
-<?php //header('Location: /request/newpurchasesubmitted.php '); ?>
-
-<?php
 include '../dbinfo.php';
 
-$validuser = '';
-$usr = $_SESSION['user'];
 
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    // set the PDO error mode to exception
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "SELECT COUNT(U3.username) AS validuser FROM Users U3
-    INNER JOIN approval A ON U3.username = A.username
-    WHERE (A.role = 'treasurer' OR A.role = 'president')
-    AND U3.username = '$usr'";
-    //$stmt->execute();
+$user = $_SESSION['user'];
+$status = sanatize($_GET['status']);
+$purchaseID = sanatize($_GET['purchaseID']);
 
-    foreach ($conn->query($sql) as $row) {
-        $validuser .= $row['validuser'];
-    }
-} catch (PDOException $e) {
-    echo $sql . "<br>" . $e->getMessage();
+if (strcmp($status, "processing") == 0) {
+    $stat = 'Processing Reimbursement';
+
+    $message = "$item for $committee is now $stat. Check money.pieee.org or contact the treasurer.";
+}
+else if (strcmp($status, "reimbursed") == 0) {
+    $stat = 'Reimbursed';
+
+
+    $message = "$item for $committee is now $stat. Please stop by EE 14 to pick up your check.";
+} else {
+    echo "Status must be set";
 }
 
-$conn = null;
 
-echo "Valid User: " . $validuser . "<br>";
-if ($validuser >= 1) {
-    // define variables and set to empty values
-    $item = $reason = $vendor = $committee = $cost = $comments = $category = "";
+if (db_update_purchase_status($user, $purchaseID, $stat)) {
+    echo "Success!";
 
-    $processing = test_input($_GET["processing"]);
-    $reimbursed = test_input($_GET["reimbursed"]);
-    $usr = $_SESSION['user'];
-    echo $processing;
-    echo "<br>";
-    echo $reimbursed;
-    echo "<br>";
-
-    if ($processing != '-1') {
-        $stat = 'Processing Reimbursement';
-        $purchaseid = $processing;
-    } else if ($reimbursed != '-1') {
-        $stat = 'Reimbursed';
-        $purchaseid = $reimbursed;
-
-    } else {
-        $stat = '';
-        echo 'None';
-        header('Location: /treasurer/index.php');
-        return 1;
-    }
-    echo $stat;
-
-    try {
-        $cost = test_input(str_replace('$', '', $cost));
-        $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-        // set the PDO error mode to exception
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "UPDATE Purchases SET modifydate = NOW(), status='$stat' WHERE Purchases.purchaseID = '$purchaseid'";
-
-        // use exec() because no results are returned
-        $conn->exec($sql);
-        echo "Updated";
-    } catch (PDOException $e) {
-        echo $sql . "<br>" . $e->getMessage();
-    }
-
-    $conn = null;
-
-    try {
-        $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-        // set the PDO error mode to exception
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "SELECT U.email, item, committee, status FROM Purchases P
-        INNER JOIN Users U ON U.username = P.username
-        WHERE P.purchaseID = '$purchaseid'";
-        //$stmt->execute();
-
-        error_log("hello");
-        foreach ($conn->query($sql) as $row) {
-            $email = $row['email'];
-            $item = $row['item'];
-            $committee = $row['committee'];
-            $status = $row['status'];
-            error_log($email);
-        }
-
-    } catch (PDOException $e) {
-        echo $sql . "<br>" . $e->getMessage();
-    }
-
-    $conn = null;
-
-
-    if ($reimbursed != '-1') {
-        $message = "$item for $committee is now $stat. Please stop by EE 14 to pick up your check.";
-    } else {
-        $message = "$item for $committee is now $stat. Check money.pieee.org or contact the treasurer.";
-    }
+    $email = db_purchaser_email($purchaseID);
 
     send_email(
         $email,
         "Your purchased item is now $stat",
         $message
     );
+} else {
+    echo "There was an issue..";
 }
-
-header('Location: /treasurer/index.php');
-
 ?>

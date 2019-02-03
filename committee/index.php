@@ -11,12 +11,14 @@ $income = db_committee_income($committee, ["fiscalyear" => $fiscalyear, "user" =
 $expenses = db_committee_expenses($committee, ["fiscalyear" => $fiscalyear, "user" => $_SESSION['user']]);
 $expenses_summary = db_committee_expenses_summary($committee, $fiscalyear, $_SESSION['user']);
 
-$total_expenses = db_committee_total_expenses($committee, $fiscalyear);
+$total_expenses = db_committee_total_expenses($committee);
 $total_expenses_year = db_committee_total_expenses_year($committee, $fiscalyear);
-$total_budget = db_committee_total_budget($committee, $fiscalyear);
+$total_budget = db_committee_total_budget($committee);
 $total_budget_year = db_committee_total_budget_year($committee, $fiscalyear);
-$total_income = db_committee_total_income($committee, $fiscalyear);
+$total_income = db_committee_total_income($committee);
 $total_income_year = db_committee_total_income_year($committee, $fiscalyear);
+
+$balance = db_committee_balance($committee);
 ?>
 
 <br>
@@ -45,7 +47,7 @@ $total_income_year = db_committee_total_income_year($committee, $fiscalyear);
     <div class = "row">
         <div class="col-sm-3">
             <h4 class="text-left" title="Balance = Income - Total (for all years)">
-                Balance: <?= $total_income - $total_expenses; ?>
+                Balance: <?= $balance; ?>
             </h4>
         </div>
         <div class="col-sm-3">

@@ -52,6 +52,17 @@ function get_param($param, $default="") {
     return $default;
 }
 
+function db_execute($sql) {
+    try {
+        $GLOBALS['db']->exec($sql);
+        return true;
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+
+    return false;
+}
+
 function db_fetchOne($sql) {
     try {
         return $GLOBALS['db']->query($sql)->fetch();
@@ -74,8 +85,8 @@ function db_fetchAll($sql) {
 
 function db_purchases($user) {
     $sql = "SELECT DATE_FORMAT(p.purchasedate,'%Y-%m-%d') as date, p.purchaseid, p.item, p.purchasereason, p.vendor, p.committee, p.category, p.receipt, p.status,
-            p.cost, p.comments, p.username purchasedby
-            , (SELECT CONCAT(U.first, ' ', U.last) FROM Users U WHERE U.username = p.approvedby) approvedby
+            p.cost, p.comments, p.username purchasedby,
+            (SELECT CONCAT(U.first, ' ', U.last) FROM Users U WHERE U.username = p.approvedby) approvedby
             FROM Purchases p
             WHERE p.username = '$user'
             ORDER BY p.purchasedate";
@@ -189,6 +200,17 @@ function db_committee_total_income_year($committee, $year) {
     return db_fetchOne($sql)[0];
 }
 
+function db_committee_balance($committee) {
+    $sql = "SELECT
+            (SELECT SUM(amount) AS income FROM Income
+             WHERE type in ('BOSO', 'Cash', 'SOGA') AND committee = '$committee')
+            -
+            (SELECT SUM(Purchases.cost) AS 'Spent' FROM Purchases
+            WHERE Purchases.committee = '$committee' AND Purchases.status in ('Purchased','Processing Reimbursement','Reimbursed','Approved',NULL)) AS Balance";
+
+    return db_fetchOne($sql)[0];
+}
+
 function db_purchase($user, $purchaseID) {
     $sql = "SELECT DATE_FORMAT(p.purchasedate,'%Y-%m-%d') as date, p.modifydate, p.item,
             p.purchasereason, p.vendor, p.committee, p.category, p.receipt, p.status,
@@ -199,6 +221,14 @@ function db_purchase($user, $purchaseID) {
             WHERE p.purchaseID = $purchaseID";
 
     return db_fetchOne($sql);
+}
+
+function db_purchaser_email($purchaseID) {
+    $sql = "SELECT Users.email FROM Users
+            INNER JOIN Purchases on Users.username = Purchases.username
+            WHERE Purchases.purchaseID = $purchaseID";
+
+    return db_fetchOne($sql)[0];
 }
 
 function db_treasurer($committee, $fiscalyear, $user) {
@@ -241,5 +271,67 @@ function db_income() {
             ORDER BY i.updated DESC";
 
     return db_fetchAll($sql);
+}
+
+function db_approval_purchases($user) {
+    $sql = "SELECT DISTINCT p.purchaseID, p.item FROM Purchases p
+            INNER JOIN approval on p.committee = approval.committee
+            WHERE p.status = 'Requested'
+            AND approval.username = '$user'
+            AND (approval.category = p.category OR approval.category = '*')
+            AND p.cost <= (SELECT MAX(approval.ammount) FROM approval
+            WHERE approval.username = '$user'
+            AND approval.committee = p.committee)";
+
+
+    return db_fetchAll($sql);
+}
+
+function db_approve_purchase($purchaseID, $user, $item, $reason, $vendor, $cost, $comments, $category, $status, $fundsource) {
+    $sql = "UPDATE Purchases SET modifydate = NOW(), approvedby='$user', item='$item', purchasereason='$reason', vendor='$vendor',
+            category='$category', cost='$cost', status='$status', fundsource='$fundsource',
+            comments='$comments' WHERE Purchases.purchaseID = '$purchaseID'";
+
+    echo $sql;
+
+    return db_execute($sql);
+}
+
+function db_receive_donation($user, $committee, $source, $amount, $item, $category, $status, $comments) {
+    $sql = "INSERT INTO Income (updated, committee, source, amount, item, type, status, comments, addedby)
+        VALUES (NOW(), '$committee', '$source', '$amount', '$item', '$category', '$status', '$comments', '$usr')";
+
+
+    return db_execute($sql);
+}
+
+function db_is_treasurer($user) {
+    $sql = "SELECT COUNT(Users.username) FROM Users
+            INNER JOIN approval ON Users.username = approval.username
+            WHERE (approval.role = 'treasurer' OR approval.role = 'president')
+            AND Users.username = '$user'";
+
+    return db_fetchOne($sql)[0];
+}
+
+function db_update_income($user, $incomeID, $status) {
+    //TODO: This counts if the user is a treasurer of _some_ committee, not in general
+    //could be better with committee based approval
+
+    if (db_is_treasurer($user)) {
+        $sql = "UPDATE Income SET status='$status' WHERE Income.incomeid = '$incomeID'";
+        return db_execute($sql);
+    }
+
+    return false;
+}
+
+function db_update_purchase_status($user, $purchaseID, $status) {
+    if (db_is_treasurer($user)) {
+        $sql = "UPDATE Purchases SET modifydate = NOW(), status='$status' WHERE Purchases.purchaseID = '$purchaseID'";
+        return db_execute($sql);
+    }
+
+    return false;
 }
 ?>

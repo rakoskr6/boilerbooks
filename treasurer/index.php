@@ -69,8 +69,8 @@ $items = db_treasurer($committee, $fiscalyear, $_SESSION['user']);
                 <td><?= $row['status']; ?></td>
                 <td><?= $row['cost']; ?></td>
                 <td><?= $row['comments']; ?></td>
-                <td><a href='update.php?reimbursed=-1&processing=<?= $row['purchaseID']; ?>'>Mark Processing</a></td>
-                <td><a href='update.php?processing=-1&reimbursed=<?= $row['purchaseID']; ?>'>Mark Reimbursed</a></td>
+                <td><a href='update.php?status=processing&purchaseID=<?= $row['purchaseID']; ?>'>Mark Processing</a></td>
+                <td><a href='update.php?status=reimbursed&purchaseID=<?= $row['purchaseID']; ?>'>Mark Reimbursed</a></td>
             <?php endforeach; ?>
         </tbody>
     </table>
