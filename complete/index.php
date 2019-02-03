@@ -6,7 +6,6 @@ include '../menu.php';
 
 
 <?php
-include '../dbinfo.php';
 
 $items = '';
 $usr = $_SESSION['user'];

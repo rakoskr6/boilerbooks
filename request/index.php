@@ -3,7 +3,6 @@
 $title = 'Boiler Books';
 $requestactive = "active";
 include '../menu.php';
-include '../dbinfo.php';
 ?>
 
 <?php
