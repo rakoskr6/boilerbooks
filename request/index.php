@@ -112,11 +112,28 @@ $conn = null;
 
 <script>
 function categories() {
+
     var com = document.getElementById('committee').value;
     var title = "index.php?committee=";
     var full = title.concat(com);
+
+    /* Need a way to save value of committee accross page refresh */
+    localStorage.setItem("committee", com);
+    console.log(com);
+
     window.location = full;
 }
+
+$( function() {
+    /* On page load retrieve the value of committee */
+    committee = localStorage.getItem("committee");
+    console.log(committee);
+    if(committee != null) {
+        document.getElementById("committee").value = committee;
+        localStorage.removeItem("committee");
+    }
+})
+
 </script>
 
 <?php include '../smallfooter.php';?>
