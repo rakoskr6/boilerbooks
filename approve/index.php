@@ -142,7 +142,7 @@ $conn = null;
 		<div class="form-group">
 			<label class="col-md-4 control-label" for="cost">Cost</label>
 			<div class="col-md-4">
-				<input id="cost" name="cost" type="number" step = "0.01" placeholder="Select item above to view" class="form-control input-md" required="" value="<?php echo $_SESSION['cost']; ?>">
+				<input id="cost" name="cost" type="number" step = "0.01" placeholder="Select item above to view" class="form-control input-md" required="" value="<?php echo $_SESSION['cost']; ?>" max="<?php echo $_SESSION['costmax']; ?>">
 			</div>
 		</div>
 

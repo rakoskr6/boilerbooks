@@ -2,7 +2,7 @@
 	session_start();
 	header("Location: index.php");
 	$title = 'Boiler Books';
-	$completeactive = "active";	
+	$completeactive = "active";
 ?>
 
 
@@ -23,7 +23,6 @@ try {
 
 	foreach ($conn->query($sql) as $row) {
 
-
 		$_SESSION['usernamec'] = $row['username'];
 		$_SESSION['itemc'] =  $row['item'];
 		$_SESSION['reasonc'] =  $row['purchasereason'];
@@ -31,17 +30,16 @@ try {
 		$_SESSION['committeec'] = $row['committee'];
 		$_SESSION['categoryc'] = $row['category'];
 		$_SESSION['costc'] = $row['cost'];
+		$_SESSION['costmax'] = $row['cost'] * 1.15 + 10;  // Maximum the user can increase by is 15% and $10.
 		$_SESSION['statusc']= $row['status'];
 		$_SESSION['commentsc']= $row['comments'];
 		$_SESSION['statusc']= $row['status'];
 		$_SESSION['purchaseIDc']= $row['purchaseID'];
 	}
 
-	}
-catch(PDOException $e)
-	{
+} catch(PDOException $e) {
 	echo $sql . "<br>" . $e->getMessage();
-	}
+}
 
 $conn = null;
 
@@ -56,23 +54,17 @@ $_SESSION['rocketactive'] = '';
 
 if ($_SESSION['committee'] == 'Aerial Robotics') {
 	$_SESSION['aerialactive'] = 'selected';
-}
-elseif ($_SESSION['committee'] == 'Computer Society') {
+} elseif ($_SESSION['committee'] == 'Computer Society') {
 	$_SESSION['computersocietyactive'] = 'selected';
-}
-elseif ($_SESSION['committee'] == 'EMBS') {
+} elseif ($_SESSION['committee'] == 'EMBS') {
 	$_SESSION['embsactive'] = 'selected';
-}
-elseif ($_SESSION['committee'] == 'Learning') {
+} elseif ($_SESSION['committee'] == 'Learning') {
 	$_SESSION['learningactive'] = 'selected';
-}
-elseif ($_SESSION['committee'] == 'Racing') {
+} elseif ($_SESSION['committee'] == 'Racing') {
 	$_SESSION['racingactive'] = 'selected';
-}
-elseif ($_SESSION['committee'] == 'ROV') {
+} elseif ($_SESSION['committee'] == 'ROV') {
 	$_SESSION['rovactive'] = 'selected';
-}
-elseif ($_SESSION['committee'] == 'Rocket') {
+} elseif ($_SESSION['committee'] == 'Rocket') {
 	$_SESSION['rocketactive'] = 'selected';
 }
 ?>

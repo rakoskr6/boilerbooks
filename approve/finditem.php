@@ -38,6 +38,7 @@ try {
 		$_SESSION['committee'] = $row['committee'];
 		$_SESSION['category'] = $row['category'];
 		$_SESSION['cost'] = $row['cost'];
+		$_SESSION['costmax'] = $row['cost'] * 1.15 + 10;
 		$_SESSION['status'] = $row['status'];
 		$_SESSION['comments'] = $row['comments'];
 		$_SESSION['email'] = $row['email'];
@@ -93,7 +94,7 @@ try {
 	$conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
 	// set the PDO error mode to exception
 	$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$sql = "SELECT 
+	$sql = "SELECT
 	(SELECT SUM(amount) AS income FROM Income
 	WHERE type in ('BOSO', 'Cash', 'SOGA') AND committee = '$committee')
     -
